@@ -76,6 +76,11 @@ test('hydrates bilingual navigation and persists the language per browser', asyn
 	await page.goto('/');
 	await page.getByRole('button', { name: 'Cambiar a español' }).click();
 	await expect(page.locator('html')).toHaveAttribute('lang', 'es');
+	const mobileMenu = page.getByRole('button', { name: 'Abrir navegación', exact: true });
+	if (await mobileMenu.isVisible()) {
+		await mobileMenu.click();
+		await expect(mobileMenu).toHaveAttribute('aria-expanded', 'true');
+	}
 	await expect(
 		page
 			.getByRole('navigation', { name: 'Primary' })
