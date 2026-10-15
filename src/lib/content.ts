@@ -267,8 +267,8 @@ Termina con los tres próximos pasos más útiles.`
 		title: { en: 'Write a clear email', es: 'Escribe un correo claro' },
 		category: { en: 'Writing & Communication', es: 'Redacción y comunicación' },
 		usefulFor: {
-			en: 'Follow-ups, requests and status updates.',
-			es: 'Seguimientos, solicitudes y avances.'
+			en: 'Follow-ups, requests and concise status updates.',
+			es: 'Seguimientos, solicitudes y actualizaciones de estado concisas.'
 		},
 		prompt: {
 			en: `Draft an email I can review before sending.

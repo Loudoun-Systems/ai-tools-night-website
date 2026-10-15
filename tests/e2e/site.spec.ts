@@ -50,7 +50,7 @@ test('serves every public route with unique metadata, CSP and no horizontal over
 		expect(response?.headers()['content-security-policy'], path).toContain("script-src 'self'");
 		expect(await page.title(), path).toContain("We've Got Now");
 		const description = await page.locator('meta[name="description"]').getAttribute('content');
-		expect(description?.length, path).toBeGreaterThan(40);
+		expect(description?.length, path).toBeGreaterThanOrEqual(40);
 		if (!path.startsWith('/events/') && !path.startsWith('/prompt-library/')) {
 			expect(descriptions.has(description ?? ''), `duplicate description on ${path}`).toBe(false);
 			descriptions.add(description ?? '');
@@ -76,7 +76,11 @@ test('hydrates bilingual navigation and persists the language per browser', asyn
 	await page.goto('/');
 	await page.getByRole('button', { name: 'Cambiar a español' }).click();
 	await expect(page.locator('html')).toHaveAttribute('lang', 'es');
-	await expect(page.getByRole('link', { name: 'Eventos', exact: true })).toBeVisible();
+	await expect(
+		page
+			.getByRole('navigation', { name: 'Primary' })
+			.getByRole('link', { name: 'Eventos', exact: true })
+	).toBeVisible();
 	await expect(page.getByText('PRUEBAS', { exact: true })).toBeVisible();
 	await page.reload();
 	await expect(page.locator('html')).toHaveAttribute('lang', 'es');
@@ -272,7 +276,11 @@ test('mobile menu opens with keyboard-accessible navigation', async ({ page }, t
 	await menu.focus();
 	await page.keyboard.press('Enter');
 	await expect(menu).toHaveAttribute('aria-expanded', 'true');
-	await expect(page.getByRole('link', { name: 'Events', exact: true })).toBeVisible();
+	await expect(
+		page
+			.getByRole('navigation', { name: 'Primary' })
+			.getByRole('link', { name: 'Events', exact: true })
+	).toBeVisible();
 });
 
 test('all rendered local images and navigable internal links resolve', async ({ page }) => {

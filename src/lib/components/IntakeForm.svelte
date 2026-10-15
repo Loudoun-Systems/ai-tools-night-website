@@ -71,12 +71,18 @@
 
 	async function focusResult(form: HTMLFormElement) {
 		await tick();
+		// Wait until the UI has left its submitting state before moving focus.
+		await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 		if (Object.keys(fieldErrors).length > 0) {
 			const first = Object.keys(fieldErrors)[0];
-			(form.elements.namedItem(first) as HTMLElement | null)?.focus();
-		} else {
-			resultElement?.focus();
+			// namedItem() returns a non-focusable RadioNodeList for grouped checkboxes.
+			const field = form.querySelector<HTMLElement>(`[name="${CSS.escape(first)}"]`);
+			if (field && !field.matches(':disabled')) {
+				field.focus();
+				return;
+			}
 		}
+		resultElement?.focus();
 	}
 
 	async function submit(event: SubmitEvent) {

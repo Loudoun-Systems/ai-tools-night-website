@@ -35,6 +35,8 @@ describe('content truth and shared records', () => {
 	test('keeps all five bilingual prompt templates complete', () => {
 		expect(prompts).toHaveLength(5);
 		for (const prompt of prompts) {
+			expect(prompt.usefulFor.en.length).toBeGreaterThanOrEqual(40);
+			expect(prompt.usefulFor.es.length).toBeGreaterThanOrEqual(40);
 			expect(prompt.prompt.en.length).toBeGreaterThan(300);
 			expect(prompt.prompt.es.length).toBeGreaterThan(300);
 			expect(prompt.example.en).toContain('Output shape');
