@@ -1,0 +1,12 @@
+.svelte-kit
+build
+node_modules
+legacy-static
+api
+css
+js
+*.html
+server.js
+run.mjs
+package-lock.json
+vercel.json
