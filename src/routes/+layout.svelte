@@ -27,7 +27,9 @@
 </script>
 
 <svelte:head>
-	<meta name="robots" content="noindex,nofollow,noarchive" />
+	{#if data.environment !== 'production'}
+		<meta name="robots" content="noindex,nofollow,noarchive" />
+	{/if}
 </svelte:head>
 
 <a class="skip-link" href="#main-content"

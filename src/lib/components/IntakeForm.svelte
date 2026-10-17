@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
+	import { page } from '$app/state';
 	import { tracks } from '$lib/content';
 	import { useLanguage } from '$lib/language.svelte';
 
@@ -13,6 +14,7 @@
 
 	let { formType, eventId = '' }: { formType: FormType; eventId?: string } = $props();
 	const language = useLanguage();
+	const unavailable = $derived(page.data.formsMode === 'disabled');
 	const storageKey = $derived(`wgn-form-state:${formType}:${eventId}`);
 	let formStatus = $state<'idle' | 'submitting' | 'accepted' | 'error'>('idle');
 	let error = $state('');
@@ -32,6 +34,7 @@
 	};
 
 	onMount(() => {
+		if (unavailable) return;
 		try {
 			const saved = window.localStorage.getItem(storageKey);
 			if (!saved) return;
@@ -86,6 +89,7 @@
 	}
 
 	async function submit(event: SubmitEvent) {
+		if (unavailable) return;
 		formStatus = 'submitting';
 		error = '';
 		fieldErrors = {};
@@ -192,7 +196,23 @@
 		{/if}
 	</div>
 
-	{#if formStatus !== 'accepted'}
+	{#if unavailable}
+		<div class="notice" role="status">
+			<strong
+				>{language.locale === 'en'
+					? 'Online submissions temporarily unavailable'
+					: 'Envíos en línea temporalmente no disponibles'}</strong
+			>
+			<p>
+				{language.locale === 'en'
+					? 'This form is disabled while its delivery connection is being verified. Nothing has been submitted.'
+					: 'Este formulario está deshabilitado mientras verificamos su conexión de entrega. No se ha enviado nada.'}
+			</p>
+			<button class="button secondary" type="button" disabled
+				>{language.locale === 'en' ? 'Submissions unavailable' : 'Envíos no disponibles'}</button
+			>
+		</div>
+	{:else if formStatus !== 'accepted'}
 		<form
 			aria-describedby={formStatus === 'error' ? `${formType}-result` : undefined}
 			onsubmit={(event) => {
@@ -385,7 +405,7 @@
 		</form>
 	{/if}
 
-	{#if formStatus === 'accepted'}
+	{#if !unavailable && formStatus === 'accepted'}
 		<div
 			bind:this={resultElement}
 			id={`${formType}-result`}
@@ -418,7 +438,7 @@
 				>
 			</p>
 		</div>
-	{:else if formStatus === 'error'}
+	{:else if !unavailable && formStatus === 'error'}
 		<div
 			bind:this={resultElement}
 			id={`${formType}-result`}

@@ -39,6 +39,7 @@
 	}
 
 	async function send() {
+		if (mode === 'disabled') return;
 		const content = draft.trim();
 		if (!content || pending) return;
 		messages.push({ role: 'user', content });
@@ -121,9 +122,13 @@
 			? language.locale === 'en'
 				? 'Close'
 				: 'Cerrar'
-			: language.locale === 'en'
-				? 'Ask WGN'
-				: 'Pregunta a WGN'}</span
+			: mode === 'disabled'
+				? language.locale === 'en'
+					? 'Chat unavailable'
+					: 'Chat no disponible'
+				: language.locale === 'en'
+					? 'Ask WGN'
+					: 'Pregunta a WGN'}</span
 	>
 </button>
 
@@ -137,72 +142,87 @@
 	>
 		<header>
 			<div>
-				<p class="eyebrow">{mode === 'fixture' ? 'FIXTURE' : 'ASSISTANT'}</p>
+				<p class="eyebrow">
+					{mode === 'disabled' ? 'WGN' : mode === 'fixture' ? 'FIXTURE' : 'ASSISTANT'}
+				</p>
 				<h2 id="chat-title">
 					{language.locale === 'en' ? 'Public WGN guide' : 'Guía pública de WGN'}
 				</h2>
 			</div>
-			<button type="button" onclick={reset}
-				>{language.locale === 'en' ? 'Reset' : 'Reiniciar'}</button
-			>
+			{#if mode !== 'disabled'}<button type="button" onclick={reset}
+					>{language.locale === 'en' ? 'Reset' : 'Reiniciar'}</button
+				>{/if}
 		</header>
-		<p class="chat-disclosure">
-			{mode === 'fixture'
-				? language.locale === 'en'
-					? 'Fixture mode uses local public facts and makes zero model calls.'
-					: 'El modo de prueba usa datos públicos locales y no llama a ningún modelo.'
-				: language.locale === 'en'
-					? 'Public site facts only. Do not share private information.'
-					: 'Solo datos públicos del sitio. No compartas información privada.'}
-		</p>
-		<div class="chat-log" aria-live="polite">
-			{#if messages.length === 0}
-				<p class="chat-empty">
-					{language.locale === 'en'
-						? 'Ask about workshops, prompts, careers, projects or events.'
-						: 'Pregunta sobre talleres, prompts, carreras, proyectos o eventos.'}
-				</p>
-			{/if}
-			{#each messages as message}
-				<div class:assistant={message.role === 'assistant'} class="chat-message">
-					<strong
-						>{message.role === 'assistant'
-							? 'WGN'
-							: language.locale === 'en'
-								? 'You'
-								: 'Tú'}</strong
-					>
-					<p>{message.content}</p>
-					{#if message.links?.length}
-						<div class="chat-links">
-							{#each message.links as link}<a href={link}>{link}</a>{/each}
-						</div>
-					{/if}
-				</div>
-			{/each}
-			{#if pending}<p class="chat-pending">
-					{language.locale === 'en' ? 'Checking public facts…' : 'Consultando datos públicos…'}
-				</p>{/if}
-		</div>
-		<form
-			onsubmit={(event) => {
-				event.preventDefault();
-				send();
-			}}
-		>
-			<label class="sr-only" for="chat-question"
-				>{language.locale === 'en' ? 'Your question' : 'Tu pregunta'}</label
+		{#if mode === 'disabled'}
+			<p class="chat-disclosure" role="status">
+				{language.locale === 'en'
+					? 'The assistant is temporarily unavailable. Please use the site navigation; no AI answer or action has been generated.'
+					: 'El asistente está temporalmente no disponible. Usa la navegación del sitio; no se ha generado ninguna respuesta de IA ni realizado ninguna acción.'}
+			</p>
+			<div class="chat-links">
+				<a href="/events">{language.locale === 'en' ? 'Events' : 'Eventos'}</a><a href="/workshops"
+					>{language.locale === 'en' ? 'Workshops' : 'Talleres'}</a
+				>
+			</div>
+		{:else}
+			<p class="chat-disclosure">
+				{mode === 'fixture'
+					? language.locale === 'en'
+						? 'Fixture mode uses local public facts and makes zero model calls.'
+						: 'El modo de prueba usa datos públicos locales y no llama a ningún modelo.'
+					: language.locale === 'en'
+						? 'Public site facts only. Do not share private information.'
+						: 'Solo datos públicos del sitio. No compartas información privada.'}
+			</p>
+			<div class="chat-log" aria-live="polite">
+				{#if messages.length === 0}
+					<p class="chat-empty">
+						{language.locale === 'en'
+							? 'Ask about workshops, prompts, careers, projects or events.'
+							: 'Pregunta sobre talleres, prompts, carreras, proyectos o eventos.'}
+					</p>
+				{/if}
+				{#each messages as message}
+					<div class:assistant={message.role === 'assistant'} class="chat-message">
+						<strong
+							>{message.role === 'assistant'
+								? 'WGN'
+								: language.locale === 'en'
+									? 'You'
+									: 'Tú'}</strong
+						>
+						<p>{message.content}</p>
+						{#if message.links?.length}
+							<div class="chat-links">
+								{#each message.links as link}<a href={link}>{link}</a>{/each}
+							</div>
+						{/if}
+					</div>
+				{/each}
+				{#if pending}<p class="chat-pending">
+						{language.locale === 'en' ? 'Checking public facts…' : 'Consultando datos públicos…'}
+					</p>{/if}
+			</div>
+			<form
+				onsubmit={(event) => {
+					event.preventDefault();
+					send();
+				}}
 			>
-			<input
-				id="chat-question"
-				bind:this={inputElement}
-				bind:value={draft}
-				maxlength="1000"
-				autocomplete="off"
-			/>
-			<button type="submit" disabled={pending || !draft.trim()}
-				>{language.locale === 'en' ? 'Send' : 'Enviar'}</button
-			>
-		</form>
+				<label class="sr-only" for="chat-question"
+					>{language.locale === 'en' ? 'Your question' : 'Tu pregunta'}</label
+				>
+				<input
+					id="chat-question"
+					bind:this={inputElement}
+					bind:value={draft}
+					maxlength="1000"
+					autocomplete="off"
+				/>
+				<button type="submit" disabled={pending || !draft.trim()}
+					>{language.locale === 'en' ? 'Send' : 'Enviar'}</button
+				>
+			</form>
+		{/if}
 	</div>
 {/if}

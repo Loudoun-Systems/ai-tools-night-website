@@ -24,6 +24,7 @@
 		"test:unit": "bun test tests/unit",
 		"test:http": "playwright test tests/e2e/http.spec.ts",
 		"test:e2e": "playwright test",
+		"test:production": "playwright test --config=playwright.production.config.ts",
 		"qa": "bun run lint && bun run check && bun run test && bun run build"
 	},
 	"dependencies": {

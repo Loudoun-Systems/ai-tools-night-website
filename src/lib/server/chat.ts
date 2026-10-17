@@ -1,6 +1,6 @@
 import type { Locale } from '$lib/types';
 import { events, prompts, publicSiteKnowledge, tracks } from '$lib/content';
-import { positiveInteger } from './config';
+import { chatMode, positiveInteger } from './config';
 import { getStore, type DurableStore } from './db';
 
 export type ChatMessage = { role: 'user' | 'assistant'; content: string };
@@ -234,6 +234,15 @@ export async function processChat(
 	identityHash: string,
 	options: ChatServiceOptions = {}
 ): Promise<ChatResponse> {
+	if (chatMode() === 'disabled') {
+		return {
+			status: 503,
+			body: {
+				error: 'chat_unavailable',
+				message: 'The assistant is temporarily unavailable. Please use the site navigation.'
+			}
+		};
+	}
 	const validation = validateChatInput(input);
 	if (!validation.ok)
 		return { status: 400, body: { error: 'invalid_chat', fields: validation.errors } };

@@ -3,8 +3,6 @@ name: CI
 on:
   pull_request:
   push:
-    branches-ignore:
-      - main
 
 permissions:
   contents: read
@@ -49,3 +47,11 @@ jobs:
           WGN_ENV: staging
           WGN_FORMS_MODE: fixture
           WGN_CHAT_MODE: fixture
+      - run: bun run test:production
+        env:
+          WGN_RELEASE_SHA: ${{ github.sha }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: production-mode-desktop-mobile-screenshots
+          path: ../qa-production-screenshots/*.png
+          if-no-files-found: error

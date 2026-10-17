@@ -1,7 +1,7 @@
-import { env } from '$env/dynamic/private';
+import { chatMode, formsMode, runtimeEnvironment } from '$lib/server/config';
 
 export const load = () => ({
-	environment: env.WGN_ENV ?? 'staging',
-	formsMode: env.WGN_FORMS_MODE ?? 'fixture',
-	chatMode: env.WGN_CHAT_MODE ?? 'fixture'
+	environment: runtimeEnvironment(),
+	formsMode: formsMode(),
+	chatMode: chatMode()
 });

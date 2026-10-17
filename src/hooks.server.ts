@@ -1,4 +1,4 @@
-import { env } from '$env/dynamic/private';
+import { runtimeEnvironment } from '$lib/server/config';
 import type { Handle } from '@sveltejs/kit';
 
 const aliases: Record<string, string> = {
@@ -18,7 +18,7 @@ function applyCommonHeaders(response: Response): Response {
 	response.headers.set('X-Content-Type-Options', 'nosniff');
 	response.headers.set('X-Frame-Options', 'DENY');
 	response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-	if ((env.WGN_ENV ?? 'staging') !== 'production') {
+	if (runtimeEnvironment() !== 'production') {
 		response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive');
 	}
 	return response;

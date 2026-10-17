@@ -9,6 +9,7 @@ const databasePath = resolve(scratch, `playwright-${runId}.sqlite`);
 
 export default defineConfig({
 	testDir: './tests/e2e',
+	testIgnore: '**/production.spec.ts',
 	fullyParallel: false,
 	workers: 1,
 	retries: 0,

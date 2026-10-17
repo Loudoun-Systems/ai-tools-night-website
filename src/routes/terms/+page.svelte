@@ -8,8 +8,8 @@
 <Seo
 	title={{ en: 'Terms of use', es: 'Términos de uso' }}
 	description={{
-		en: 'Read plain-language staging terms covering pending event details, expressions of interest and responsible use.',
-		es: 'Lee los términos del entorno de prueba sobre eventos pendientes, expresiones de interés y uso responsable.'
+		en: 'Read plain-language website terms covering pending event details, expressions of interest and responsible use.',
+		es: 'Lee los términos del sitio sobre eventos pendientes, expresiones de interés y uso responsable de la información.'
 	}}
 	path="/terms"
 />
@@ -20,12 +20,12 @@
 	}}
 	title={{ en: 'Terms of use', es: 'Términos de uso' }}
 	body={{
-		en: 'Plain-language staging terms. No payment, refund or ticket rules are introduced here.',
-		es: 'Términos sencillos para el entorno de prueba. Aquí no se introducen reglas de pago, reembolso ni entradas.'
+		en: 'Plain-language website terms. No payment, refund or ticket rules are introduced here.',
+		es: 'Términos sencillos del sitio. Aquí no se introducen reglas de pago, reembolso ni entradas.'
 	}}
 />
 <article class="shell legal">
-	<h2>{language.locale === 'en' ? 'Informational staging site' : 'Sitio informativo de prueba'}</h2>
+	<h2>{language.locale === 'en' ? 'Informational website' : 'Sitio informativo'}</h2>
 	<p>
 		{language.locale === 'en'
 			? 'Content is provided for review and practical learning. Dates, prices, capacity and availability are not confirmed unless a specific event record says so.'

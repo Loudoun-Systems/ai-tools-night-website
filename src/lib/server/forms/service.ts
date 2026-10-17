@@ -1,5 +1,5 @@
 import { digest, getStore, stableJson, type DurableStore } from '../db';
-import { positiveInteger, runtimeEnvironment } from '../config';
+import { formsMode, positiveInteger, runtimeEnvironment } from '../config';
 import {
 	FixtureFormProvider,
 	GoogleSheetsProvider,
@@ -31,6 +31,15 @@ export async function processSubmission(
 	identityHash: string,
 	options: ServiceOptions = {}
 ): Promise<SubmissionResponse> {
+	if (formsMode() === 'disabled') {
+		return {
+			status: 503,
+			body: {
+				error: 'forms_unavailable',
+				message: 'Online submissions are temporarily unavailable. Nothing was submitted.'
+			}
+		};
+	}
 	const validation = validateSubmission(input);
 	if (!validation.ok)
 		return { status: 400, body: { error: 'invalid_submission', fields: validation.errors } };

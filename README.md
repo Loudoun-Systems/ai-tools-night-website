@@ -1,4 +1,4 @@
-# We've Got Now — R5 staging application
+# We've Got Now — R5 application
 
 SvelteKit 2 + Svelte 5 application for We've Got Now / AI Tools Explorers Night. The server build uses `svelte-adapter-bun`; Bun is the package manager, test runner, SQLite runtime and production server runtime.
 
@@ -9,7 +9,7 @@ bun install --frozen-lockfile
 bun run dev
 ```
 
-The safe default is staging fixture mode. Form submissions create local fixture receipts and chat uses the checked-in public knowledge rules. Neither path makes external calls unless the corresponding provider mode and every safety gate are explicitly configured.
+Local development uses clearly labelled staging fixtures. Production (`WGN_ENV=production`, also the default when `NODE_ENV=production`) disables forms and chat in both the UI and APIs for this release. The existing Google adapter is QA-only, and the chatbot benchmark approval does not authorize public-chat spending. No fixture is presented as a public submission or AI answer. Production emits neither the staging banner nor staging-only noindex settings.
 
 ## Checks
 
@@ -20,6 +20,7 @@ bun run test
 bun run build
 bun run test:http
 bun run test:e2e
+bun run test:production
 ```
 
 The built server starts with:
@@ -35,4 +36,4 @@ WGN_ENV=staging WGN_FORMS_MODE=fixture WGN_CHAT_MODE=fixture ORIGIN=http://127.0
 - SQLite stores atomic idempotency, uncertain outcomes, rate limits and chat cap reservations. An uncertain Sheets result is not automatically re-appended.
 - The current fixture stage does not claim a real lead, seat, job application, presentation slot or model response.
 
-See `docs/STAGING-RUNBOOK.md` for the isolated exact-SHA deployment procedure and `docs/PRIVATE-RUNTIME.md` for private local credential mapping, read-only provider receipts, and the fixture-only local preview.
+See `docs/PRODUCTION-RUNBOOK.md` for production prerequisites, runtime/storage verification and rollback. `docs/STAGING-RUNBOOK.md` remains as historical isolated-staging guidance; a separate remote staging environment is no longer a release prerequisite. See `docs/PRIVATE-RUNTIME.md` for private local credential mapping, read-only provider receipts, and the fixture-only local preview.
