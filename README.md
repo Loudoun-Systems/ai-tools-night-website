@@ -35,4 +35,4 @@ WGN_ENV=staging WGN_FORMS_MODE=fixture WGN_CHAT_MODE=fixture ORIGIN=http://127.0
 - SQLite stores atomic idempotency, uncertain outcomes, rate limits and chat cap reservations. An uncertain Sheets result is not automatically re-appended.
 - The current fixture stage does not claim a real lead, seat, job application, presentation slot or model response.
 
-See `docs/STAGING-RUNBOOK.md` for the isolated exact-SHA deployment procedure.
+See `docs/STAGING-RUNBOOK.md` for the isolated exact-SHA deployment procedure and `docs/PRIVATE-RUNTIME.md` for private local credential mapping, read-only provider receipts, and the fixture-only local preview.
