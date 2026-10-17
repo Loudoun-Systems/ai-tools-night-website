@@ -50,8 +50,9 @@ jobs:
       - run: bun run test:production
         env:
           WGN_RELEASE_SHA: ${{ github.sha }}
+          WGN_SCREENSHOT_DIR: ${{ runner.temp }}/wgn-production-screenshots
       - uses: actions/upload-artifact@v4
         with:
           name: production-mode-desktop-mobile-screenshots
-          path: ../qa-production-screenshots/*.png
+          path: ${{ runner.temp }}/wgn-production-screenshots/*.png
           if-no-files-found: error
