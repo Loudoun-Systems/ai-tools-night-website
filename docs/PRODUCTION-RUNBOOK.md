@@ -1,66 +1,27 @@
 # Production release and rollback runbook
 
-## Authorization and current delivery status
+## Current target: Haytham's existing Vercel project
 
-Production publishing to `https://wevegotnow.com` and the narrowly necessary website DNS/routing changes are authorized. No separate remote staging environment is required. This document is an operator procedure, **not evidence that a remote deployment occurred**. GitHub merge does not publish this application; the legacy Vercel Git connection is disconnected.
+Use [VERCEL-DEPLOYMENT.md](VERCEL-DEPLOYMENT.md) for the exact account/Git/build/environment/preview/production-promotion procedure. This supersedes the earlier VPS/SSH prerequisite. PR #1 is merged; compatibility work belongs to a follow-up PR. The canonical repository remains under Loudoun-Systems. There is no production deployment merely because GitHub CI passed.
 
-No new hosting, credits or paid services may be purchased. Do not reuse unrelated application deployment secrets or change other applications. Keep the existing Vercel deployment and its aliases intact until the replacement is verified and a later retention decision is approved.
+The default Node 22 Vercel build excludes local Bun/SQLite/provider implementation and keeps forms/chat disabled in both preview and production. No shared database is needed for this disabled first release. No in-memory or ephemeral SQLite replacement is allowed for a later enabled integration release. Bun remains the local package/test tool; standalone fixture builds require explicit `bun run build:local` and are blocked on Vercel.
 
-## Existing rollback baseline
+## Authorization and rollback boundary
 
-The pre-change domain served the legacy site through Cloudflare and Vercel. Cloudflare nameservers are `marty.ns.cloudflare.com` and `molly.ns.cloudflare.com`. The latest successful historical GitHub Production deployment is ID `4284660792`, SHA `7dfd58320f2e880a63336d1fd0452c27a42bf1d5`, URL:
+Publishing to `https://wevegotnow.com` and specifically necessary website routing changes are already authorized. A separate staging server/domain is not required. No plan, credit or database purchase is approved. Preserve all design/assets, existing Forms/response tabs/QRs/follow-up automations, email DNS and unrelated applications.
 
-`https://ai-tools-night-website-1mmen9a53-haythamabouelfaids-projects.vercel.app`
+Before reconnecting Git, privately record the actual current production deployment URL/ID, project account, root/www domain assignments and redirect behavior. Turn off automatic custom-domain assignment before any production candidate build, or use the documented staged-production workflow with normal authorized local Vercel sign-in if that control is unavailable. Keep the current serving deployment intact for rollback. Do not request a raw token in chat.
 
-That historical deployment is a rollback reference, not independent proof of the currently selected Vercel alias. The authorized hosting operator must export the actual current project/domain aliases and Cloudflare record IDs, origin values, proxy flags, TTLs and website redirect rules before changing them. Public proxied A records reveal Cloudflare edges, **not the origin to restore**. The public DNS/HTTP/certificate/GitHub snapshot is in the shared release evidence; it is not a full authoritative zone export.
+Prior public evidence found Cloudflare routing to a legacy Vercel site, and historical GitHub deployment SHA `7dfd58320f2e880a63336d1fd0452c27a42bf1d5`. That historical record is **not** proof of the deployment currently receiving the domain; obtain the actual owner-side rollback identity rather than guessing from proxied DNS.
 
-Preserve Google Workspace MX, SPF, verification TXT, DKIM, DMARC and every unrelated record. No Forms, response tabs, QR links, Apps Script triggers or follow-up automations are changed by this release.
+## Release acceptance
 
-## Required actual hosting access
+Require passing exact-commit GitHub checks and an actual Vercel preview of the adaptation branch before merging it. After merge, build/test the exact merged commit with Production variables while auto-assignment remains off; verify the candidate deployment URL, health SHA, HTTPS, important routes, legacy redirects/query preservation, images, desktop/mobile, EN/ES, prompt controls, disabled APIs/UI, and absence of staging banners/noindex in production. Promote only that verified Production build to the existing domain. Then repeat external root/www/live acceptance and capture distinct live screenshots.
 
-An authorized operator must supply an existing approved target, scoped deployment user/identity and verified host key, persistent data directory, service manager and reverse-proxy permissions. An authenticated operator can execute this procedure instead of sharing credentials. Website-specific Cloudflare zone access is needed only if routing changes require it. No suitable hosting credential or connected deployment operator has yet been verified from this workhorse.
+No provider success may be claimed: production intake mapping/exclusion is unresolved, and the US$0.25 / 10-call benchmark approval is not public-chat funding. Preserve these boundaries even when private credential files exist.
 
-The unchanged application requires Bun `>=1.3.0` with `bun:sqlite`, a long-running process, and local persistent SQLite-compatible storage. Vercel serverless/ephemeral filesystems do not satisfy those requirements unchanged. Do not deploy this Bun build there as if Node/serverless compatible. A stateless/database adaptation would require implementation, tests and a reviewed storage service first.
+## Rollback
 
-## Preflight before any routing change
+On failed live acceptance, immediately restore/promote the privately captured previous working Vercel deployment and read back domain assignments; verify its HTTPS content and redirects externally. If any website-specific DNS/routing was changed, restore only those exact captured values. Preserve mail/unrelated records, deployment history and repository history. Do not delete the previous deployment, reset Git history or invent a successful restoration.
 
-1. Export the authoritative account configuration above; record the rollback owner and exact restoration values. Reserve an unused loopback port without stopping another application.
-2. On the target, run `bun --version` and a `bun:sqlite` open/write/read probe. Confirm the absolute SQLite data path is on a persistent local volume, outside all release directories, not `/tmp`, an ephemeral container layer, a serverless instance or SQLite-incompatible network filesystem. Prove the probe survives two independent processes and a service/container restart; capture outputs and volume configuration. Local unit tests are not proof of target-host persistence.
-3. Create an immutable release directory at the exact merged SHA. Install with `bun install --frozen-lockfile`, then run `bun run qa`, `bun run test:e2e` and `bun run test:production`. Read GitHub checks on that exact merged SHA. Do not use an unrelated branch tip or `latest` artifact.
-4. Keep any private runtime file outside source/build directories, owner-readable only, and outside Git. This release needs **no provider credentials** because public forms/chat are disabled. Set the following reviewed environment values (paths/port are operator-selected, not defaults to apply blindly):
-
-```text
-NODE_ENV=production
-WGN_ENV=production
-WGN_FORMS_MODE=disabled
-WGN_CHAT_MODE=disabled
-WGN_CHAT_ENABLED=false
-WGN_CHAT_KILL_SWITCH=true
-WGN_AUTOMATION_EXCLUSION_VERIFIED=false
-WGN_TEST_DATA_ONLY=true
-ORIGIN=https://wevegotnow.com
-WGN_ALLOWED_ORIGINS=https://wevegotnow.com
-HOST=127.0.0.1
-PORT=<verified-unused-port>
-WGN_RELEASE_SHA=<exact-merged-40-character-sha>
-WGN_SQLITE_PATH=<verified-absolute-persistent-path>/wgn.sqlite
-WGN_RATE_LIMIT_SALT=<private-random-value>
-```
-
-5. Start a new, uniquely named managed process using `bun run build/index.js`; do not overwrite an unrelated PM2/service entry. Require `/healthz` to return the exact SHA, environment `production`, forms `disabled`, chat `disabled`. Health is app liveness/config identity, **not** a storage durability check.
-6. Verify the new process over loopback and a controlled Host-header/reverse-proxy probe. Do not create an unapproved staging domain. Only after candidate smoke tests pass, atomically update the website-specific proxy/routing. Use TLS verification, preserve canonical `www` to apex and HTTP to HTTPS redirects, and preserve the existing origin/deployment for rollback. Read back the precise changed account objects.
-7. Verify externally: HTTPS and certificate chain; exact health SHA; 19 public routes; legacy 308 redirects and queries; desktop/mobile width and image decoding; EN/ES switching/persistence; prompt interactions; assets/sitemap/canonicals; no staging banner; no staging-only robots meta/header. Capture live screenshots distinctly from local production-mode screenshots.
-
-## Integration state in this release
-
-Production forces both providers to `disabled`, even if fixture/QA/benchmark environment flags remain. The UI shows bilingual unavailable messages and offers no personal-data entry/chat-send control. Direct API requests return HTTP 503 without success receipts, fake AI answers, database submission claims or provider calls. Old local fixture receipts are not restored in production.
-
-Google credentials have previously authenticated against the master workbook, but the existing adapter is synthetic-staging/QA-only. The current bound automation exclusions and production destination mapping are not verified. Do not enable or adapt production intake without that evidence and real acknowledgement testing in a safe non-follow-up destination.
-
-The US$0.25 lifetime / 10-request permission is only for a bounded benchmark (1,500 input + 240 output tokens per call; 17,400 total tokens), contingent on independently verified dedicated-key cap and no reset. It does not authorize public chat, purchases or renewal. Do not put that key into public production runtime or treat budget metadata flags as proof of an actual provider cap.
-
-## Rollback on any failed live acceptance check
-
-Stop the rollout immediately. Restore only the captured website-specific Cloudflare records/rules, Vercel alias or reverse-proxy upstream to their exact prior values. Keep the old Vercel deployment serving; do not delete/rebuild it. Verify the old HTTPS page and canonical redirects externally, and read back restored account values. If using release symlinks for a later Bun-to-Bun upgrade, restore the previous immutable release link/service definition, retaining the shared SQLite path; back up SQLite via the online backup API before any migration, never copy an active WAL database unsafely. Do not drop data or reset Git history to roll back routing.
-
-No restoration is needed when no hosting or routing write has occurred. Report the failed criterion and the restored old target, not a claim that merging main made the new site live.
+If no hosting/routing write occurred, no rollback is needed. Report prepared/previewed/merged/deployed/promoted states separately.

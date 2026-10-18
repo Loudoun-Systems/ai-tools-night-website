@@ -39,6 +39,7 @@ export default [
 	prettierConfig,
 	{
 		ignores: [
+			'.vercel/**',
 			'.svelte-kit/**',
 			'build/**',
 			'node_modules/**',

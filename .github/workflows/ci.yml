@@ -12,6 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.14
@@ -22,16 +25,48 @@ jobs:
         env:
           WGN_ENV: testing
       - run: bun run build
-        env:
-          WGN_ENV: staging
-          WGN_FORMS_MODE: fixture
-          WGN_CHAT_MODE: fixture
+      - run: bun audit
 
   browser-qa:
     runs-on: ubuntu-latest
     needs: quality
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+      - run: bun install --frozen-lockfile
+      - run: bunx playwright install --with-deps chromium
+      - run: bun run build:local
+        env:
+          WGN_ENV: staging
+          WGN_FORMS_MODE: fixture
+          WGN_CHAT_MODE: fixture
+      - run: bun run test:e2e
+      - run: bun run test:production
+        env:
+          WGN_RELEASE_SHA: ${{ github.sha }}
+          WGN_SCREENSHOT_DIR: ${{ runner.temp }}/wgn-production-screenshots
+      - uses: actions/upload-artifact@v4
+        with:
+          name: local-bun-production-mode-screenshots
+          path: ${{ runner.temp }}/wgn-production-screenshots/*.png
+          if-no-files-found: error
+
+  vercel-compatibility:
+    runs-on: ubuntu-latest
+    needs: quality
+    env:
+      WGN_RELEASE_SHA: ${{ github.sha }}
+      WGN_SCREENSHOT_DIR: ${{ runner.temp }}/wgn-vercel-screenshots
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.14
@@ -39,20 +74,11 @@ jobs:
       - run: bunx playwright install --with-deps chromium
       - run: bun run build
         env:
-          WGN_ENV: staging
-          WGN_FORMS_MODE: fixture
-          WGN_CHAT_MODE: fixture
-      - run: bun run test:e2e
-        env:
-          WGN_ENV: staging
-          WGN_FORMS_MODE: fixture
-          WGN_CHAT_MODE: fixture
-      - run: bun run test:production
-        env:
-          WGN_RELEASE_SHA: ${{ github.sha }}
-          WGN_SCREENSHOT_DIR: ${{ runner.temp }}/wgn-production-screenshots
+          VERCEL: '1'
+      - run: bun run test:vercel
+      - run: bun run test:vercel:preview
       - uses: actions/upload-artifact@v4
         with:
-          name: production-mode-desktop-mobile-screenshots
-          path: ${{ runner.temp }}/wgn-production-screenshots/*.png
+          name: vercel-node22-production-mode-screenshots
+          path: ${{ runner.temp }}/wgn-vercel-screenshots/*.png
           if-no-files-found: error

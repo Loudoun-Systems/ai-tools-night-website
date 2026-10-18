@@ -1,0 +1,17 @@
+# Do not auto-deploy the retired root-level legacy API functions or static site.
+api/
+legacy-static/
+css/
+js/
+*.html
+server.js
+run.mjs
+# Local/private/QA artifacts are never deployment inputs.
+.wgn-data/
+.env
+.env.*
+build/
+test-results/
+playwright-report/
+screenshots/
+ops/private-runtime.ts

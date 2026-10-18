@@ -63,7 +63,7 @@ bun install --frozen-lockfile
 bun run lint
 bun run check
 WGN_ENV=testing bun run test
-WGN_ENV=staging WGN_FORMS_MODE=fixture WGN_CHAT_MODE=fixture bun run build
+WGN_ENV=staging WGN_FORMS_MODE=fixture WGN_CHAT_MODE=fixture bun run build:local
 ln -sfn "$release_path" "$remote_app_root/current"
 set -a
 . "$remote_app_root/shared/wgn-staging.env"

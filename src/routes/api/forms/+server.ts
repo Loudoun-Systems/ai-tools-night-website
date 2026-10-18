@@ -1,4 +1,4 @@
-import { processSubmission } from '$lib/server/forms/service';
+import { processSubmission } from '$integrations';
 import { requestIdentity, validateJsonRequest, MAX_BODY_BYTES } from '$lib/server/http';
 import type { RequestHandler } from './$types';
 

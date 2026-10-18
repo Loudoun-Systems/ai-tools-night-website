@@ -1,4 +1,4 @@
-import { processChat } from '$lib/server/chat';
+import { processChat } from '$integrations';
 import { MAX_BODY_BYTES, requestIdentity, validateJsonRequest } from '$lib/server/http';
 import type { RequestHandler } from './$types';
 
