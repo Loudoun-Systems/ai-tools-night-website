@@ -61,7 +61,6 @@ jobs:
     needs: quality
     env:
       WGN_RELEASE_SHA: ${{ github.sha }}
-      WGN_SCREENSHOT_DIR: ${{ runner.temp }}/wgn-vercel-screenshots
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -76,6 +75,8 @@ jobs:
         env:
           VERCEL: '1'
       - run: bun run test:vercel
+        env:
+          WGN_SCREENSHOT_DIR: ${{ runner.temp }}/wgn-vercel-screenshots
       - run: bun run test:vercel:preview
       - uses: actions/upload-artifact@v4
         with:
