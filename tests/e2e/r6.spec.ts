@@ -81,6 +81,16 @@ test('R6 editorial identity uses local fonts, framed artwork and honest public a
 	await page.evaluate(() => document.fonts.ready);
 	await expect(page.getByRole('heading', { level: 1 })).toHaveText('Make room for your next idea.');
 	await expect(page.locator('.hero-art img')).toBeVisible();
+	if (await page.locator('.stage-banner').count()) {
+		expect(
+			await page.locator('.stage-banner').evaluate((e) => {
+				const rect = e.getBoundingClientRect();
+				return !!document
+					.elementFromPoint(rect.x + rect.width / 2, rect.y + rect.height / 2)
+					?.closest('.stage-banner');
+			})
+		).toBe(true);
+	}
 	expect(await page.locator('h1').evaluate((e) => getComputedStyle(e).fontFamily)).toContain(
 		'Orbitron'
 	);

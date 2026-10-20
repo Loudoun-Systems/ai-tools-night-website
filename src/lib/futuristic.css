@@ -26,6 +26,10 @@
 body {
 	background: transparent;
 }
+.stage-banner {
+	position: relative;
+	z-index: 2;
+}
 h1,
 h2 {
 	font-weight: 650;
