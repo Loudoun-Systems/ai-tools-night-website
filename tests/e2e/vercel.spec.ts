@@ -15,6 +15,14 @@ test('actual Node Vercel handler reports platform environment and real Git ident
 	expect(body.integrations).toEqual({ forms: 'disabled', chat: 'disabled' });
 	expect(body.releaseSha).toBe(process.env.WGN_RELEASE_SHA ?? '0'.repeat(40));
 	expect(JSON.stringify(body)).not.toMatch(/sqlite|private.key|api.key/i);
+	const robots = await request.get('/robots.txt');
+	expect(robots.status()).toBe(200);
+	if (preview) expect(await robots.text()).toBe('User-agent: *\nDisallow: /\n');
+	else {
+		expect(await robots.text()).toContain('Allow: /\n');
+		expect(await robots.text()).not.toContain('Disallow: /');
+		expect(await robots.text()).toContain('Sitemap: https://wevegotnow.com/sitemap.xml');
+	}
 });
 
 test('disabled APIs keep JSON/origin/body guards without loading providers or SQLite', async ({
