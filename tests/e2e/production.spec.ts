@@ -137,22 +137,23 @@ test('unavailable UI prevents PII entry and ignores old fixture receipts in both
 	for (const route of ['/', '/workshops', '/events/ai-workshops', '/careers', '/projects']) {
 		await page.goto(route);
 		await expect(
-			page.getByRole('button', { name: 'Submissions unavailable', exact: true })
-		).toBeDisabled();
+			page.getByText('Online submissions temporarily unavailable', { exact: true })
+		).toBeVisible();
 		await expect(page.locator('input[name="email"]')).toHaveCount(0);
 		await expect(page.getByText('WGN-FX-OLD')).toHaveCount(0);
 	}
-	await page.getByRole('button', { name: 'Chat unavailable', exact: true }).click();
-	await expect(page.getByText(/no AI answer or action has been generated/)).toBeVisible();
+	await page.locator('.chat-availability summary').click();
+	await expect(page.getByText(/No message is sent/)).toBeVisible();
 	await expect(page.locator('#chat-question')).toHaveCount(0);
 	await page.keyboard.press('Escape');
+	await page.locator('.chat-availability summary').click();
 	await page.getByRole('button', { name: 'Cambiar a español' }).click();
 	await expect(page.locator('html')).toHaveAttribute('lang', 'es');
 	await expect(
-		page.getByRole('button', { name: 'Envíos no disponibles', exact: true })
-	).toBeDisabled();
-	await page.getByRole('button', { name: 'Chat no disponible', exact: true }).click();
-	await expect(page.getByText(/no se ha generado ninguna respuesta de IA/)).toBeVisible();
+		page.getByText('Envíos en línea temporalmente no disponibles', { exact: true })
+	).toBeVisible();
+	await page.locator('.chat-availability summary').click();
+	await expect(page.getByText(/No se envía ningún mensaje/)).toBeVisible();
 	await page.keyboard.press('Escape');
 	await page.reload();
 	await expect(page.locator('html')).toHaveAttribute('lang', 'es');

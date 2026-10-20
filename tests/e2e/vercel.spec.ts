@@ -70,9 +70,9 @@ test('preview/production indexing and unavailable UI match platform scope', asyn
 	else expect(response?.headers()['x-robots-tag']).toBeUndefined();
 	await expect(page.locator('.stage-banner')).toHaveCount(preview ? 1 : 0);
 	await expect(
-		page.getByRole('button', { name: 'Submissions unavailable', exact: true })
-	).toBeDisabled();
+		page.getByText('Online submissions temporarily unavailable', { exact: true })
+	).toBeVisible();
 	await expect(page.locator('input[name="email"]')).toHaveCount(0);
-	await page.getByRole('button', { name: 'Chat unavailable', exact: true }).click();
+	await page.locator('.chat-availability summary').click();
 	await expect(page.locator('#chat-question')).toHaveCount(0);
 });

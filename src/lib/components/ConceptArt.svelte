@@ -4,7 +4,17 @@
 	import { useLanguage } from '$lib/language.svelte';
 	import type { Localized } from '$lib/types';
 
-	let { base, alt, eager = false }: { base: string; alt: Localized; eager?: boolean } = $props();
+	let {
+		base,
+		alt,
+		eager = false,
+		format = 'landscape'
+	}: {
+		base: string;
+		alt: Localized;
+		eager?: boolean;
+		format?: 'landscape' | 'portrait';
+	} = $props();
 	const language = useLanguage();
 	let failed = $state(false);
 	let imageElement = $state<HTMLImageElement>();
@@ -22,7 +32,7 @@
 	});
 </script>
 
-<figure class="concept-art">
+<figure class:portrait={format === 'portrait'} class="concept-art">
 	{#if failed}
 		<div class="image-fallback" role="img" aria-label={text(alt, language.locale)}>
 			<span

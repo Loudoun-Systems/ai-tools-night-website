@@ -169,7 +169,11 @@
 	}
 </script>
 
-<section class="intake-card" aria-labelledby={`${formType}-title`}>
+<section
+	class="intake-card"
+	class:intake-disabled={unavailable}
+	aria-labelledby={`${formType}-title`}
+>
 	<div class="form-heading">
 		<p class="eyebrow">
 			{language.locale === 'en' ? 'Secure website intake' : 'Formulario seguro'}

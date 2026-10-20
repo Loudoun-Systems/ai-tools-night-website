@@ -14,7 +14,9 @@ const databasePath = resolve(
 export default defineConfig({
 	...base,
 	testIgnore: [],
-	testMatch: preview ? '**/vercel.spec.ts' : ['**/production.spec.ts', '**/vercel.spec.ts'],
+	testMatch: preview
+		? ['**/vercel.spec.ts', '**/r6.spec.ts']
+		: ['**/production.spec.ts', '**/vercel.spec.ts', '**/r6.spec.ts'],
 	reporter: [
 		['list'],
 		[

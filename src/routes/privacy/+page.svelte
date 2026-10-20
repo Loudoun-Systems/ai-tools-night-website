@@ -4,7 +4,9 @@
 	import Seo from '$lib/components/Seo.svelte';
 	import { useLanguage } from '$lib/language.svelte';
 	const language = useLanguage();
-	const production = $derived(page.data.environment === 'production');
+	const integrationsDisabled = $derived(
+		page.data.formsMode === 'disabled' && page.data.chatMode === 'disabled'
+	);
 </script>
 
 <Seo
@@ -27,7 +29,7 @@
 	}}
 />
 <article class="shell legal">
-	{#if production}
+	{#if integrationsDisabled}
 		<h2>
 			{language.locale === 'en'
 				? 'Online submissions are disabled'
@@ -52,7 +54,7 @@
 			: 'Asistente y almacenamiento del navegador'}
 	</h2>
 	<p>
-		{production
+		{integrationsDisabled
 			? language.locale === 'en'
 				? 'The browser remembers your EN/ES preference in localStorage. The website assistant does not generate answers or make model calls in this release. Hosting and security infrastructure may process normal request metadata; no analytics or advertising tracker is enabled by this application.'
 				: 'El navegador recuerda tu preferencia EN/ES en localStorage. El asistente no genera respuestas ni llama a modelos en esta versión. La infraestructura de alojamiento y seguridad puede procesar metadatos normales de solicitudes; esta aplicación no habilita analítica ni rastreadores publicitarios.'
