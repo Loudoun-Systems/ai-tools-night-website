@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+export { digest, stableJson } from './hash';
 import { createRequire } from 'node:module';
 import { dirname } from 'node:path';
 import { mkdirSync } from 'node:fs';
@@ -38,6 +38,7 @@ export class DurableStore {
 	readonly database: BunDatabase;
 
 	constructor(path = sqlitePath()) {
+		if (process.env.VERCEL === '1') throw new Error('local_sqlite_forbidden_on_vercel');
 		if (path !== ':memory:') mkdirSync(dirname(path), { recursive: true });
 		const { Database } = runtimeRequire('bun:sqlite') as typeof import('bun:sqlite');
 		this.database = new Database(path, { create: true, strict: true });
@@ -200,19 +201,4 @@ let sharedStore: DurableStore | undefined;
 export function getStore(): DurableStore {
 	sharedStore ??= new DurableStore();
 	return sharedStore;
-}
-
-export function digest(value: string): string {
-	return createHash('sha256').update(value).digest('hex');
-}
-
-export function stableJson(value: unknown): string {
-	if (Array.isArray(value)) return `[${value.map(stableJson).join(',')}]`;
-	if (value && typeof value === 'object') {
-		return `{${Object.entries(value as Record<string, unknown>)
-			.sort(([left], [right]) => left.localeCompare(right))
-			.map(([key, entry]) => `${JSON.stringify(key)}:${stableJson(entry)}`)
-			.join(',')}}`;
-	}
-	return JSON.stringify(value);
 }

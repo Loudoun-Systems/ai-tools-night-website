@@ -1,4 +1,5 @@
 node_modules/
+.vercel/
 .svelte-kit/
 build/
 .wgn-data/

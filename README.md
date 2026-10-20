@@ -1,39 +1,38 @@
 # We've Got Now — R5 application
 
-SvelteKit 2 + Svelte 5 application for We've Got Now / AI Tools Explorers Night. The server build uses `svelte-adapter-bun`; Bun is the package manager, test runner, SQLite runtime and production server runtime.
+SvelteKit 2 + Svelte 5. The completed R5 design/assets are preserved. The default build now targets Haytham's **existing Vercel project**, using the official Node 22 adapter. Repository ownership remains `Loudoun-Systems`.
 
-## Local development
+## Vercel first release
 
 ```sh
 bun install --frozen-lockfile
-bun run dev
+bun run qa
+# With Node 22 on PATH:
+bun run test:vercel
+bun run test:vercel:preview
 ```
 
-Local development uses clearly labelled staging fixtures. Production (`WGN_ENV=production`, also the default when `NODE_ENV=production`) disables forms and chat in both the UI and APIs for this release. The existing Google adapter is QA-only, and the chatbot benchmark approval does not authorize public-chat spending. No fixture is presented as a public submission or AI answer. Production emits neither the staging banner nor staging-only noindex settings.
+`bun run build` emits `.vercel/output` and verifies that the actual function bundles exclude local SQLite/Bun/provider implementation. Forms and chat remain honestly disabled in both public preview and production. No database, provider secret or paid public-chat budget is needed to publish the existing design. A local build/test pass is not a hosted Vercel deployment.
 
-## Checks
+See [the exact existing-project Vercel setup and promotion checklist](docs/VERCEL-DEPLOYMENT.md). Record rollback identity and disable automatic custom-domain assignment **before** reconnecting Git. Actual Vercel preview checks must pass before merging/promoting the follow-up PR.
+
+## Retained local fixture/durable implementation
 
 ```sh
-bun run lint
-bun run check
-bun run test
-bun run build
-bun run test:http
+bun run dev
+# Explicit Bun-only standalone fixture build:
+bun run build:local
 bun run test:e2e
 bun run test:production
 ```
 
-The built server starts with:
-
-```sh
-WGN_ENV=staging WGN_FORMS_MODE=fixture WGN_CHAT_MODE=fixture ORIGIN=http://127.0.0.1:4175 HOST=127.0.0.1 PORT=4175 bun run build/index.js
-```
+Local development uses clearly labelled fixtures. The local Bun target retains atomic SQLite idempotency, uncertain-outcome handling, rate limits, multiprocess durability and conservative chat-budget reservations; it is rejected on Vercel. Never replace these with in-memory or ephemeral-disk controls when re-enabling providers later.
 
 ## Integration safety
 
-- Google mode is QA-only. The server owns the tab mapping, always uses `RAW`, requires labelled test data, and fails closed until automation exclusion and scoped credentials are verified.
-- OpenRouter mode uses a dedicated server-only key, candidate-model allowlist, explicit approved-budget and external-account-cap gates, durable conservative input/output token reservations, and a kill switch. No tools are sent and no fallback/model benchmark is claimed.
-- SQLite stores atomic idempotency, uncertain outcomes, rate limits and chat cap reservations. An uncertain Sheets result is not automatically re-appended.
-- The current fixture stage does not claim a real lead, seat, job application, presentation slot or model response.
+- No fixture is represented as a real submission or AI answer. Disabled UI has no personal-data entry/send control; direct valid API calls return HTTP 503 without receipts/provider activity.
+- Google integration remains retained QA-only code. Current automation exclusions, approved destination mapping and real acknowledgements are prerequisites to any later enabled release. Preserve Forms, response tabs, QR links and follow-up workflows.
+- The bounded US$0.25 / 10-request benchmark approval is not public-chat funding. No visitor-provider call is required or made by the compatibility tests.
+- Workshop dates/prices and paid openings remain unconfirmed; content is not changed by this adaptation.
 
-See `docs/PRODUCTION-RUNBOOK.md` for production prerequisites, runtime/storage verification and rollback. `docs/STAGING-RUNBOOK.md` remains as historical isolated-staging guidance; a separate remote staging environment is no longer a release prerequisite. See `docs/PRIVATE-RUNTIME.md` for private local credential mapping, read-only provider receipts, and the fixture-only local preview.
+`docs/PRODUCTION-RUNBOOK.md` links the current Vercel procedure. `docs/STAGING-RUNBOOK.md` is historical optional Bun-host guidance, not a required hosting path. `docs/PRIVATE-RUNTIME.md` covers local private credential mapping and read-only preflight, not Vercel configuration.

@@ -1,6 +1,6 @@
 import type { RequestEvent } from '@sveltejs/kit';
 import { allowedOrigins } from './config';
-import { digest } from './db';
+import { digest } from './hash';
 
 export const MAX_BODY_BYTES = 20_000;
 

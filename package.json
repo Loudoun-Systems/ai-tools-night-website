@@ -4,7 +4,8 @@
 	"private": true,
 	"type": "module",
 	"engines": {
-		"bun": ">=1.3.0"
+		"bun": ">=1.3.0",
+		"node": "22.x"
 	},
 	"overrides": {
 		"cookie": "^0.7.2",
@@ -14,9 +15,9 @@
 		"source-map-js": "^1.2.2"
 	},
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "bun run build/index.js",
+		"dev": "WGN_BUILD_TARGET=bun vite dev",
+		"build": "vite build && node ops/verify-vercel-output.mjs",
+		"preview": "node ops/serve-vercel-output.mjs",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
@@ -25,7 +26,11 @@
 		"test:http": "playwright test tests/e2e/http.spec.ts",
 		"test:e2e": "playwright test",
 		"test:production": "playwright test --config=playwright.production.config.ts",
-		"qa": "bun run lint && bun run check && bun run test && bun run build"
+		"qa": "bun run lint && bun run check && bun run test && bun run build",
+		"build:local": "WGN_BUILD_TARGET=bun vite build",
+		"preview:local": "bun run build/index.js",
+		"test:vercel": "playwright test --config=playwright.vercel.config.ts",
+		"test:vercel:preview": "WGN_VERCEL_TEST_ENV=preview playwright test --config=playwright.vercel.config.ts"
 	},
 	"dependencies": {
 		"google-auth-library": "^10.9.1"
@@ -34,6 +39,7 @@
 		"@axe-core/playwright": "^4.13.0",
 		"@eslint/js": "^9.39.5",
 		"@playwright/test": "^1.64.1",
+		"@sveltejs/adapter-vercel": "6.3.4",
 		"@sveltejs/kit": "^2.70.3",
 		"@sveltejs/vite-plugin-svelte": "^6.2.4",
 		"@types/bun": "^1.4.3",
@@ -53,5 +59,6 @@
 		"typescript": "^5.9.3",
 		"typescript-eslint": "^8.71.2",
 		"vite": "^7.3.7"
-	}
+	},
+	"packageManager": "bun@1.3.14"
 }

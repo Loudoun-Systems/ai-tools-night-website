@@ -1,6 +1,10 @@
 export type RuntimeEnvironment = 'testing' | 'staging' | 'production';
 
 export function runtimeEnvironment(): RuntimeEnvironment {
+	// Platform identity wins over stale user overrides on preview and production deployments.
+	if (process.env.VERCEL === '1') {
+		return process.env.VERCEL_ENV === 'production' ? 'production' : 'staging';
+	}
 	const fallback = process.env.NODE_ENV === 'production' ? 'production' : 'staging';
 	const value = process.env.WGN_ENV ?? fallback;
 	return value === 'testing' || value === 'staging' || value === 'production' ? value : fallback;
@@ -9,13 +13,13 @@ export function runtimeEnvironment(): RuntimeEnvironment {
 // This release has a QA-only Sheets adapter and benchmark-only chat funding.
 // Production must never promote fixtures or reuse those staging approvals.
 export function formsMode(): 'fixture' | 'google' | 'disabled' {
-	if (runtimeEnvironment() === 'production') return 'disabled';
+	if (process.env.VERCEL === '1' || runtimeEnvironment() === 'production') return 'disabled';
 	const value = process.env.WGN_FORMS_MODE ?? 'fixture';
 	return value === 'fixture' || value === 'google' ? value : 'disabled';
 }
 
 export function chatMode(): 'fixture' | 'openrouter' | 'disabled' {
-	if (runtimeEnvironment() === 'production') return 'disabled';
+	if (process.env.VERCEL === '1' || runtimeEnvironment() === 'production') return 'disabled';
 	const value = process.env.WGN_CHAT_MODE ?? 'fixture';
 	return value === 'fixture' || value === 'openrouter' ? value : 'disabled';
 }

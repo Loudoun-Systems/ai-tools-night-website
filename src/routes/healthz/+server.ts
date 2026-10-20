@@ -3,9 +3,10 @@ import { env } from '$env/dynamic/private';
 import { chatMode, formsMode, runtimeEnvironment } from '$lib/server/config';
 
 export const GET: RequestHandler = ({ locals }) => {
-	const releaseSha = /^[0-9a-f]{40}$/.test(env.WGN_RELEASE_SHA ?? '')
-		? env.WGN_RELEASE_SHA
-		: 'unverified';
+	const releaseSha =
+		[env.VERCEL_GIT_COMMIT_SHA, env.WGN_RELEASE_SHA].find((value) =>
+			/^[0-9a-f]{40}$/.test(value ?? '')
+		) ?? 'unverified';
 	return Response.json(
 		{
 			status: 'ok',

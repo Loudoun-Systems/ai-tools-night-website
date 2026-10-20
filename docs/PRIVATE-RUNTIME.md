@@ -1,6 +1,6 @@
 # Private WGN runtime and read-only provider preflight
 
-This continues PR #1; it does not replace or redesign the R5 site. Keep production publishing, root/www/email DNS and existing follow-up automations on hold.
+PR #1 is merged. This tooling retains the original local fixture workflow; it does not configure Vercel or replace the completed design. Production authorization stands, but follow the current `VERCEL-DEPLOYMENT.md` account/preview/promotion gates and preserve email DNS and follow-up automations.
 
 ## Local credential mapping
 
@@ -22,7 +22,7 @@ bun ops/private-runtime.ts check
 
 ## Local fixture preview with private configuration
 
-After a clean build, stop only the previously identified WGN preview that occupies port 4177, then run:
+After an explicit `bun run build:local` (not the default Vercel build), stop only the previously identified WGN preview that occupies port 4177, then run:
 
 ```sh
 bun ops/private-runtime.ts preview
@@ -40,4 +40,4 @@ For paid visitor-chat tests, the dedicated application key needs a verified fini
 
 ## Hosting
 
-Use the exact-SHA procedure in `STAGING-RUNBOOK.md` only after identifying the authorized server, scoped login, independently verified SSH host key, isolated directory/process, available port and reviewer route. Bun plus a persistent SQLite volume is required. Existing serverless Vercel access alone is not compatibility: do not deploy this adapter/SQLite application unchanged, provision paid resources, or reconnect the legacy production Git project.
+The current release target is Haytham's existing Vercel project; use `VERCEL-DEPLOYMENT.md`. Do not wait for VPS/SSH. Vercel uses the default Node adapter with providers/database compiled out and needs none of this local private configuration. `STAGING-RUNBOOK.md` remains historical optional Bun-host guidance only; that target still requires a verified persistent SQLite volume. Never upload these private local credential files to Vercel or shared Drive.
