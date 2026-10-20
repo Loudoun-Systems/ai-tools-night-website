@@ -1,85 +1,108 @@
 <script lang="ts">
-	import ConceptArt from '$lib/components/ConceptArt.svelte';
 	import PageIntro from '$lib/components/PageIntro.svelte';
 	import PromptWorkspace from '$lib/components/PromptWorkspace.svelte';
 	import Seo from '$lib/components/Seo.svelte';
-	import { images, prompts } from '$lib/content';
+	import { prompts, text } from '$lib/content';
+	import copy from '$lib/r6-copy.json';
 	import { useLanguage } from '$lib/language.svelte';
-
+	import type { Localized } from '$lib/types';
 	const language = useLanguage();
-	let query = $state('');
-	let category = $state('all');
-	const categories = $derived([...new Set(prompts.map((prompt) => prompt.category.en))]);
+	const t = (v: Localized) => text(v, language.locale);
+	let query = $state(''),
+		category = $state('all');
+	const categories = [...new Set(prompts.map((p) => p.category.en))];
 	const visible = $derived(
-		prompts.filter((prompt) => {
-			const haystack =
-				`${prompt.title[language.locale]} ${prompt.category[language.locale]} ${prompt.usefulFor[language.locale]}`.toLowerCase();
-			return (
-				(category === 'all' || prompt.category.en === category) &&
-				haystack.includes(query.toLowerCase())
-			);
-		})
+		prompts.filter(
+			(p) =>
+				(category === 'all' || p.category.en === category) &&
+				`${p.title[language.locale]} ${p.category[language.locale]} ${p.usefulFor[language.locale]}`
+					.toLocaleLowerCase(language.locale)
+					.includes(query.trim().toLocaleLowerCase(language.locale))
+		)
 	);
 </script>
 
 <Seo
 	title={{ en: 'Prompt library', es: 'Biblioteca de prompts' }}
-	description={{
-		en: 'Search, edit, copy and reset five complete bilingual prompt templates with placeholders and synthetic examples.',
-		es: 'Busca, edita, copia y restablece cinco prompts bilingües completos con marcadores y ejemplos ficticios.'
-	}}
+	description={copy.prompts.lead}
 	path="/prompt-library"
 />
-
 <PageIntro
-	eyebrow={{ en: 'Five practical starters', es: 'Cinco plantillas prácticas' }}
-	title={{ en: 'Start with a real task.', es: 'Empieza con una tarea real.' }}
-	body={{
-		en: 'Replace the brackets, paste only information you can share, and check the answer before using it. Examples are synthetic and no model compatibility is claimed.',
-		es: 'Reemplaza los corchetes, usa solo información que puedas compartir y revisa la respuesta antes de usarla. Los ejemplos son ficticios y no se afirma compatibilidad con modelos.'
-	}}
+	eyebrow={{ en: 'THE PROMPT LIBRARY', es: 'LA BIBLIOTECA DE PROMPTS' }}
+	title={copy.prompts.title}
+	body={copy.prompts.lead}
 />
-
-<section class="shell">
-	<ConceptArt base={images.prompts.base} alt={images.prompts.alt} eager />
-</section>
-
-<section class="section shell">
-	<div class="filter-bar">
-		<label
-			><span>{language.locale === 'en' ? 'Search prompts' : 'Buscar prompts'}</span><input
-				type="search"
-				bind:value={query}
-				placeholder={language.locale === 'en'
-					? 'Email, workflow, learning…'
-					: 'Correo, flujo, aprendizaje…'}
-			/></label
-		>
-		<label
-			><span>{language.locale === 'en' ? 'Category' : 'Categoría'}</span><select
-				bind:value={category}
-				><option value="all"
-					>{language.locale === 'en' ? 'All categories' : 'Todas las categorías'}</option
-				>{#each categories as item}<option value={item}
-						>{prompts.find((prompt) => prompt.category.en === item)?.category[
-							language.locale
-						]}</option
-					>{/each}</select
-			></label
-		>
-	</div>
-	<div class="prompt-grid">
-		{#each visible as prompt}<PromptWorkspace {prompt} compact />{:else}<div class="pending-box">
-				<strong
-					>{language.locale === 'en'
-						? 'No prompts match.'
-						: 'No hay prompts que coincidan.'}</strong
+<section class="chapter prompt-catalog">
+	<div class="shell">
+		<div class="catalog-top">
+			<p class="eyebrow">
+				{language.locale === 'en' ? 'FIVE PRACTICAL STARTERS' : 'CINCO PLANTILLAS PRÁCTICAS'}
+			</p>
+			<p>
+				{language.locale === 'en'
+					? 'Edit. Copy. Try. Then check. These are templates, not generated answers.'
+					: 'Edita. Copia. Prueba. Después revisa. Son plantillas, no respuestas generadas.'}
+			</p>
+		</div>
+		<div class="filter-bar">
+			<label
+				><span>{language.locale === 'en' ? 'Search prompts' : 'Buscar prompts'}</span><input
+					type="search"
+					bind:value={query}
+					placeholder={language.locale === 'en'
+						? 'A task, a word, a starting point…'
+						: 'Una tarea, una palabra, por dónde empezar…'}
+				/></label
+			><label
+				><span>{language.locale === 'en' ? 'Category' : 'Categoría'}</span><select
+					bind:value={category}
+					><option value="all"
+						>{language.locale === 'en' ? 'All categories' : 'Todas las categorías'}</option
+					>{#each categories as item}<option value={item}
+							>{prompts.find((p) => p.category.en === item)?.category[language.locale]}</option
+						>{/each}</select
+				></label
+			>
+		</div>
+		<div class="catalog-count">
+			<p role="status">
+				{visible.length}
+				{language.locale === 'en' ? 'templates shown' : 'plantillas visibles'}
+			</p>
+			{#if query || category !== 'all'}<button
+					class="reset-button"
+					type="button"
+					onclick={() => {
+						query = '';
+						category = 'all';
+					}}>{language.locale === 'en' ? 'Clear filters' : 'Borrar filtros'}</button
+				>{/if}
+		</div>
+		<div class="prompt-grid">
+			{#each visible as prompt (prompt.slug)}<PromptWorkspace {prompt} compact />{:else}<div
+					class="empty-state"
+					role="status"
 				>
-				<p>
-					{language.locale === 'en'
-						? 'Clear the search or choose another category.'
-						: 'Borra la búsqueda o elige otra categoría.'}
-				</p>
-			</div>{/each}
+					<span class="empty-mark" aria-hidden="true">—</span>
+					<h2>
+						{language.locale === 'en' ? 'No prompts match.' : 'No hay prompts que coincidan.'}
+					</h2>
+					<p>{t(copy.prompts.empty)}</p>
+					<button
+						class="button dark-button"
+						type="button"
+						onclick={() => {
+							query = '';
+							category = 'all';
+						}}
+						>{language.locale === 'en' ? 'Show every template' : 'Ver todas las plantillas'}</button
+					>
+				</div>{/each}
+		</div>
+		<p class="catalog-disclosure">
+			{language.locale === 'en'
+				? 'Prompt templates are editorially reviewed. Examples are synthetic. No model compatibility or output quality is guaranteed.'
+				: 'Las plantillas tienen revisión editorial. Los ejemplos son ficticios. No se garantiza compatibilidad con modelos ni calidad de resultados.'}
+		</p>
 	</div>
 </section>

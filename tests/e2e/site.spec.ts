@@ -79,14 +79,14 @@ test('hydrates bilingual navigation and persists the language per browser', asyn
 	const mobileMenu = page.getByRole('button', { name: 'Abrir navegación', exact: true });
 	if (await mobileMenu.isVisible()) {
 		await mobileMenu.click();
-		await expect(mobileMenu).toHaveAttribute('aria-expanded', 'true');
+		await expect(page.locator('.menu-button')).toHaveAttribute('aria-expanded', 'true');
 	}
 	await expect(
 		page
-			.getByRole('navigation', { name: 'Primary' })
+			.getByRole('navigation', { name: /Principal|Navegación móvil|Mobile navigation/ })
 			.getByRole('link', { name: 'Eventos', exact: true })
 	).toBeVisible();
-	await expect(page.getByText('PRUEBAS', { exact: true })).toBeVisible();
+	await expect(page.locator('.stage-banner')).toContainText('QA LOCAL');
 	await page.reload();
 	await expect(page.locator('html')).toHaveAttribute('lang', 'es');
 	await expect(page.getByText('Saltar al contenido')).toBeAttached();
@@ -110,7 +110,9 @@ test('concept art failure renders its fallback without inline-handler or console
 	const response = await page.goto('/workshops');
 	const html = await response?.text();
 	expect(html).not.toMatch(/\son[a-z]+\s*=/i);
-	await expect(page.getByText('Concept artwork unavailable')).toBeVisible();
+	const fallbacks = page.getByText('Concept artwork unavailable', { exact: true });
+	await expect(fallbacks).toHaveCount(2); // The approved workshop artwork appears in two compositions.
+	for (const fallback of await fallbacks.all()) await expect(fallback).toBeVisible();
 	expect(browserErrors).toEqual([]);
 });
 
@@ -119,6 +121,7 @@ test('prompt search, edit, copy and reset are real interactions', async ({ page 
 	await page.getByLabel('Search prompts').fill('email');
 	await expect(page.getByRole('heading', { name: 'Write a clear email' })).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Turn notes into next steps' })).toHaveCount(0);
+	await page.getByRole('link', { name: 'Open detail' }).click();
 	const editor = page.getByLabel('Editable prompt text');
 	await editor.fill('Synthetic edited prompt');
 	await page.getByRole('button', { name: 'Copy prompt' }).click();
@@ -280,10 +283,10 @@ test('mobile menu opens with keyboard-accessible navigation', async ({ page }, t
 	const menu = page.getByRole('button', { name: 'Toggle navigation' });
 	await menu.focus();
 	await page.keyboard.press('Enter');
-	await expect(menu).toHaveAttribute('aria-expanded', 'true');
+	await expect(page.locator('.menu-button')).toHaveAttribute('aria-expanded', 'true');
 	await expect(
 		page
-			.getByRole('navigation', { name: 'Primary' })
+			.getByRole('navigation', { name: /Principal|Navegación móvil|Mobile navigation/ })
 			.getByRole('link', { name: 'Events', exact: true })
 	).toBeVisible();
 });

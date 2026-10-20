@@ -14,11 +14,8 @@
 	path={`/prompt-library/${data.prompt.slug}`}
 />
 <PageIntro eyebrow={data.prompt.category} title={data.prompt.title} body={data.prompt.usefulFor} />
-<section class="section shell" style="padding-top: 0">
-	<PromptWorkspace prompt={data.prompt} />
-	<p style="margin-top: 1rem">
-		<a href="/prompt-library"
-			>← {language.locale === 'en' ? 'Back to all prompts' : 'Volver a todos los prompts'}</a
-		>
-	</p>
+<section class="section shell">
+	<a class="back-link" href="/prompt-library"
+		>← {language.locale === 'en' ? 'Back to all prompts' : 'Volver a todos los prompts'}</a
+	><PromptWorkspace prompt={data.prompt} />
 </section>
