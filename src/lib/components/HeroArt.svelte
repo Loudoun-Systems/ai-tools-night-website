@@ -1,8 +1,21 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { useLanguage } from '$lib/language.svelte';
 	import { ambient } from '$lib/motion';
 	const language = useLanguage();
 	let failed = $state(false);
+	let imageElement = $state<HTMLImageElement>();
+	onMount(() => {
+		const node = imageElement;
+		if (!node) return;
+		const fail = () => {
+			failed = true;
+		};
+		node.addEventListener('error', fail);
+		// Catch an eager/cached image failure without Svelte's CSP-unsafe image action capture attributes.
+		if (node.complete && node.naturalWidth === 0) fail();
+		return () => node.removeEventListener('error', fail);
+	});
 </script>
 
 <figure class="hero-art" use:ambient>
@@ -27,7 +40,7 @@
 					alt={language.locale === 'en'
 						? "Original WGN concept artwork: an explorer looking over a neon city, alongside the We've Got Now wordmark."
 						: 'Arte conceptual original de WGN: una persona exploradora frente a una ciudad iluminada y la marca We’ve Got Now.'}
-					onerror={() => (failed = true)}
+					bind:this={imageElement}
 				/></picture
 			>{/if}
 	</div>

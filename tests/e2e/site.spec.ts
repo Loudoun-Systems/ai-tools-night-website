@@ -110,7 +110,9 @@ test('concept art failure renders its fallback without inline-handler or console
 	const response = await page.goto('/workshops');
 	const html = await response?.text();
 	expect(html).not.toMatch(/\son[a-z]+\s*=/i);
-	await expect(page.getByText('Concept artwork unavailable')).toBeVisible();
+	const fallbacks = page.getByText('Concept artwork unavailable', { exact: true });
+	await expect(fallbacks).toHaveCount(2); // The approved workshop artwork appears in two compositions.
+	for (const fallback of await fallbacks.all()) await expect(fallback).toBeVisible();
 	expect(browserErrors).toEqual([]);
 });
 

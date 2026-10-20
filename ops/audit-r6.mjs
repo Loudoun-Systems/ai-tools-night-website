@@ -55,6 +55,9 @@ try {
 			const page = await context.newPage();
 			let jsErrors = [];
 			page.on('pageerror', (e) => jsErrors.push(e.message));
+			page.on('console', (message) => {
+				if (message.type() === 'error') jsErrors.push('console: ' + message.text());
+			});
 			for (const route of publicRoutes) {
 				jsErrors = [];
 				const response = await page.goto(new URL(route, base).href, {

@@ -186,3 +186,32 @@ test('R6 language controls survive denied optional localStorage access', async (
 	await expect(page.locator('html')).toHaveAttribute('lang', 'es');
 	expect(errors).toEqual([]);
 });
+
+test('R6 hero renders a truthful CSP-safe fallback for corrupt cached artwork', async ({
+	page
+}) => {
+	const errors: string[] = [];
+	page.on('console', (m) => {
+		if (m.type() === 'error') errors.push(m.text());
+	});
+	page.on('pageerror', (e) => errors.push(e.message));
+	await page.route('**/assets/derived/wgn-hero-*', (route) =>
+		route.fulfill({ status: 200, contentType: 'image/webp', body: 'not-an-image' })
+	);
+	const response = await page.goto('/');
+	expect(await response!.text()).not.toMatch(/\son[a-z]+\s*=/i);
+	await expect(
+		page.getByRole('img', { name: 'WGN skyline illustration unavailable', exact: true })
+	).toBeVisible();
+	expect(errors).toEqual([]);
+});
+
+test('R6 prompt editor has primary-first mobile order and a separate desktop guide', async ({
+	page
+}) => {
+	await page.goto('/prompt-library/clear-email');
+	const editor = await page.locator('.workspace-editor').boundingBox();
+	const guide = await page.locator('.workspace-guide').boundingBox();
+	if (page.viewportSize()!.width < 950) expect(editor!.y).toBeLessThan(guide!.y);
+	else expect(editor!.x).toBeGreaterThan(guide!.x);
+});

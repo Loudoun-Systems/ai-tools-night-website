@@ -32,3 +32,10 @@ test('preserved factual resource records support all nineteen public routes', ()
 	expect(events).toHaveLength(3);
 	expect(events.filter((e) => e.status === 'past')).toHaveLength(2);
 });
+
+test('R6 hero image error handling is CSP safe and handles cached image failures', async () => {
+	const source = await Bun.file('src/lib/components/HeroArt.svelte').text();
+	expect(source).not.toMatch(/\son(?:error|load)\s*=/);
+	expect(source).toContain("addEventListener('error', fail)");
+	expect(source).toContain('node.complete && node.naturalWidth === 0');
+});

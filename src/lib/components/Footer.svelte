@@ -33,8 +33,8 @@ Personas que aprenden juntas.`}
 				type="button"
 				onclick={() => language.toggle()}
 				aria-label={language.locale === 'en'
-					? 'Footer: cambiar a español'
-					: 'Footer: switch to English'}
+					? 'Idioma del sitio: español'
+					: 'Site language: English'}
 				>EN <span aria-hidden="true">/</span> ES <span aria-hidden="true">↗</span></button
 			>
 		</div>

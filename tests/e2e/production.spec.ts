@@ -49,11 +49,15 @@ test('production routes are indexable, banner-free and fit desktop/mobile with d
 		await expect(page.locator('meta[name="robots"][content*="noindex"]')).toHaveCount(0);
 		await expect(page.locator('.stage-banner')).toHaveCount(0);
 		expect(await page.title()).toContain("We've Got Now");
-		await page
-			.locator('img')
-			.evaluateAll(async (images) =>
-				Promise.all(images.map((image) => (image as HTMLImageElement).decode()))
-			);
+		// Load native lazy images by actually scrolling, then retain strict decode checks.
+		await page.evaluate(async () => {
+			for (let y = 0; y < document.body.scrollHeight; y += 800) {
+				window.scrollTo(0, y);
+				await new Promise((resolve) => setTimeout(resolve, 20));
+			}
+			await Promise.all([...document.images].map((image) => image.decode()));
+			window.scrollTo(0, 0);
+		});
 		expect(
 			await page.evaluate(
 				() => document.documentElement.scrollWidth - document.documentElement.clientWidth
