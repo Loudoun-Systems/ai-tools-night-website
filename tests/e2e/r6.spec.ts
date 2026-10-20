@@ -1,6 +1,75 @@
 import { test, expect } from '@playwright/test';
 import { prompts } from '../../src/lib/content';
 
+test('futuristic backgrounds are decorative, animated, pausable and preference-persistent', async ({
+	page
+}) => {
+	await page.emulateMedia({ reducedMotion: 'no-preference' });
+	await page.goto('/');
+	const control = page.getByRole('button', { name: 'Pause background animations', exact: true });
+	await expect(control).toBeVisible();
+	await expect(page.locator('.atmosphere')).toHaveAttribute('aria-hidden', 'true');
+	await expect(page.locator('canvas')).toHaveCount(0);
+	const orb = page.locator('.orbital-system i').first();
+	await expect
+		.poll(() => orb.evaluate((e) => getComputedStyle(e).animationPlayState))
+		.toBe('running');
+	const first = await orb.evaluate((e) => e.getAnimations()[0].currentTime);
+	await expect
+		.poll(() => orb.evaluate((e) => Number(e.getAnimations()[0].currentTime)))
+		.toBeGreaterThan(Number(first) + 100);
+	await control.focus();
+	await page.keyboard.press('Enter');
+	await expect
+		.poll(() => orb.evaluate((e) => getComputedStyle(e).animationPlayState))
+		.toBe('paused');
+	await page.reload();
+	await expect(
+		page.getByRole('button', { name: 'Resume background animations', exact: true })
+	).toBeVisible();
+	await expect
+		.poll(() => orb.evaluate((e) => getComputedStyle(e).animationPlayState))
+		.toBe('paused');
+	await page.getByRole('button', { name: 'Resume background animations', exact: true }).click();
+	await expect
+		.poll(() => orb.evaluate((e) => getComputedStyle(e).animationPlayState))
+		.toBe('running');
+	await page.emulateMedia({ reducedMotion: 'reduce' });
+	await expect(page.locator('.motion-control')).toBeDisabled();
+	await expect.poll(() => orb.evaluate((e) => getComputedStyle(e).animationName)).toBe('none');
+	await page.emulateMedia({ reducedMotion: 'no-preference' });
+	await expect(page.locator('.motion-control')).toBeEnabled();
+	await expect
+		.poll(() => orb.evaluate((e) => getComputedStyle(e).animationPlayState))
+		.toBe('running');
+});
+
+test('futuristic decorative motion suspends on visibility events and resumes without a timer', async ({
+	page
+}) => {
+	await page.emulateMedia({ reducedMotion: 'no-preference' });
+	await page.goto('/workshops');
+	await expect(page.locator('.motion-control')).toBeVisible();
+	await page.evaluate(() => {
+		Object.defineProperty(document, 'hidden', { configurable: true, get: () => true });
+		document.dispatchEvent(new Event('visibilitychange'));
+	});
+	await expect(page.locator('html')).toHaveAttribute('data-ambient-paused', '');
+	await expect
+		.poll(() =>
+			page
+				.locator('.aurora')
+				.first()
+				.evaluate((e) => getComputedStyle(e).animationPlayState)
+		)
+		.toBe('paused');
+	await page.evaluate(() => {
+		Object.defineProperty(document, 'hidden', { configurable: true, get: () => false });
+		document.dispatchEvent(new Event('visibilitychange'));
+	});
+	await expect(page.locator('html')).not.toHaveAttribute('data-ambient-paused', '');
+});
+
 test('R6 editorial identity uses local fonts, framed artwork and honest public availability', async ({
 	page
 }) => {
@@ -13,11 +82,11 @@ test('R6 editorial identity uses local fonts, framed artwork and honest public a
 	await expect(page.getByRole('heading', { level: 1 })).toHaveText('Make room for your next idea.');
 	await expect(page.locator('.hero-art img')).toBeVisible();
 	expect(await page.locator('h1').evaluate((e) => getComputedStyle(e).fontFamily)).toContain(
-		'Manrope'
+		'Orbitron'
 	);
 	expect(
 		await page.evaluate(
-			() => document.fonts.check('16px Manrope') && document.fonts.check('16px Inter')
+			() => document.fonts.check('16px Orbitron') && document.fonts.check('16px Inter')
 		)
 	).toBe(true);
 	await expect(page.locator('.hero-media')).toHaveCount(0);

@@ -90,7 +90,7 @@ try {
 					bodySize: getComputedStyle(document.body).fontSize,
 					displayFont: getComputedStyle(document.querySelector('h1')).fontFamily,
 					fontFacesReady:
-						document.fonts.check('16px Manrope') && document.fonts.check('16px Inter'),
+						document.fonts.check('16px Orbitron') && document.fonts.check('16px Inter'),
 					brokenImages: [...document.images]
 						.filter((i) => !i.naturalWidth)
 						.map((i) => i.currentSrc),

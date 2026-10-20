@@ -3,6 +3,8 @@
 	import { onMount } from 'svelte';
 	import '../app.css';
 	import '$lib/r6-interfaces.css';
+	import '$lib/futuristic.css';
+	import Atmosphere from '$lib/components/Atmosphere.svelte';
 	import ChatWidget from '$lib/components/ChatWidget.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import Header from '$lib/components/Header.svelte';
@@ -43,7 +45,7 @@
 <svelte:head>
 	<link
 		rel="preload"
-		href="/fonts/manrope-latin-variable.woff2"
+		href="/fonts/orbitron-latin-variable.woff2"
 		as="font"
 		type="font/woff2"
 		crossorigin="anonymous"
@@ -65,6 +67,7 @@
 				? 'DESIGN PREVIEW · Forms and automated chat are temporarily unavailable.'
 				: 'VISTA PREVIA DEL DISEÑO · Formularios y chat automático temporalmente no disponibles.'}
 	</div>{/if}
+<Atmosphere />
 <Header />
 <main id="main-content" tabindex="-1">{@render children()}</main>
 <Footer />
