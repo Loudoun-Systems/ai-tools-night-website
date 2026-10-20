@@ -1,11 +1,12 @@
 # Do not auto-deploy the retired root-level legacy API functions or static site.
-api/
-legacy-static/
-css/
-js/
-*.html
-server.js
-run.mjs
+# Anchor legacy exclusions to the repository root; retain src/app.html and src/routes/api/.
+/api/
+/legacy-static/
+/css/
+/js/
+/*.html
+/server.js
+/run.mjs
 # Local/private/QA artifacts are never deployment inputs.
 .wgn-data/
 .env

@@ -38,7 +38,11 @@ for (const directory of functions) {
 	assert.equal(metadata.runtime, 'nodejs22.x');
 	inspect(directory);
 }
-assert.match(readFileSync('.vercelignore', 'utf8'), /^api\//m, 'Retired root API must be excluded');
+assert.match(
+	readFileSync('.vercelignore', 'utf8'),
+	/^\/api\//m,
+	'Retired root API must be excluded without excluding src/routes/api'
+);
 console.log(
 	JSON.stringify(
 		{
