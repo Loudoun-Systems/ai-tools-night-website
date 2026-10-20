@@ -17,6 +17,14 @@ const report = {
 	fallback: {},
 	errors: []
 };
+async function scopeQaHeaders(context) {
+	await context.route('**/*', async (route) => {
+		const outgoing = { ...route.request().headers() };
+		if (new URL(route.request().url()).origin !== new URL(base).origin)
+			delete outgoing['x-vercel-protection-bypass'];
+		await route.continue({ headers: outgoing });
+	});
+}
 let persistent;
 try {
 	const extension = resolve(root, 'zoom-extension');
@@ -43,6 +51,7 @@ try {
 		reducedMotion: 'reduce',
 		args: [`--disable-extensions-except=${extension}`, `--load-extension=${extension}`]
 	});
+	if (headersFile) await scopeQaHeaders(persistent);
 	const worker =
 		persistent.serviceWorkers()[0] ||
 		(await persistent.waitForEvent('serviceworker', { timeout: 15000 }));
@@ -105,6 +114,7 @@ try {
 		reducedMotion: 'no-preference',
 		recordVideo: { dir: resolve(root, 'motion-video'), size: { width: 1440, height: 1000 } }
 	});
+	if (headersFile) await scopeQaHeaders(context);
 	const p = await context.newPage();
 	await p.goto(base, { waitUntil: 'networkidle' });
 	await p.evaluate(() => document.fonts.ready);

@@ -10,6 +10,14 @@ const [
 const root = resolve(directory);
 mkdirSync(root, { recursive: true });
 const headers = headersFile ? JSON.parse(readFileSync(headersFile, 'utf8')) : {};
+async function scopeQaHeaders(context) {
+	await context.route('**/*', async (route) => {
+		const outgoing = { ...route.request().headers() };
+		if (new URL(route.request().url()).origin !== new URL(base).origin)
+			delete outgoing['x-vercel-protection-bypass'];
+		await route.continue({ headers: outgoing });
+	});
+}
 export const publicRoutes = [
 	'/',
 	'/workshops',
@@ -51,6 +59,7 @@ try {
 				reducedMotion: 'reduce',
 				userAgent: 'Mozilla/5.0 WGN-R6-Acceptance'
 			});
+			if (headersFile) await scopeQaHeaders(context);
 			await context.addInitScript((l) => localStorage.setItem('wgn-language', l), locale);
 			const page = await context.newPage();
 			let jsErrors = [];
@@ -149,6 +158,7 @@ try {
 	const context = await browser.newContext({ extraHTTPHeaders: headers });
 	for (const link of internal) {
 		const target = new URL(link, base);
+		if (target.origin !== new URL(base).origin) continue;
 		const response = await context.request.get(target.href);
 		report.links.push({ path: target.pathname + target.hash, status: response.status() });
 	}
