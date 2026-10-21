@@ -572,7 +572,7 @@
 	}
 	.r7-session-step > span {
 		font-size: 0.7rem;
-		color: #6e7e91;
+		color: #627286;
 		padding-top: 4px;
 	}
 	.r7-session-step h3 {

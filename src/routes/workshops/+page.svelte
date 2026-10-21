@@ -316,7 +316,7 @@
 		font:
 			0.7rem Orbitron,
 			sans-serif;
-		color: #64788a;
+		color: #586c7e;
 		margin-bottom: 44px;
 	}
 	.ws-practice-list h3 {
