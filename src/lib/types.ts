@@ -31,6 +31,11 @@ export type PromptRecord = {
 	source: string;
 	reviewStatus: Localized;
 	reviewedAt: string;
+	categoryKey?: string;
+	difficulty?: 'intermediate' | 'advanced';
+	tags?: string[];
+	outcome?: Localized;
+	inputs?: Localized[];
 };
 
 export type TrackRecord = {

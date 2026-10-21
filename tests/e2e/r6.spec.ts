@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { prompts } from '../../src/lib/content';
+import { images, prompts } from '../../src/lib/content';
 
-test('futuristic backgrounds are decorative, animated, pausable and preference-persistent', async ({
+test('ambient backgrounds are decorative, animated, pausable and preference-persistent', async ({
 	page
 }) => {
 	await page.emulateMedia({ reducedMotion: 'no-preference' });
@@ -44,7 +44,7 @@ test('futuristic backgrounds are decorative, animated, pausable and preference-p
 		.toBe('running');
 });
 
-test('futuristic decorative motion suspends on visibility events and resumes without a timer', async ({
+test('decorative motion suspends on visibility events and resumes without a timer', async ({
 	page
 }) => {
 	await page.emulateMedia({ reducedMotion: 'no-preference' });
@@ -70,7 +70,7 @@ test('futuristic decorative motion suspends on visibility events and resumes wit
 	await expect(page.locator('html')).not.toHaveAttribute('data-ambient-paused', '');
 });
 
-test('R6 editorial identity uses local fonts, framed artwork and honest public availability', async ({
+test('R7 identity separates readable display type from brand accents and keeps availability honest', async ({
 	page
 }) => {
 	const calls: string[] = [];
@@ -79,8 +79,12 @@ test('R6 editorial identity uses local fonts, framed artwork and honest public a
 	});
 	await page.goto('/');
 	await page.evaluate(() => document.fonts.ready);
-	await expect(page.getByRole('heading', { level: 1 })).toHaveText('Make room for your next idea.');
-	await expect(page.locator('.hero-art img')).toBeVisible();
+	await expect(page.getByRole('heading', { level: 1 })).toHaveText(
+		/A curious mind\.\s*A useful next step\./
+	);
+	await expect(page.locator('.r7-opening')).toBeVisible();
+	await expect(page.locator('.r7-scene-main img')).toBeVisible();
+	await expect(page.locator('.r7-scene-main')).toHaveAttribute('href', '/workshops');
 	if (await page.locator('.stage-banner').count()) {
 		expect(
 			await page.locator('.stage-banner').evaluate((e) => {
@@ -91,12 +95,18 @@ test('R6 editorial identity uses local fonts, framed artwork and honest public a
 			})
 		).toBe(true);
 	}
-	expect(await page.locator('h1').evaluate((e) => getComputedStyle(e).fontFamily)).toContain(
-		'Orbitron'
-	);
+	const displayFont = await page.locator('h1').evaluate((e) => getComputedStyle(e).fontFamily);
+	expect(displayFont).toContain('Manrope');
+	expect(displayFont).not.toContain('Orbitron');
+	expect(
+		await page
+			.locator('.r7-opening .eyebrow > span')
+			.first()
+			.evaluate((e) => getComputedStyle(e).fontFamily)
+	).toContain('Orbitron');
 	expect(
 		await page.evaluate(
-			() => document.fonts.check('16px Orbitron') && document.fonts.check('16px Inter')
+			() => document.fonts.check('16px Manrope') && document.fonts.check('16px Inter')
 		)
 	).toBe(true);
 	await expect(page.locator('.hero-media')).toHaveCount(0);
@@ -105,7 +115,7 @@ test('R6 editorial identity uses local fonts, framed artwork and honest public a
 	expect(calls).toEqual([]);
 });
 
-test('R6 desktop disclosure and native mobile drawer work with keyboard and return focus', async ({
+test('desktop disclosure and native mobile drawer work with keyboard and return focus', async ({
 	page
 }) => {
 	await page.goto('/');
@@ -134,37 +144,75 @@ test('R6 desktop disclosure and native mobile drawer work with keyboard and retu
 	}
 });
 
-test('R6 event filters distinguish past, pending and empty upcoming records', async ({ page }) => {
+test('event filters distinguish past, pending and empty upcoming records', async ({ page }) => {
 	await page.goto('/events');
 	await page.getByRole('button', { name: 'Upcoming', exact: true }).click();
+	await expect(page.getByRole('button', { name: 'Upcoming', exact: true })).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
 	await expect(page.getByRole('heading', { name: 'No events match this filter.' })).toBeVisible();
+	await expect(page.locator('.results-note')).toHaveText('0 records shown');
 	await page.getByRole('button', { name: 'Past', exact: true }).click();
 	await expect(page.locator('.event-row')).toHaveCount(2);
 	await page.getByRole('button', { name: 'Workshops', exact: true }).click();
 	await expect(page.locator('.event-row')).toHaveCount(1);
 	await expect(page.locator('.event-row')).toContainText('Date to be confirmed');
+	await expect(page.locator('.results-note')).toHaveText('1 records shown');
 });
 
-test('R6 prompt catalog has compact results, filters, empty state and a real editor link', async ({
+test('expanded prompt catalog has accurate counts, meaningful categories and reversible search', async ({
 	page
 }) => {
+	const advanced = prompts.find((prompt) => prompt.slug === 'decision-brief-with-evidence')!;
+	const categoryCount = prompts.filter(
+		(prompt) => prompt.category.en === advanced.category.en
+	).length;
 	await page.goto('/prompt-library');
-	await expect(page.locator('.prompt-card')).toHaveCount(5);
+	await expect(page.locator('.prompt-card')).toHaveCount(prompts.length);
+	await expect(page.locator('.lp-count-line [role="status"]')).toHaveText(
+		`${prompts.length} templates shown`
+	);
 	await expect(page.locator('textarea')).toHaveCount(0);
+	const category = page
+		.getByRole('navigation', { name: 'Prompt categories', exact: true })
+		.getByRole('button')
+		.filter({ hasText: advanced.category.en });
+	await category.click();
+	await expect(category).toHaveAttribute('aria-pressed', 'true');
+	await expect(page.locator('.prompt-card')).toHaveCount(categoryCount);
+	await expect(page.getByRole('heading', { name: advanced.title.en, exact: true })).toBeVisible();
 	await page.getByLabel('Search prompts').fill('zz-no-match');
 	await expect(page.getByRole('heading', { name: 'No prompts match.' })).toBeVisible();
-	await page.getByRole('button', { name: 'Show every template' }).click();
-	await expect(page.locator('.prompt-card')).toHaveCount(5);
-	await page.getByLabel('Search prompts').fill('email');
+	await expect(page.locator('.prompt-card')).toHaveCount(0);
+	await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
+	await expect(page.getByLabel('Search prompts')).toHaveValue('');
+	await expect(page.locator('.prompt-card')).toHaveCount(prompts.length);
+	await page.getByLabel('Search prompts').fill(advanced.outcome!.en);
 	await expect(page.locator('.prompt-card')).toHaveCount(1);
-	await page.getByRole('link', { name: 'Open detail' }).click();
-	await expect(page.getByLabel('Editable prompt text')).toHaveValue(/Draft an email/);
+	await expect(page.getByRole('heading', { name: advanced.title.en, exact: true })).toBeVisible();
+	await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
+	await page.getByRole('button', { name: 'Cambiar a español', exact: true }).click();
+	await page
+		.getByRole('navigation', { name: 'Categorías de prompts', exact: true })
+		.getByRole('button')
+		.filter({ hasText: advanced.category.es })
+		.click();
+	await expect(page.locator('.prompt-card')).toHaveCount(categoryCount);
+	await page.getByLabel('Buscar prompts').fill(advanced.title.es);
+	await expect(page.locator('.prompt-card')).toHaveCount(1);
+	await expect(page.locator('.lp-count-line [role="status"]')).toHaveText('1 plantilla visible');
+	await page.getByRole('link', { name: `Abrir prompt: ${advanced.title.es}`, exact: true }).click();
+	await expect(page.getByLabel('Texto editable del prompt')).toHaveValue(advanced.prompt.es);
 });
 
-test('all five R6 prompt workspaces retain independent bilingual drafts and reset deliberately', async ({
+test('original and advanced prompt workspaces retain independent bilingual drafts and reset deliberately', async ({
 	page
 }) => {
-	for (const prompt of prompts) {
+	const representatives = ['clear-email', 'decision-brief-with-evidence'].map((slug) =>
+		prompts.find((prompt) => prompt.slug === slug)!
+	);
+	for (const prompt of representatives) {
 		await page.goto(`/prompt-library/${prompt.slug}`);
 		const editor = page.getByLabel('Editable prompt text');
 		await expect(editor).toHaveValue(prompt.prompt.en);
@@ -177,10 +225,97 @@ test('all five R6 prompt workspaces retain independent bilingual drafts and rese
 		await expect(editor).toHaveValue('EN synthetic working draft');
 		await page.getByRole('button', { name: 'Reset', exact: true }).click();
 		await expect(editor).toHaveValue(prompt.prompt.en);
+		await page.getByRole('button', { name: 'Cambiar a español', exact: true }).click();
+		await expect(spanish).toHaveValue('ES borrador de prueba');
+		await page.getByRole('button', { name: 'Restablecer', exact: true }).click();
+		await expect(spanish).toHaveValue(prompt.prompt.es);
+		await page.getByRole('button', { name: 'Switch to English', exact: true }).click();
 	}
 });
 
-test('R6 clipboard denial selects real editable text instead of claiming a copy succeeded', async ({
+test('bookmarks persist locally across reload and compose with the Saved filter and search', async ({
+	page
+}) => {
+	const advanced = prompts.find((prompt) => prompt.slug === 'decision-brief-with-evidence')!;
+	const calls: string[] = [];
+	page.on('request', (request) => {
+		if (/\/api\//.test(request.url())) calls.push(request.url());
+	});
+	await page.goto('/prompt-library');
+	await page.getByRole('button', { name: 'Save prompt: Write a clear email', exact: true }).click();
+	await page
+		.getByRole('button', { name: `Save prompt: ${advanced.title.en}`, exact: true })
+		.click();
+	await expect(page.locator('.lp-save-notice')).toHaveText('Saved list updated on this device.');
+	expect(
+		await page.evaluate(() => JSON.parse(localStorage.getItem('wgn-saved-prompts-v1') ?? '[]'))
+	).toEqual(['clear-email', advanced.slug]);
+	await page.reload();
+	await expect(page.locator('.lp-saved-toggle')).toContainText('2');
+	await page.locator('.lp-saved-toggle').click();
+	await expect(page.locator('.lp-saved-toggle')).toHaveAttribute('aria-pressed', 'true');
+	await expect(page.locator('.prompt-card')).toHaveCount(2);
+	await page.getByLabel('Search prompts').fill(advanced.title.en);
+	await expect(page.locator('.prompt-card')).toHaveCount(1);
+	await expect(page.getByRole('heading', { name: advanced.title.en, exact: true })).toBeVisible();
+	await page.getByRole('button', { name: 'Clear filters', exact: true }).click();
+	await expect(page.getByLabel('Search prompts')).toHaveValue('');
+	await expect(page.locator('.lp-saved-toggle')).toHaveAttribute('aria-pressed', 'false');
+	await expect(page.locator('.prompt-card')).toHaveCount(prompts.length);
+	await page.locator('.lp-saved-toggle').click();
+	await page
+		.getByRole('button', { name: `Remove saved prompt: ${advanced.title.en}`, exact: true })
+		.click();
+	await expect(page.locator('.prompt-card')).toHaveCount(1);
+	await expect(
+		page.getByRole('heading', { name: 'Write a clear email', exact: true })
+	).toBeVisible();
+	await page.getByRole('button', { name: 'Cambiar a español', exact: true }).click();
+	await expect(
+		page.getByRole('heading', { name: 'Escribe un correo claro', exact: true })
+	).toBeVisible();
+	await page.reload();
+	await expect(page.locator('html')).toHaveAttribute('lang', 'es');
+	await expect(page.locator('.lp-saved-toggle')).toContainText('1');
+	await page.locator('.lp-saved-toggle').click();
+	await expect(page.locator('.prompt-card')).toHaveCount(1);
+	await expect(
+		page.getByRole('heading', { name: 'Escribe un correo claro', exact: true })
+	).toBeVisible();
+	expect(calls).toEqual([]);
+});
+
+test('blocked bookmark storage reports failure without pretending a prompt was saved', async ({
+	page
+}) => {
+	await page.addInitScript(() => {
+		Storage.prototype.setItem = () => {
+			throw new DOMException('Denied', 'SecurityError');
+		};
+	});
+	const errors: string[] = [];
+	page.on('pageerror', (error) => errors.push(error.message));
+	await page.goto('/prompt-library');
+	const bookmark = page.getByRole('button', {
+		name: 'Save prompt: Write a clear email',
+		exact: true
+	});
+	await bookmark.click();
+	await expect(page.locator('.lp-save-notice')).toContainText(
+		'This browser could not save the list.'
+	);
+	await expect(bookmark).toHaveAttribute('aria-pressed', 'false');
+	await page.locator('.lp-saved-toggle').click();
+	await expect(page.locator('.prompt-card')).toHaveCount(0);
+	await expect(
+		page.getByRole('heading', { name: 'Your collection starts here.', exact: true })
+	).toBeVisible();
+	await page.getByRole('button', { name: 'Show every template', exact: true }).click();
+	await expect(page.locator('.prompt-card')).toHaveCount(prompts.length);
+	expect(errors).toEqual([]);
+});
+
+test('clipboard denial selects real editable text instead of claiming a copy succeeded', async ({
 	page
 }) => {
 	await page.addInitScript(() =>
@@ -205,7 +340,7 @@ test('R6 clipboard denial selects real editable text instead of claiming a copy 
 	).toBe('Synthetic clipboard fallback'.length);
 });
 
-test('R6 workshops, contribution directory and project empty state remain truthful', async ({
+test('workshops, contribution paths and illustrative projects remain truthful', async ({
 	page
 }) => {
 	await page.goto('/workshops');
@@ -216,23 +351,29 @@ test('R6 workshops, contribution directory and project empty state remain truthf
 	);
 	await page.goto('/careers');
 	await expect(page.locator('.contribution-track')).toHaveCount(5);
-	await expect(page.locator('.contribution-notice')).toContainText(
-		'not confirmed paid job openings'
-	);
+	await expect(page.locator('.route-paths-intro')).toContainText('not confirmed paid job openings');
+	await expect(page.getByRole('link', { name: /apply now/i })).toHaveCount(0);
 	await page.goto('/projects');
-	await expect(
-		page.getByRole('heading', { name: 'Nothing published here yet. Plenty worth trying.' })
-	).toBeVisible();
+	await expect(page.locator('.route-idea')).toHaveCount(3);
+	await expect(page.locator('#project-ideas')).toContainText(
+		'ILLUSTRATIVE IDEAS · NOT PUBLISHED COMMUNITY PROJECTS'
+	);
+	await expect(page.locator('#project-ideas')).toContainText(
+		'not products, client work or promised outcomes'
+	);
 });
 
-test('R6 reduced motion and no-JavaScript fallback preserve readable public content', async ({
+test('reduced motion and no-JavaScript fallback preserve readable public content', async ({
 	page,
 	browser
 }) => {
 	await page.emulateMedia({ reducedMotion: 'reduce' });
 	await page.goto('/');
 	expect(
-		await page.locator('.hero-art-frame').evaluate((e) => getComputedStyle(e).animationName)
+		await page
+			.locator('.orbital-system i')
+			.first()
+			.evaluate((e) => getComputedStyle(e).animationName)
 	).toBe('none');
 	await expect(page.locator('h1')).toBeVisible();
 	const context = await browser.newContext({
@@ -249,7 +390,7 @@ test('R6 reduced motion and no-JavaScript fallback preserve readable public cont
 	await context.close();
 });
 
-test('R6 language controls survive denied optional localStorage access', async ({ page }) => {
+test('language controls survive denied optional localStorage access', async ({ page }) => {
 	await page.addInitScript(() => {
 		Storage.prototype.getItem = () => {
 			throw new DOMException('Denied', 'SecurityError');
@@ -266,7 +407,7 @@ test('R6 language controls survive denied optional localStorage access', async (
 	expect(errors).toEqual([]);
 });
 
-test('R6 hero renders a truthful CSP-safe fallback for corrupt cached artwork', async ({
+test('R7 opening renders a truthful CSP-safe fallback for corrupt cached artwork', async ({
 	page
 }) => {
 	const errors: string[] = [];
@@ -274,23 +415,26 @@ test('R6 hero renders a truthful CSP-safe fallback for corrupt cached artwork', 
 		if (m.type() === 'error') errors.push(m.text());
 	});
 	page.on('pageerror', (e) => errors.push(e.message));
-	await page.route('**/assets/derived/wgn-hero-*', (route) =>
+	await page.route(`**/assets/**/${images.workshops.base}*`, (route) =>
 		route.fulfill({ status: 200, contentType: 'image/webp', body: 'not-an-image' })
 	);
 	const response = await page.goto('/');
 	expect(await response!.text()).not.toMatch(/\son[a-z]+\s*=/i);
 	await expect(
-		page.getByRole('img', { name: 'WGN skyline illustration unavailable', exact: true })
+		page.locator('.r7-scene-main').getByRole('img', { name: images.workshops.alt.en, exact: true })
 	).toBeVisible();
+	await expect(page.locator('.r7-scene-main .image-fallback')).toContainText(
+		'Concept artwork unavailable'
+	);
 	expect(errors).toEqual([]);
 });
 
-test('R6 prompt editor has primary-first mobile order and a separate desktop guide', async ({
+test('prompt editor has primary-first mobile order and a separate desktop guide', async ({
 	page
 }) => {
 	await page.goto('/prompt-library/clear-email');
 	const editor = await page.locator('.workspace-editor').boundingBox();
 	const guide = await page.locator('.workspace-guide').boundingBox();
-	if (page.viewportSize()!.width < 950) expect(editor!.y).toBeLessThan(guide!.y);
-	else expect(editor!.x).toBeGreaterThan(guide!.x);
+	if (page.viewportSize()!.width <= 800) expect(editor!.y).toBeLessThan(guide!.y);
+	else expect(editor!.x).toBeLessThan(guide!.x);
 });

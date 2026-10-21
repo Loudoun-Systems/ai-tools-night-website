@@ -1,4 +1,5 @@
 import type { EventRecord, Localized, Locale, PromptRecord, TrackRecord } from './types';
+import { extendedPrompts } from './prompt-catalog';
 
 export const SITE_NAME = "We've Got Now";
 export const EVENT_NAME = 'AI Tools Explorers Night';
@@ -157,8 +158,8 @@ export function publicSiteKnowledge(locale: Locale): string {
 	const trackNames = tracks.map((track) => track.title[locale]).join(', ');
 	const promptNames = prompts.map((prompt) => prompt.title[locale]).join(', ');
 	return locale === 'en'
-		? `We've Got Now hosts AI Tools Explorers Night for practical AI learning, building and sharing. Public event records: ${eventFacts} Meetups and MyGuyGus workshops are separate event types. The workshop date, time, price, capacity and registration are pending; interest does not reserve a seat. Contribution tracks are ${trackNames}; these are expressions of interest, not confirmed paid openings. The five editable prompt starters are ${promptNames}. Project submissions are inquiries and do not promise a presentation slot.`
-		: `We've Got Now organiza AI Tools Explorers Night para aprender, crear y compartir usos prácticos de IA. Registros públicos de eventos: ${eventFacts} Los encuentros y talleres de MyGuyGus son tipos de evento distintos. La fecha, hora, precio, cupos e inscripción del taller están pendientes; mostrar interés no reserva un cupo. Las áreas de colaboración son ${trackNames}; son expresiones de interés, no vacantes pagadas confirmadas. Los cinco prompts editables son ${promptNames}. Enviar un proyecto es una consulta y no promete un cupo de presentación.`;
+		? `We've Got Now hosts AI Tools Explorers Night for practical AI learning, building and sharing. Public event records: ${eventFacts} Meetups and MyGuyGus workshops are separate event types. The workshop date, time, price, capacity and registration are pending; interest does not reserve a seat. Contribution tracks are ${trackNames}; these are expressions of interest, not confirmed paid openings. The ${prompts.length} editable prompt templates are ${promptNames}. Project submissions are inquiries and do not promise a presentation slot.`
+		: `We've Got Now organiza AI Tools Explorers Night para aprender, crear y compartir usos prácticos de IA. Registros públicos de eventos: ${eventFacts} Los encuentros y talleres de MyGuyGus son tipos de evento distintos. La fecha, hora, precio, cupos e inscripción del taller están pendientes; mostrar interés no reserva un cupo. Las áreas de colaboración son ${trackNames}; son expresiones de interés, no vacantes pagadas confirmadas. Las ${prompts.length} plantillas editables son ${promptNames}. Enviar un proyecto es una consulta y no promete un cupo de presentación.`;
 }
 
 export const tracks: TrackRecord[] = [
@@ -224,7 +225,7 @@ export const tracks: TrackRecord[] = [
 	}
 ];
 
-export const prompts: PromptRecord[] = [
+const starterPrompts: PromptRecord[] = [
 	{
 		slug: 'notes-to-next-steps',
 		title: { en: 'Turn notes into next steps', es: 'Convierte notas en próximos pasos' },
@@ -437,3 +438,5 @@ Termina con una lista reutilizable y algo que deba verificar por mi cuenta.`
 		reviewedAt: '2026-10-14'
 	}
 ];
+
+export const prompts: PromptRecord[] = [...starterPrompts, ...extendedPrompts];

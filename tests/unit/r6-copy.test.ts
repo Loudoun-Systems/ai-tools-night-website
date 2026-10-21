@@ -26,8 +26,8 @@ test('R6 workshop copy remains planned and never opens payment or reservations',
 	expect(copy.workshops.flowNote.en).toContain('not a finalized agenda');
 	expect(events.filter((e) => e.status === 'upcoming')).toHaveLength(0);
 });
-test('preserved factual resource records support all nineteen public routes', () => {
-	expect(prompts).toHaveLength(5);
+test('preserved factual records and expanded prompt catalog support public routes', () => {
+	expect(prompts).toHaveLength(37);
 	expect(tracks).toHaveLength(5);
 	expect(events).toHaveLength(3);
 	expect(events.filter((e) => e.status === 'past')).toHaveLength(2);
