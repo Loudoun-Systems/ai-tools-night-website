@@ -2,8 +2,6 @@
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import '../app.css';
-	import '$lib/r6-interfaces.css';
-	import '$lib/futuristic.css';
 	import Atmosphere from '$lib/components/Atmosphere.svelte';
 	import ChatWidget from '$lib/components/ChatWidget.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -45,7 +43,7 @@
 <svelte:head>
 	<link
 		rel="preload"
-		href="/fonts/orbitron-latin-variable.woff2"
+		href="/fonts/manrope-latin-variable.woff2"
 		as="font"
 		type="font/woff2"
 		crossorigin="anonymous"

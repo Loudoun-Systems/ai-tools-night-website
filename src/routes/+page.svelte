@@ -1,296 +1,1022 @@
 <script lang="ts">
 	import ConceptArt from '$lib/components/ConceptArt.svelte';
-	import HeroArt from '$lib/components/HeroArt.svelte';
-	import CommunityInvite from '$lib/components/CommunityInvite.svelte';
-	import IntakeForm from '$lib/components/IntakeForm.svelte';
 	import Seo from '$lib/components/Seo.svelte';
-	import { events, images, nextConfirmedEvent, text } from '$lib/content';
-	import copy from '$lib/r6-copy.json';
+	import IntakeForm from '$lib/components/IntakeForm.svelte';
+	import { images, MEETUP_URL, prompts, text } from '$lib/content';
 	import { useLanguage } from '$lib/language.svelte';
-	import type { Localized } from '$lib/types';
 	const language = useLanguage();
-	const c = copy.home;
-	const nextEvent = nextConfirmedEvent(events);
-	const t = (value: Localized) => text(value, language.locale);
-	const principles = [
+	let selected = $state('workshops');
+	const directions = [
 		{
-			title: { en: 'Try something.', es: 'Prueba algo.' },
-			body: {
-				en: 'Explore a practical use for AI. Keep the question small enough to answer.',
-				es: 'Explora un uso práctico de la IA. Empieza con una pregunta que puedas resolver.'
-			}
+			id: 'events',
+			n: '01',
+			en: 'Meet your people',
+			es: 'Encuentra tu comunidad',
+			tagEn: 'THE CONVERSATION',
+			tagEs: 'LA CONVERSACIÓN',
+			titleEn: 'One good conversation can change what you try next.',
+			titleEs: 'Una buena conversación puede cambiar lo que pruebas después.',
+			bodyEn:
+				'See an idea in action. Ask the question you have been sitting on. Meet other people exploring practical AI, one useful experiment at a time.',
+			bodyEs:
+				'Ve una idea en acción. Haz esa pregunta que tienes pendiente. Conoce a otras personas explorando la IA práctica, un experimento útil a la vez.',
+			statusEn: 'The next meetup date has not been announced.',
+			statusEs: 'La próxima fecha de encuentro aún no se ha anunciado.',
+			ctaEn: 'Explore the gatherings',
+			ctaEs: 'Conoce los encuentros',
+			href: '/events',
+			art: images.events
 		},
 		{
-			title: { en: 'Make it yours.', es: 'Hazlo tuyo.' },
-			body: {
-				en: 'Bring your own task into the process. Learn what helps and what still needs checking.',
-				es: 'Trabaja con una tarea tuya. Descubre qué funciona y qué necesita más revisión.'
-			}
+			id: 'workshops',
+			n: '02',
+			en: 'Make something useful',
+			es: 'Crea algo útil',
+			tagEn: 'THE HANDS-ON PART',
+			tagEs: 'MANOS A LA OBRA',
+			titleEn: 'Bring a task. Find a new way through it.',
+			titleEs: 'Trae una tarea. Encuentra otra forma de resolverla.',
+			bodyEn:
+				'Better prompts. Clearer workflows. A small project you can explain. We’re shaping workshops around trying things together, with room to ask, get stuck, and improve.',
+			bodyEs:
+				'Mejores prompts. Flujos más claros. Un proyecto pequeño que puedas explicar. Estamos preparando talleres para probar juntos, preguntar, trabarnos y mejorar.',
+			statusEn: 'Dates and pricing are pending. Registration is not open.',
+			statusEs: 'Fechas y precios pendientes. Las inscripciones no están abiertas.',
+			ctaEn: 'Inside the workshop plan',
+			ctaEs: 'Conoce el plan del taller',
+			href: '/workshops',
+			art: images.workshops
 		},
 		{
-			title: { en: 'Pass it on.', es: 'Compártelo.' },
-			body: {
-				en: 'Share the useful part. Your next conversation might help someone take their first step.',
-				es: 'Comparte lo que te sirvió. Tu próxima conversación puede ayudar a alguien a empezar.'
-			}
+			id: 'prompts',
+			n: '03',
+			en: 'Follow a better prompt',
+			es: 'Prueba un mejor prompt',
+			tagEn: 'THE NEXT EXPERIMENT',
+			tagEs: 'EL SIGUIENTE EXPERIMENTO',
+			titleEn: 'Skip the blank page. Start with a real task.',
+			titleEs: 'Sal de la página en blanco. Empieza con una tarea real.',
+			bodyEn:
+				'Detailed workflows for research, content, automation, building and more. Add your context, edit the brief, and check what comes back.',
+			bodyEs:
+				'Flujos detallados para investigar, crear contenido, automatizar y construir. Añade contexto, edita las instrucciones y revisa el resultado.',
+			statusEn: `${prompts.length} editable templates. English + Spanish.`,
+			statusEs: `${prompts.length} plantillas editables. Inglés + español.`,
+			ctaEn: 'Open the prompt field guide',
+			ctaEs: 'Abre la guía práctica de prompts',
+			href: '/prompt-library',
+			art: images.prompts
 		}
 	];
+	const active = $derived(directions.find((d) => d.id === selected) ?? directions[1]);
+	const featured = prompts.filter((p) =>
+		[
+			'decision-brief-with-evidence',
+			'automation-opportunity-map',
+			'hands-on-workshop-design'
+		].includes(p.slug)
+	);
 </script>
 
 <Seo
-	title={{ en: 'Make room for your next idea', es: 'Dale espacio a tu próxima idea' }}
-	description={c.lead}
+	title={{ en: 'Good ideas. Better together.', es: 'Buenas ideas. Mejor juntos.' }}
+	description={{
+		en: 'A community for curious people exploring practical AI. Meet, make, and find your next experiment with We’ve Got Now.',
+		es: 'Una comunidad para explorar la IA práctica. Conecta, crea y descubre tu próximo experimento con We’ve Got Now.'
+	}}
 	path="/"
 />
-<section class="hero">
-	<div class="shell">
-		<div class="hero-grid">
-			<div class="hero-copy">
-				<p class="eyebrow">{t(c.eyebrow)}</p>
-				<h1>
-					{#if language.locale === 'en'}<span>Make room</span>{' '}<span
-							>for your <em>next</em></span
-						>{' '}<em>idea.</em>{:else}<span>Dale espacio</span>{' '}<span
-							>a tu <em>próxima</em></span
-						>{' '}<em>idea.</em>{/if}
-				</h1>
-				<p class="lede">{t(c.lead)}</p>
-				<div class="button-row">
-					<a class="button primary" href="/workshops"
-						>{t(c.primaryCta)}<span aria-hidden="true">↗</span></a
-					><a class="button secondary" href="/about">{t(c.secondaryCta)}</a>
-				</div>
-				<p class="hero-hint">
-					{language.locale === 'en'
-						? 'A place to learn, build, share, and connect.'
-						: 'Un espacio para aprender, crear, compartir y conectar.'}
-				</p>
-			</div>
-			<HeroArt />
+
+<section class="r8-opening">
+	<div class="shell r8-hero">
+		<div class="r8-hero-light" aria-hidden="true"></div>
+		<div class="r8-hero-art">
+			<ConceptArt base={images.events.base} alt={images.events.alt} eager />
 		</div>
-		<div class="hero-baseline">
-			<span
-				>{language.locale === 'en'
-					? 'LEARN. BUILD. SHARE. CONNECT.'
-					: 'APRENDE. CREA. COMPARTE. CONECTA.'}</span
-			><span
-				>{language.locale === 'en'
-					? 'Practical AI. Human connections.'
-					: 'IA práctica. Conexiones humanas.'}</span
-			><span
-				>{language.locale === 'en'
-					? 'Everyone starts somewhere ↗'
-					: 'Todos empezamos por algo ↗'}</span
-			>
-		</div>
-	</div>
-</section>
-<section class="chapter">
-	<div class="shell">
-		<div class="manifesto-grid">
-			<div>
-				<p class="eyebrow">
-					{language.locale === 'en'
-						? '01 / A LITTLE LESS WATCHING. A LITTLE MORE DOING.'
-						: '01 / MENOS MIRAR. MÁS HACER.'}
-				</p>
-				<h2>
-					{language.locale === 'en'
-						? 'Good ideas get better when we work on them together.'
-						: 'Las buenas ideas mejoran cuando las trabajamos juntos.'}
-				</h2>
-			</div>
-			<p>
-				{language.locale === 'en'
-					? 'You don’t need to know every tool or have the perfect prompt. Bring a question, a useful task, or a bit of curiosity. We’ve Got Now is a community for making the next step feel possible.'
-					: 'No necesitas conocer todas las herramientas ni tener el prompt perfecto. Trae una pregunta, una tarea útil o un poco de curiosidad. We’ve Got Now es una comunidad para hacer posible el siguiente paso.'}
-			</p>
-		</div>
-		<ol class="principles">
-			{#each principles as principle, i}<li>
-					<span class="index">0{i + 1}</span>
-					<h3>{t(principle.title)}</h3>
-					<p>{t(principle.body)}</p>
-				</li>{/each}
-		</ol>
-	</div>
-</section>
-<section class="chapter workshop-feature">
-	<div class="shell split">
-		<ConceptArt base={images.workshops.base} alt={images.workshops.alt} />
-		<div class="editorial-copy">
+		<div class="r8-hero-copy">
 			<p class="eyebrow">
-				{language.locale === 'en'
-					? '02 / LESS THEORY. MORE TRYING.'
-					: '02 / MENOS TEORÍA. MÁS PRÁCTICA.'}
+				<span>WE’VE GOT NOW</span><span class="r8-slash" aria-hidden="true">/</span
+				>{language.locale === 'en' ? 'AI TOOLS EXPLORERS NIGHT' : 'AI TOOLS EXPLORERS NIGHT'}
 			</p>
-			<h2>{t(c.workshopTitle)}</h2>
-			<p>{t(c.workshopBody)}</p>
-			<div class="quiet-meta">
-				<span
-					><small>{language.locale === 'en' ? 'DATES' : 'FECHAS'}</small>{language.locale === 'en'
-						? 'To be announced'
-						: 'Por anunciar'}</span
-				><span
-					><small>{language.locale === 'en' ? 'PRICING' : 'PRECIO'}</small>{language.locale === 'en'
-						? 'To be announced'
-						: 'Por anunciar'}</span
+			<h1>
+				{#if language.locale === 'en'}Good ideas.<br /><span>Better together.</span>{:else}Buenas
+					ideas.<br /><span>Mejor juntos.</span>{/if}
+			</h1>
+			<p class="r8-hero-description">
+				{language.locale === 'en'
+					? 'Less figuring it out alone. More “wait, let’s try that.” Explore AI, make something useful, and find your people.'
+					: 'Menos descubrirlo a solas. Más «espera, probemos eso». Explora la IA, crea algo útil y encuentra tu comunidad.'}
+			</p>
+			<div class="button-row">
+				<a class="button primary" href="#find-your-spark"
+					>{language.locale === 'en' ? 'Find your next spark' : 'Encuentra tu próxima idea'}<span
+						aria-hidden="true">↘</span
+					></a
+				><a class="r8-text-link" href="/workshops"
+					>{language.locale === 'en' ? 'Explore workshops' : 'Explora los talleres'}<span
+						aria-hidden="true">↗</span
+					></a
 				>
 			</div>
-			<a class="button dark-button" href="/workshops"
-				>{language.locale === 'en' ? 'Explore the workshop plan' : 'Conoce el plan del taller'}<span
-					aria-hidden="true">↗</span
-				></a
-			>
-		</div>
-	</div>
-</section>
-<section class="chapter">
-	<div class="shell">
-		<div class="section-header">
-			<div>
-				<p class="eyebrow">
-					{language.locale === 'en' ? '03 / WHAT’S TAKING SHAPE' : '03 / LO QUE ESTAMOS PREPARANDO'}
-				</p>
-				<h2>
-					{language.locale === 'en' ? 'A reason to get together.' : 'Una razón para encontrarnos.'}
-				</h2>
-			</div>
-			<p>
-				{language.locale === 'en'
-					? 'Community meetups and hands-on workshops are separate experiences.'
-					: 'Los encuentros de la comunidad y los talleres prácticos son experiencias distintas.'}
-			</p>
-		</div>
-		<a class="event-strip" href={nextEvent ? `/events/${nextEvent.slug}` : '/events'}
-			><div>
-				<p class="eyebrow">
-					{language.locale === 'en' ? 'COMMUNITY MEETUP' : 'ENCUENTRO COMUNITARIO'}
-				</p>
-				<small>{nextEvent ? t(nextEvent.title) : t(copy.events.pending)}</small>
-			</div>
-			<div>
-				<strong>AI Tools Explorers Night</strong>
+			<div class="r8-signature">
+				<span aria-hidden="true">✳</span>
 				<p>
 					{language.locale === 'en'
-						? 'Useful demos, open questions, and conversations with people who build.'
-						: 'Demos útiles, preguntas abiertas y conversaciones con personas que crean.'}
+						? 'Curious is a good place to start.'
+						: 'La curiosidad es un buen comienzo.'}
 				</p>
 			</div>
-			<span class="arrow" aria-hidden="true">↗</span></a
-		>
+		</div>
+		<div class="r8-hero-footer">
+			<span
+				>{language.locale === 'en'
+					? 'PRACTICAL AI. HUMAN CONNECTIONS.'
+					: 'IA PRÁCTICA. CONEXIONES HUMANAS.'}</span
+			><span
+				>{language.locale === 'en' ? 'LEARN' : 'APRENDE'} <i>✦</i>
+				{language.locale === 'en' ? 'BUILD' : 'CREA'} <i>✦</i>
+				{language.locale === 'en' ? 'SHARE' : 'COMPARTE'} <i>✦</i>
+				{language.locale === 'en' ? 'CONNECT' : 'CONECTA'}</span
+			>
+		</div>
 	</div>
 </section>
-<section class="chapter alt">
+
+<section id="find-your-spark" class="r8-discover chapter">
 	<div class="shell">
-		<div class="section-header">
+		<div class="section-header r8-section-heading">
 			<div>
 				<p class="eyebrow">
-					{language.locale === 'en' ? '04 / FOLLOW YOUR CURIOSITY' : '04 / SIGUE TU CURIOSIDAD'}
+					{language.locale === 'en' ? 'CHOOSE YOUR OWN STARTING POINT' : 'ELIGE POR DÓNDE EMPEZAR'}
 				</p>
-				<h2>{t(c.resourcesTitle)}</h2>
+				<h2>{language.locale === 'en' ? 'What brings you here?' : '¿Qué te trae por aquí?'}</h2>
 			</div>
 			<p>
 				{language.locale === 'en'
-					? 'A few starting points. Take the one that feels right for you.'
-					: 'Algunos puntos de partida. Elige el que más te sirva.'}
+					? 'A conversation. An experiment. That thing you have been meaning to make. Take the next step that feels like you.'
+					: 'Una conversación. Un experimento. Eso que llevas tiempo queriendo crear. Da el siguiente paso a tu manera.'}
 			</p>
 		</div>
-		<div class="resource-mosaic">
-			<a class="resource-tile large" href="/prompt-library"
-				><div>
-					<p class="eyebrow">
-						{language.locale === 'en' ? 'PROMPT LIBRARY' : 'BIBLIOTECA DE PROMPTS'}
-					</p>
-					<h3>
-						{language.locale === 'en'
-							? 'Start with the task. Make the prompt your own.'
-							: 'Empieza con la tarea. Haz tuyo el prompt.'}
-					</h3>
-					<p>
-						{language.locale === 'en'
-							? 'Editable starters for notes, writing, learning, and everyday workflows.'
-							: 'Plantillas editables para notas, escritura, aprendizaje y tareas cotidianas.'}
-					</p>
-					<span class="tile-link"
-						>{language.locale === 'en'
-							? 'Open the prompt library ↗'
-							: 'Abre la biblioteca de prompts ↗'}</span
-					>
-				</div>
-				<ConceptArt base={images.prompts.base} alt={images.prompts.alt} /></a
-			>
-			<a class="resource-tile" href="/careers"
-				><div>
-					<p class="eyebrow">
-						{language.locale === 'en' ? 'CAREERS & CONTRIBUTIONS' : 'CARRERAS Y COLABORACIÓN'}
-					</p>
-					<h3>
-						{language.locale === 'en' ? 'Find a way to contribute.' : 'Encuentra cómo aportar.'}
-					</h3>
-					<p>
-						{language.locale === 'en'
-							? 'Explore skills, roles, and small starting points. These are not job offers.'
-							: 'Explora habilidades, roles y formas de empezar. No son ofertas de empleo.'}
-					</p>
-					<span class="tile-link"
-						>{language.locale === 'en'
-							? 'Explore contribution areas ↗'
-							: 'Explora áreas de colaboración ↗'}</span
-					>
-				</div>
-				<ConceptArt base={images.careers.base} alt={images.careers.alt} /></a
-			>
-			<a class="resource-tile sage" href="/projects"
-				><div>
-					<p class="eyebrow">
-						{language.locale === 'en' ? 'COMMUNITY PROJECTS' : 'PROYECTOS DE LA COMUNIDAD'}
-					</p>
-					<h3>
-						{language.locale === 'en' ? 'See an idea take shape.' : 'Ve cómo toma forma una idea.'}
-					</h3>
-					<p>
-						{language.locale === 'en'
-							? 'Learn from what people try, make, and share.'
-							: 'Aprende de lo que las personas prueban, crean y comparten.'}
-					</p>
-					<span class="tile-link"
-						>{language.locale === 'en'
-							? 'Open community projects ↗'
-							: 'Explora los proyectos ↗'}</span
-					>
-				</div>
-				<ConceptArt base={images.projects.base} alt={images.projects.alt} /></a
+		<div
+			class="r8-direction-buttons"
+			role="group"
+			aria-label={language.locale === 'en' ? 'Choose your direction' : 'Elige tu camino'}
+		>
+			{#each directions as d}<button
+					id={`direction-${d.id}`}
+					type="button"
+					aria-pressed={selected === d.id}
+					aria-controls="direction-preview"
+					onclick={() => (selected = d.id)}
+					><span>{d.n}</span><strong>{language.locale === 'en' ? d.en : d.es}</strong><span
+						aria-hidden="true">↗</span
+					></button
+				>{/each}
+		</div>
+		<div
+			id="direction-preview"
+			class="r8-direction-preview"
+			aria-labelledby={`direction-${active.id}`}
+		>
+			<div class="r8-direction-image">
+				{#key active.id}<ConceptArt base={active.art.base} alt={active.art.alt} eager />{/key}
+			</div>
+			<div class="r8-direction-copy">
+				<p class="eyebrow">{language.locale === 'en' ? active.tagEn : active.tagEs}</p>
+				<h3>{language.locale === 'en' ? active.titleEn : active.titleEs}</h3>
+				<p>{language.locale === 'en' ? active.bodyEn : active.bodyEs}</p>
+				<a class="button secondary" href={active.href}
+					>{language.locale === 'en' ? active.ctaEn : active.ctaEs}<span aria-hidden="true">↗</span
+					></a
+				>
+				<p class="r8-pending">{language.locale === 'en' ? active.statusEn : active.statusEs}</p>
+			</div>
+		</div>
+	</div>
+</section>
+
+<section class="chapter r8-field-guide">
+	<div class="shell">
+		<div class="section-header r8-section-heading">
+			<div>
+				<p class="eyebrow">
+					{language.locale === 'en' ? 'THE PROMPT FIELD GUIDE' : 'LA GUÍA PRÁCTICA DE PROMPTS'}
+				</p>
+				<h2>
+					{language.locale === 'en'
+						? 'Less blank page. More possibility.'
+						: 'Menos página en blanco. Más posibilidades.'}
+				</h2>
+			</div>
+			<div class="r8-library-lead">
+				<p>
+					{language.locale === 'en'
+						? 'Real workflows, with the missing middle filled in: what to provide, how to work, and how to check the result.'
+						: 'Flujos completos: qué aportar, cómo trabajar y cómo revisar el resultado.'}
+				</p>
+				<a class="r8-text-link" href="/prompt-library"
+					>{language.locale === 'en'
+						? `Explore all ${prompts.length} prompts`
+						: `Explora los ${prompts.length} prompts`}<span aria-hidden="true">↗</span></a
+				>
+			</div>
+		</div>
+		<div class="r8-prompt-grid">
+			{#each featured as prompt, i}<a class="r8-prompt-pick" href={`/prompt-library/${prompt.slug}`}
+					><div class="r8-pick-top">
+						<span>0{i + 1}</span><span>{text(prompt.category, language.locale)}</span>
+					</div>
+					<h3>{text(prompt.title, language.locale)}</h3>
+					<p>{text(prompt.outcome ?? prompt.usefulFor, language.locale)}</p>
+					<span class="r8-pick-action"
+						>{language.locale === 'en' ? 'Make it your own' : 'Hazlo tuyo'}<span aria-hidden="true"
+							>↗</span
+						></span
+					></a
+				>{/each}
+		</div>
+		<div class="r8-library-foot">
+			<span>EN + ES</span>
+			<p>
+				{language.locale === 'en'
+					? 'Editable. Saveable. Yours to experiment with.'
+					: 'Editables. Guardables. Listos para experimentar.'}
+			</p>
+			<a href="/prompt-library"
+				>{language.locale === 'en' ? 'Find your next workflow' : 'Encuentra tu próximo flujo'}
+				<span aria-hidden="true">→</span></a
 			>
 		</div>
 	</div>
 </section>
-<section class="chapter dark community-feature">
-	<div class="shell split">
-		<ConceptArt base={images.about.base} alt={images.about.alt} />
-		<div class="editorial-copy">
+
+<section class="chapter r8-people">
+	<div class="shell r8-people-grid">
+		<div class="r8-people-image">
+			<ConceptArt base={images.about.base} alt={images.about.alt} /><span
+				class="r8-image-stamp"
+				aria-hidden="true"
+				>{language.locale === 'en' ? 'LEARN.' : 'APRENDE.'}<br />
+				{language.locale === 'en' ? 'BUILD.' : 'CREA.'}<br />
+				{language.locale === 'en' ? 'SHARE.' : 'COMPARTE.'}<br /><em
+					>{language.locale === 'en' ? 'CONNECT.' : 'CONECTA.'}</em
+				></span
+			>
+		</div>
+		<div class="r8-people-copy">
 			<p class="eyebrow">
-				{language.locale === 'en' ? '05 / BETTER, TOGETHER' : '05 / MEJOR EN COMUNIDAD'}
+				{language.locale === 'en' ? 'THE PEOPLE ARE THE POINT' : 'LO IMPORTANTE SON LAS PERSONAS'}
 			</p>
 			<h2>
 				{language.locale === 'en'
-					? 'You don’t have to figure it all out alone.'
-					: 'No tienes que descubrirlo todo a solas.'}
+					? 'Come for the tools. Stay for the people.'
+					: 'Ven por las herramientas. Quédate por las personas.'}
 			</h2>
 			<p>
 				{language.locale === 'en'
-					? 'We’ve Got Now is about the people around the tools. Ask the question. Share the rough version. Make space for someone else’s perspective.'
-					: 'We’ve Got Now trata de las personas que usan las herramientas. Haz la pregunta. Comparte el primer intento. Dale espacio a otra perspectiva.'}
+					? 'You don’t need a perfect project or every answer. Bring the question, the rough version, the idea that won’t leave you alone. There’s a place for that here.'
+					: 'No necesitas un proyecto perfecto ni todas las respuestas. Trae tu pregunta, tu primer borrador, esa idea que no te deja en paz. Aquí hay espacio para eso.'}
 			</p>
-			<a class="text-link" href="/about"
-				>{language.locale === 'en' ? 'Find where you fit in' : 'Encuentra tu lugar'}<span
-					aria-hidden="true">↗</span
-				></a
-			>
+			<div class="r8-people-notes">
+				<span
+					>{language.locale === 'en' ? 'Ask a better question.' : 'Haz una mejor pregunta.'}</span
+				><span
+					>{language.locale === 'en'
+						? 'Build on someone’s idea.'
+						: 'Crea a partir de otra idea.'}</span
+				><span
+					>{language.locale === 'en'
+						? 'Share what you figure out.'
+						: 'Comparte lo que descubras.'}</span
+				>
+			</div>
+			<div class="button-row">
+				<a class="button primary" href={MEETUP_URL} target="_blank" rel="noreferrer"
+					>{language.locale === 'en' ? 'Find WGN on Meetup' : 'Encuentra WGN en Meetup'}<span
+						aria-hidden="true">↗</span
+					></a
+				><a class="r8-text-link" href="/about"
+					>{language.locale === 'en' ? 'Meet the community' : 'Conoce la comunidad'}
+					<span aria-hidden="true">→</span></a
+				>
+			</div>
+			<p class="r8-pending">
+				{language.locale === 'en'
+					? 'The next meetup date has not been announced.'
+					: 'La próxima fecha de encuentro aún no se ha anunciado.'}
+			</p>
 		</div>
 	</div>
 </section>
-<CommunityInvite />
-<section id="join" class="section shell">
-	<div id="join-form"><IntakeForm formType="community" /></div>
+
+<section id="join" class="chapter r8-join">
+	<div class="shell r8-join-grid">
+		<div>
+			<p class="eyebrow">
+				{language.locale === 'en'
+					? 'THE NEXT THING STARTS SMALL'
+					: 'LO QUE SIGUE EMPIEZA EN PEQUEÑO'}
+			</p>
+			<h2>{language.locale === 'en' ? 'What are you curious about?' : '¿Qué te da curiosidad?'}</h2>
+			<p>
+				{language.locale === 'en'
+					? 'A useful question is all it takes to start a conversation.'
+					: 'Una buena pregunta basta para iniciar una conversación.'}
+			</p>
+		</div>
+		<div id="join-form"><IntakeForm formType="community" /></div>
+	</div>
 </section>
+
+<style>
+	.r8-opening {
+		padding: 28px 0 0;
+	}
+	.r8-hero {
+		position: relative;
+		isolation: isolate;
+		min-height: 590px;
+		padding: 60px 44px 0;
+		border: 1px solid #9b8dff42;
+		border-radius: 28px;
+		background: radial-gradient(ellipse at 10% 15%, #27417a30, transparent 60%), #0d1023;
+		box-shadow:
+			0 18px 90px #05051580,
+			0 0 65px #8b4bf012;
+		overflow: hidden;
+	}
+	.r8-hero-light {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		background:
+			radial-gradient(ellipse at 65% 40%, #ad38ff3b, transparent 55%),
+			radial-gradient(ellipse at 15% 100%, #00c7d322, transparent 65%);
+	}
+	.r8-hero-art {
+		position: absolute;
+		inset: 0 0 0 28%;
+		z-index: -1;
+		pointer-events: none;
+		mask-image: linear-gradient(90deg, transparent, #000 30%);
+	}
+	.r8-hero-art:after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(90deg, #0d1023 0%, #0d1023ed 15%, #0d10239c 38%, #0d10231a 74%),
+			linear-gradient(0deg, #0d1023 0%, transparent 40%, #0d102320 80%);
+	}
+	.r8-hero-art :global(.concept-art) {
+		height: 100%;
+	}
+	.r8-hero-art :global(picture) {
+		height: 100%;
+		aspect-ratio: auto;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+	}
+	.r8-hero-art :global(img) {
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+		object-position: 55% 45%;
+		opacity: 0.92;
+	}
+	.r8-hero-art :global(figcaption) {
+		position: absolute;
+		right: 24px;
+		bottom: 68px;
+		max-width: 26ch;
+		text-align: right;
+		color: #d2c9e9;
+		font-size: 0.65rem;
+		line-height: 1.5;
+		z-index: 2;
+	}
+	.r8-hero-copy {
+		position: relative;
+		max-width: 780px;
+		padding-bottom: 48px;
+	}
+	.r8-hero-copy .eyebrow {
+		font-size: 0.63rem;
+		letter-spacing: 0.13em;
+		gap: 12px;
+		color: #a1c4e8;
+	}
+	.r8-hero-copy .eyebrow:before {
+		display: none;
+	}
+	.r8-hero-copy .eyebrow > span:first-child {
+		font-family: Orbitron, sans-serif;
+		color: var(--cyan);
+		font-size: 0.63rem;
+	}
+	.r8-slash {
+		color: #59658e;
+	}
+	.r8-hero h1 {
+		font-size: clamp(3.25rem, 6.7vw, 6.7rem);
+		line-height: 1.02;
+		letter-spacing: -0.065em;
+		font-weight: 650;
+		margin: 24px 0;
+	}
+	.r8-hero h1 > span {
+		color: #edb4ff;
+		background: linear-gradient(100deg, #9dfff1 0%, #c7adff 55%, #ff9ee0 100%);
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+	.r8-hero-description {
+		font-size: 1.05rem;
+		line-height: 1.7;
+		max-width: 40ch;
+		color: #c0c9df;
+	}
+	.r8-hero-copy .button-row {
+		gap: 24px;
+		margin-top: 24px;
+	}
+	.r8-text-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 18px;
+		min-height: 44px;
+		padding: 10px 0;
+		font-size: 0.88rem;
+		font-weight: 600;
+		text-decoration: none;
+		color: var(--ink);
+	}
+	.r8-text-link span {
+		color: var(--cyan);
+	}
+	.r8-text-link:hover {
+		color: var(--cyan);
+	}
+	.r8-signature {
+		display: flex;
+		gap: 12px;
+		align-items: center;
+		margin-top: 24px;
+		color: #bec6dc;
+	}
+	.r8-signature > span {
+		font-size: 30px;
+		color: var(--pink);
+		text-shadow: 0 0 24px #ff83d44d;
+		animation: spark-turn 30s linear infinite;
+	}
+	:global([data-ambient-paused]) .r8-signature > span {
+		animation-play-state: paused;
+	}
+	@keyframes spark-turn {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.r8-signature > span {
+			animation: none;
+		}
+	}
+	.r8-signature p {
+		font-size: 0.8rem;
+		margin: 0;
+	}
+	.r8-hero-footer {
+		position: relative;
+		display: flex;
+		gap: 24px;
+		justify-content: space-between;
+		align-items: center;
+		border-top: 1px solid #a9b5ff29;
+		min-height: 56px;
+		font-size: 0.61rem;
+		letter-spacing: 0.12em;
+		color: #b4b9d3;
+	}
+	.r8-hero-footer i {
+		font-style: normal;
+		color: var(--pink);
+		margin-inline: 12px;
+	}
+	.r8-section-heading h2 {
+		font-size: clamp(2rem, 3.4vw, 3.2rem);
+		max-width: 20ch;
+	}
+	.r8-section-heading > p,
+	.r8-library-lead > p {
+		font-size: 0.94rem;
+		line-height: 1.7;
+		color: var(--muted);
+		margin-bottom: 8px;
+	}
+	.r8-direction-buttons {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		border: 1px solid var(--line);
+		border-radius: 16px;
+		background: #10152b;
+		overflow: hidden;
+	}
+	.r8-direction-buttons button {
+		display: flex;
+		gap: 16px;
+		align-items: center;
+		text-align: left;
+		padding: 22px 24px;
+		min-height: 82px;
+		border: 0;
+		border-right: 1px solid var(--line);
+		background: transparent;
+		color: #b8c2da;
+		transition:
+			background 0.18s,
+			color 0.18s;
+	}
+	.r8-direction-buttons button:last-child {
+		border-right: 0;
+	}
+	.r8-direction-buttons button > span:first-child {
+		font-family: Orbitron, sans-serif;
+		font-size: 0.62rem;
+		color: #9eaeca;
+	}
+	.r8-direction-buttons strong {
+		font-family: Manrope, sans-serif;
+		font-size: 1.04rem;
+		font-weight: 600;
+		flex: 1;
+	}
+	.r8-direction-buttons button[aria-pressed='true'] {
+		color: var(--ink);
+		background: linear-gradient(115deg, #2c2554, #172f43);
+		box-shadow: inset 0 -2px var(--cyan);
+	}
+	.r8-direction-buttons button[aria-pressed='true'] > span {
+		color: var(--cyan);
+	}
+	.r8-direction-buttons button:focus-visible {
+		outline-offset: -5px;
+	}
+	.r8-direction-buttons button:hover {
+		background: #24213f;
+	}
+	.r8-direction-preview {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 40px;
+		align-items: center;
+		padding-top: 30px;
+		min-width: 0;
+	}
+	.r8-direction-image {
+		position: relative;
+		min-width: 0;
+	}
+	.r8-direction-image:before {
+		content: '';
+		position: absolute;
+		inset: 8% -3%;
+		background: radial-gradient(ellipse, #983cd52b, transparent 70%);
+		z-index: -1;
+	}
+	.r8-direction-image :global(picture) {
+		aspect-ratio: 1.6;
+		border-radius: 18px;
+		border: 1px solid #bd7aff55;
+		box-shadow:
+			0 0 35px #a63de01c,
+			0 0 22px #21d6d61a;
+	}
+	.r8-direction-image :global(figcaption) {
+		font-size: 0.64rem;
+		line-height: 1.5;
+		color: #a9b5cf;
+		margin-top: 10px;
+	}
+	.r8-direction-copy h3 {
+		font-size: clamp(1.6rem, 2.8vw, 2.7rem);
+		max-width: 22ch;
+		line-height: 1.15;
+	}
+	.r8-direction-copy > p:not(.eyebrow, .r8-pending) {
+		color: var(--muted);
+		font-size: 0.95rem;
+		line-height: 1.7;
+		max-width: 47ch;
+	}
+	.r8-direction-copy .button {
+		margin-top: 4px;
+		border-color: #7c81af;
+		background: #171c36;
+	}
+	.r8-pending {
+		font-size: 0.75rem;
+		line-height: 1.6;
+		color: #a9b5cf;
+		margin: 16px 0 0;
+		max-width: 58ch;
+	}
+	.r8-field-guide {
+		border-block: 1px solid #b797ff26;
+		background:
+			radial-gradient(ellipse at 80% 20%, #6530c324, transparent 60%),
+			linear-gradient(100deg, #10162bba, #111026bb);
+	}
+	.r8-prompt-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 18px;
+	}
+	.r8-prompt-pick {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		padding: 26px;
+		border: 1px solid var(--line);
+		border-radius: 18px;
+		background: linear-gradient(135deg, #1a2444b3, #11142b);
+		text-decoration: none;
+		transition:
+			transform 0.2s,
+			border-color 0.2s,
+			box-shadow 0.2s;
+		min-width: 0;
+	}
+	.r8-prompt-pick:nth-child(2) {
+		background: linear-gradient(135deg, #23374680, #11142b);
+	}
+	.r8-prompt-pick:nth-child(3) {
+		background: linear-gradient(135deg, #38214880, #11142b);
+	}
+	.r8-prompt-pick:hover {
+		transform: translateY(-3px);
+		border-color: #ad8cff;
+		box-shadow: 0 10px 34px #7844c51c;
+	}
+	.r8-pick-top {
+		display: flex;
+		gap: 16px;
+		justify-content: space-between;
+		align-items: start;
+		font-size: 0.66rem;
+		line-height: 1.5;
+		color: #bbb9d8;
+		margin-bottom: 22px;
+	}
+	.r8-pick-top > span:first-child {
+		font-family: Orbitron, sans-serif;
+		color: var(--cyan);
+	}
+	.r8-prompt-pick h3 {
+		font-size: 1.35rem;
+		line-height: 1.3;
+		letter-spacing: -0.035em;
+	}
+	.r8-prompt-pick p {
+		font-size: 0.87rem;
+		line-height: 1.7;
+		color: var(--muted);
+		margin-bottom: 24px;
+	}
+	.r8-pick-action {
+		display: flex;
+		justify-content: space-between;
+		gap: 14px;
+		margin-top: auto;
+		font-size: 0.8rem;
+		color: var(--cyan);
+	}
+	.r8-library-foot {
+		display: flex;
+		gap: 16px;
+		align-items: center;
+		flex-wrap: wrap;
+		padding-top: 24px;
+		font-size: 0.78rem;
+		color: #b5bed5;
+	}
+	.r8-library-foot > span {
+		color: var(--pink);
+		border: 1px solid #d27dce42;
+		border-radius: 5px;
+		padding: 3px 6px;
+		font-size: 0.64rem;
+	}
+	.r8-library-foot p {
+		margin: 0;
+		flex: 1;
+	}
+	.r8-library-foot a {
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		color: #ddd7f7;
+	}
+	.r8-people-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 48px;
+		align-items: center;
+	}
+	.r8-people-image {
+		position: relative;
+		min-width: 0;
+	}
+	.r8-people-image :global(picture) {
+		aspect-ratio: 1.1;
+		border: 1px solid #69d8dd50;
+		border-radius: 22px;
+		box-shadow: 0 0 50px #14b8cc1b;
+	}
+	.r8-people-image :global(img) {
+		object-position: 55% center;
+	}
+	.r8-people-image :global(figcaption) {
+		font-size: 0.64rem;
+		line-height: 1.5;
+		color: #a9b5cf;
+	}
+	.r8-image-stamp {
+		position: absolute;
+		bottom: 46px;
+		left: 24px;
+		font:
+			750 clamp(1rem, 2.4vw, 2rem)/1.08 Manrope,
+			sans-serif;
+		letter-spacing: -0.04em;
+		color: white;
+		text-shadow:
+			0 2px 14px #070b18,
+			0 0 22px #070b18;
+		background: linear-gradient(90deg, #11142bcc, transparent);
+		padding: 12px;
+	}
+	.r8-image-stamp em {
+		color: var(--cyan);
+		font-style: normal;
+	}
+	.r8-people-copy h2 {
+		font-size: clamp(2rem, 3.5vw, 3.5rem);
+		max-width: 16ch;
+	}
+	.r8-people-copy > p:not(.eyebrow, .r8-pending) {
+		color: var(--muted);
+		font-size: 0.97rem;
+		max-width: 47ch;
+	}
+	.r8-people-notes {
+		display: grid;
+		gap: 10px;
+		margin-block: 22px;
+		color: #d2c9ee;
+		font-size: 0.87rem;
+	}
+	.r8-people-notes > span:before {
+		content: '✦';
+		color: var(--pink);
+		margin-right: 12px;
+	}
+	.r8-people-copy .button-row {
+		gap: 20px;
+		margin-top: 16px;
+	}
+	.r8-join {
+		background: radial-gradient(ellipse at 20% 20%, #92368630, transparent 65%), #15152acc;
+		border-block: 1px solid #ab88d935;
+	}
+	.r8-join-grid {
+		display: grid;
+		grid-template-columns: 0.85fr 1.15fr;
+		gap: 40px;
+		align-items: start;
+	}
+	.r8-join h2 {
+		font-size: clamp(2rem, 3.6vw, 3.5rem);
+		max-width: 15ch;
+	}
+	.r8-join-grid > div > p:not(.eyebrow) {
+		color: var(--muted);
+	}
+	.r8-join :global(.intake-card) {
+		padding: 26px;
+		background: #11162ce6;
+		border-color: #b29be042;
+		box-shadow: 0 0 28px #74378415;
+	}
+	.r8-join :global(.intake-card h2) {
+		font-size: 1.55rem;
+		letter-spacing: -0.035em;
+		max-width: 25ch;
+	}
+	@media (min-width: 1700px) {
+		.r8-hero h1 {
+			font-size: 7rem;
+		}
+		.r8-hero {
+			min-height: 630px;
+		}
+	}
+	@media (max-width: 1100px) {
+		.r8-hero {
+			padding: 44px 30px 0;
+			min-height: 550px;
+		}
+		.r8-hero h1 {
+			font-size: 6.4vw;
+		}
+		.r8-hero-art {
+			left: 20%;
+		}
+		.r8-direction-buttons button {
+			padding: 18px 16px;
+			gap: 10px;
+		}
+		.r8-direction-buttons strong {
+			font-size: 0.92rem;
+		}
+		.r8-direction-preview,
+		.r8-people-grid {
+			gap: 28px;
+		}
+		.r8-people-copy .button-row {
+			gap: 12px;
+		}
+	}
+	@media (max-width: 760px) {
+		.r8-opening {
+			padding-top: 18px;
+		}
+		.r8-hero {
+			padding: 34px 26px 0;
+			min-height: 0;
+			border-radius: 22px;
+		}
+		.r8-hero h1 {
+			font-size: clamp(3rem, 8.7vw, 4.5rem);
+			max-width: 17ch;
+		}
+		.r8-hero-copy {
+			padding-bottom: 180px;
+			max-width: 100%;
+		}
+		.r8-hero-description {
+			max-width: 38ch;
+			font-size: 0.95rem;
+		}
+		.r8-hero-art {
+			inset: 0 0 0 10%;
+			mask-image: linear-gradient(180deg, transparent, #000 45%);
+		}
+		.r8-hero-art:after {
+			background:
+				linear-gradient(180deg, #0d1023f7 0%, #0d1023e8 35%, #0d10232b 75%, #0d1023 100%),
+				linear-gradient(90deg, #0d102390, transparent);
+		}
+		.r8-hero-art :global(img) {
+			object-position: 62% bottom;
+		}
+		.r8-hero-art :global(figcaption) {
+			bottom: 72px;
+			max-width: 30ch;
+			font-size: 0.6rem;
+		}
+		.r8-hero-footer {
+			font-size: 0.55rem;
+			gap: 12px;
+			flex-wrap: wrap;
+			justify-content: center;
+			padding-block: 14px;
+		}
+		.r8-hero-footer > span:first-child {
+			display: none;
+		}
+		.r8-hero-footer i {
+			margin-inline: 6px;
+		}
+		.r8-signature {
+			margin-top: 14px;
+		}
+		.r8-direction-buttons {
+			grid-template-columns: 1fr;
+		}
+		.r8-direction-buttons button {
+			min-height: 62px;
+			border-right: 0;
+			border-bottom: 1px solid var(--line);
+			padding: 14px 18px;
+		}
+		.r8-direction-buttons button:last-child {
+			border-bottom: 0;
+		}
+		.r8-direction-buttons strong {
+			font-size: 1rem;
+		}
+		.r8-direction-preview {
+			grid-template-columns: 1fr;
+			gap: 22px;
+		}
+		.r8-direction-image :global(picture) {
+			aspect-ratio: 1.7;
+		}
+		.r8-direction-copy h3 {
+			max-width: 26ch;
+			font-size: 1.9rem;
+		}
+		.r8-prompt-grid {
+			grid-template-columns: 1fr;
+		}
+		.r8-prompt-pick {
+			padding: 22px;
+		}
+		.r8-pick-top {
+			margin-bottom: 14px;
+		}
+		.r8-prompt-pick p {
+			margin-bottom: 20px;
+		}
+		.r8-people-grid {
+			grid-template-columns: 1fr;
+			gap: 26px;
+		}
+		.r8-people-image :global(picture) {
+			aspect-ratio: 1.4;
+		}
+		.r8-people-copy h2 {
+			max-width: 21ch;
+		}
+		.r8-join-grid {
+			grid-template-columns: 1fr;
+			gap: 20px;
+		}
+		.r8-join h2 {
+			max-width: 22ch;
+		}
+		.r8-library-foot {
+			gap: 12px;
+		}
+		.r8-library-foot p {
+			flex-basis: calc(100% - 90px);
+		}
+		.r8-library-foot a {
+			width: 100%;
+		}
+		.r8-image-stamp {
+			font-size: 1.65rem;
+		}
+	}
+	@media (max-width: 450px) {
+		.r8-hero {
+			padding: 28px 20px 0;
+		}
+		.r8-hero-copy .eyebrow {
+			flex-wrap: wrap;
+			gap: 8px;
+			font-size: 0.55rem;
+		}
+		.r8-hero-copy .eyebrow > span:first-child {
+			font-size: 0.55rem;
+		}
+		.r8-hero h1 {
+			font-size: clamp(2.7rem, 10vw, 3.8rem);
+			line-height: 1.05;
+			letter-spacing: -0.06em;
+		}
+		.r8-hero-copy .button-row {
+			gap: 8px;
+			align-items: flex-start;
+			flex-direction: column;
+			margin-top: 20px;
+		}
+		.r8-hero-copy {
+			padding-bottom: 165px;
+		}
+		.r8-hero-description {
+			font-size: 0.91rem;
+		}
+		.r8-hero-art {
+			left: 0;
+		}
+		.r8-hero-art :global(figcaption) {
+			right: 16px;
+			bottom: 70px;
+			max-width: 30ch;
+		}
+		.r8-hero-footer {
+			font-size: 0.5rem;
+		}
+		.r8-join :global(.intake-card) {
+			padding: 22px;
+		}
+		.r8-prompt-pick h3 {
+			font-size: 1.3rem;
+		}
+	}
+</style>

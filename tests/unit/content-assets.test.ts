@@ -32,8 +32,8 @@ const hash = (path: string) =>
 		.digest('hex');
 
 describe('content truth and shared records', () => {
-	test('keeps all five bilingual prompt templates complete', () => {
-		expect(prompts).toHaveLength(5);
+	test('keeps bilingual starter and workflow templates complete', () => {
+		expect(prompts).toHaveLength(37);
 		for (const prompt of prompts) {
 			expect(prompt.usefulFor.en.length).toBeGreaterThanOrEqual(40);
 			expect(prompt.usefulFor.es.length).toBeGreaterThanOrEqual(40);

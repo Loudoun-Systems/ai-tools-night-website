@@ -18,6 +18,7 @@ const routes = [
 	'/prompt-library/repetitive-workflow',
 	'/prompt-library/compare-with-evidence',
 	'/prompt-library/learn-by-doing',
+	'/prompt-library/decision-brief-with-evidence',
 	'/careers',
 	'/projects',
 	'/about',
@@ -111,17 +112,18 @@ test('concept art failure renders its fallback without inline-handler or console
 	const html = await response?.text();
 	expect(html).not.toMatch(/\son[a-z]+\s*=/i);
 	const fallbacks = page.getByText('Concept artwork unavailable', { exact: true });
-	await expect(fallbacks).toHaveCount(2); // The approved workshop artwork appears in two compositions.
+	await expect(fallbacks).toHaveCount(1);
 	for (const fallback of await fallbacks.all()) await expect(fallback).toBeVisible();
 	expect(browserErrors).toEqual([]);
 });
 
 test('prompt search, edit, copy and reset are real interactions', async ({ page }) => {
 	await page.goto('/prompt-library');
-	await page.getByLabel('Search prompts').fill('email');
-	await expect(page.getByRole('heading', { name: 'Write a clear email' })).toBeVisible();
-	await expect(page.getByRole('heading', { name: 'Turn notes into next steps' })).toHaveCount(0);
-	await page.getByRole('link', { name: 'Open detail' }).click();
+	await page.getByLabel('Search prompts').fill('Write a clear email');
+	await expect(
+		page.getByRole('heading', { name: 'Write a clear email', exact: true })
+	).toBeVisible();
+	await page.getByRole('link', { name: 'Open prompt: Write a clear email', exact: true }).click();
 	const editor = page.getByLabel('Editable prompt text');
 	await editor.fill('Synthetic edited prompt');
 	await page.getByRole('button', { name: 'Copy prompt' }).click();

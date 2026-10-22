@@ -62,7 +62,7 @@
 	{/if}
 	<figcaption>
 		{language.locale === 'en'
-			? 'AI-generated concept artwork — not a photograph of an actual WGN event, employee or venue.'
-			: 'Arte conceptual generado con IA — no es una foto de un evento, empleado o lugar real de WGN.'}
+			? 'WGN concept illustration · AI-generated'
+			: 'Ilustración conceptual de WGN · Generada con IA'}
 	</figcaption>
 </figure>

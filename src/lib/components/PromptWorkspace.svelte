@@ -8,6 +8,14 @@
 	const value = $derived(drafts[key] ?? prompt.prompt[language.locale]);
 	let copyState = $state<'idle' | 'copied' | 'failed'>('idle');
 	let editor = $state<HTMLTextAreaElement>();
+	const inputs = $derived(
+		prompt.inputs ?? [
+			{
+				en: 'Your task, relevant context and the constraints that matter.',
+				es: 'Tu tarea, el contexto relevante y las restricciones importantes.'
+			}
+		]
+	);
 	$effect(() => {
 		language.locale;
 		prompt.slug;
@@ -30,64 +38,48 @@
 </script>
 
 {#if compact}
-	<article class="prompt-card">
-		<p class="eyebrow">{prompt.category[language.locale]}</p>
+	<article class="lp-card prompt-card">
+		<p class="lp-kicker lp-kicker-dark">{prompt.category[language.locale]}</p>
 		<h2><a href={`/prompt-library/${prompt.slug}`}>{prompt.title[language.locale]}</a></h2>
 		<p>{prompt.usefulFor[language.locale]}</p>
-		<div
-			class="prompt-card-preview"
-			aria-label={language.locale === 'en' ? 'Template preview' : 'Vista de la plantilla'}
+		<a class="lp-card-open" href={`/prompt-library/${prompt.slug}`}
+			>{language.locale === 'en' ? 'Open detail' : 'Ver detalle'} ↗</a
 		>
-			{prompt.prompt[language.locale].split(String.fromCharCode(10))[0]}
-		</div>
-		<div class="prompt-card-actions">
-			<a class="text-link" href={`/prompt-library/${prompt.slug}`}
-				>{language.locale === 'en' ? 'Open detail' : 'Ver detalle'}
-				<span aria-hidden="true">↗</span></a
-			><button class="copy-small" type="button" onclick={copy}
-				>{copyState === 'copied'
-					? language.locale === 'en'
-						? 'Copied'
-						: 'Copiado'
-					: language.locale === 'en'
-						? 'Copy prompt'
-						: 'Copiar prompt'}</button
-			>
-		</div>
-		{#if copyState === 'failed'}<p role="alert" class="small">
-				{language.locale === 'en'
-					? 'Clipboard access was blocked. Open the template to select and copy the text manually.'
-					: 'El portapapeles está bloqueado. Abre la plantilla para seleccionar y copiar el texto.'}
-			</p>{/if}
 	</article>
 {:else}
-	<article class="prompt-workspace">
-		<div class="workspace-editor">
-			<div class="workspace-toolbar">
-				<span>{language.locale === 'en' ? 'YOUR WORKING COPY' : 'TU BORRADOR'}</span><span
-					>{language.locale.toUpperCase()} · {language.locale === 'en'
-						? 'EDITABLE'
-						: 'EDITABLE'}</span
+	<article class="lp-workspace prompt-workspace">
+		<div class="lp-editor workspace-editor">
+			<div class="lp-editor-top">
+				<div>
+					<p class="lp-kicker lp-kicker-dark">
+						{language.locale === 'en' ? 'MAKE IT YOUR OWN' : 'HAZLO TUYO'}
+					</p>
+					<h2>{language.locale === 'en' ? 'Your working copy.' : 'Tu borrador de trabajo.'}</h2>
+				</div>
+				<span class="lp-editor-language"
+					>{language.locale.toUpperCase()} <span aria-hidden="true">↙</span></span
 				>
 			</div>
-			<label
-				><span class="sr-only"
+			<p class="lp-editor-description">
+				{language.locale === 'en'
+					? 'Replace the bracketed inputs, adjust the brief, then copy it into the AI tool you use. Your edits stay here while this page is open.'
+					: 'Reemplaza los datos entre corchetes, ajusta las instrucciones y copia el texto en tu herramienta de IA. Tus cambios se conservan aquí mientras esta página está abierta.'}
+			</p>
+			<label class="lp-editor-label"
+				><span
 					>{language.locale === 'en' ? 'Editable prompt text' : 'Texto editable del prompt'}</span
 				><textarea
 					bind:this={editor}
 					{value}
-					oninput={(e) => {
-						drafts[key] = e.currentTarget.value;
+					oninput={(event) => {
+						drafts[key] = event.currentTarget.value;
 						copyState = 'idle';
 					}}
-					aria-label={language.locale === 'en'
-						? 'Editable prompt text'
-						: 'Texto editable del prompt'}
 					spellcheck="false"
 				></textarea></label
 			>
-			<div class="workspace-actions">
-				<button class="button dark-button" type="button" onclick={copy}
+			<div class="lp-editor-actions">
+				<button class="lp-action" type="button" onclick={copy}
 					>{copyState === 'copied'
 						? language.locale === 'en'
 							? 'Copied'
@@ -95,9 +87,9 @@
 						: language.locale === 'en'
 							? 'Copy prompt'
 							: 'Copiar prompt'} <span aria-hidden="true">↗</span></button
-				><button class="reset-button" type="button" onclick={reset}
+				><button class="lp-reset" type="button" onclick={reset}
 					>{language.locale === 'en' ? 'Reset' : 'Restablecer'}</button
-				><span class="copy-status" role="status"
+				><span class="lp-copy-status" role="status"
 					>{copyState === 'copied'
 						? language.locale === 'en'
 							? 'Prompt copied.'
@@ -107,47 +99,61 @@
 							: 'No se envía a un modelo.'}</span
 				>
 			</div>
-			{#if copyState === 'failed'}<p class="notice error" role="alert">
+			{#if copyState === 'failed'}<p class="lp-copy-error" role="alert">
 					{language.locale === 'en'
-						? 'Clipboard access was blocked. Select the text and copy it manually.'
-						: 'El acceso al portapapeles fue bloqueado. Selecciona el texto y cópialo manualmente.'}
+						? 'Clipboard access was blocked. The text is selected; copy it manually with your keyboard or device menu.'
+						: 'El portapapeles está bloqueado. El texto está seleccionado; cópialo con el teclado o el menú del dispositivo.'}
 				</p>{/if}
 		</div>
-		<aside class="workspace-guide">
-			<p class="eyebrow">{language.locale === 'en' ? 'MAKE IT USEFUL' : 'HAZLO ÚTIL'}</p>
-			<h2>
-				{language.locale === 'en'
-					? 'Your context makes the difference.'
-					: 'Tu contexto hace la diferencia.'}
-			</h2>
-			<ol>
-				<li>
-					{language.locale === 'en'
-						? 'Replace the bracketed placeholders with your task.'
-						: 'Reemplaza los corchetes con los datos de tu tarea.'}
-				</li>
-				<li>
-					{language.locale === 'en'
-						? 'Use sample or redacted information. Leave private data out.'
-						: 'Usa ejemplos o información sin datos privados.'}
-				</li>
-				<li>
-					{language.locale === 'en'
-						? 'Review the result before you rely on it.'
-						: 'Revisa el resultado antes de utilizarlo.'}
-				</li>
-			</ol>
-			<p class="small muted">
-				{language.locale === 'en'
-					? 'This editor only prepares text in your browser. It does not send a prompt or call an AI model.'
-					: 'Este editor solo prepara texto en tu navegador. No envía el prompt ni consulta ningún modelo de IA.'}
-			</p>
-			<details class="workspace-example">
+		<aside class="lp-guide workspace-guide">
+			<div class="lp-guide-block">
+				<p class="lp-kicker lp-kicker-dark">
+					{language.locale === 'en' ? 'THE INTENDED RESULT' : 'EL RESULTADO BUSCADO'}
+				</p>
+				<h2>
+					{prompt.outcome?.[language.locale] ??
+						(language.locale === 'en'
+							? 'A useful result begins with useful context.'
+							: 'Un resultado útil empieza con buen contexto.')}
+				</h2>
+			</div>
+			<div class="lp-guide-block">
+				<h3>{language.locale === 'en' ? 'Have these ready' : 'Ten esto a mano'}</h3>
+				<ul class="lp-input-list">
+					{#each inputs as input}<li>{input[language.locale]}</li>{/each}
+				</ul>
+			</div>
+			<div class="lp-guide-block">
+				<h3>
+					{language.locale === 'en' ? 'Before you use the output' : 'Antes de usar el resultado'}
+				</h3>
+				<ol class="lp-check-list">
+					<li>
+						{language.locale === 'en'
+							? 'Compare it with your original task and constraints.'
+							: 'Compáralo con tu tarea y tus restricciones.'}
+					</li>
+					<li>
+						{language.locale === 'en'
+							? 'Check sources, assumptions and any missing information.'
+							: 'Revisa las fuentes, los supuestos y la información que falta.'}
+					</li>
+					<li>
+						{language.locale === 'en'
+							? 'Keep decisions and final approval with a person.'
+							: 'Mantén las decisiones y la aprobación final en manos de una persona.'}
+					</li>
+				</ol>
+			</div>
+			<details class="lp-example workspace-example">
 				<summary>{language.locale === 'en' ? 'Synthetic example' : 'Ejemplo ficticio'}</summary>
 				<p>{prompt.example[language.locale]}</p>
 			</details>
-			<p class="workspace-provenance">
-				{prompt.reviewStatus[language.locale]}<br />{prompt.reviewedAt}
+			<p class="lp-provenance">
+				{prompt.reviewStatus[language.locale]}<br />{prompt.reviewedAt}<br />{language.locale ===
+				'en'
+					? 'No model call or submission happens here.'
+					: 'Aquí no se consulta un modelo ni se envían datos.'}
 			</p>
 		</aside>
 	</article>
