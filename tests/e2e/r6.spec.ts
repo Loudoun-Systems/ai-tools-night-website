@@ -70,7 +70,7 @@ test('decorative motion suspends on visibility events and resumes without a time
 	await expect(page.locator('html')).not.toHaveAttribute('data-ambient-paused', '');
 });
 
-test('R7 identity separates readable display type from brand accents and keeps availability honest', async ({
+test('R8 identity uses readable display and body type and keeps availability honest', async ({
 	page
 }) => {
 	const calls: string[] = [];
@@ -80,11 +80,13 @@ test('R7 identity separates readable display type from brand accents and keeps a
 	await page.goto('/');
 	await page.evaluate(() => document.fonts.ready);
 	await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-		/A curious mind\.\s*A useful next step\./
+		/Good ideas\.\s*Better together\./
 	);
-	await expect(page.locator('.r7-opening')).toBeVisible();
-	await expect(page.locator('.r7-scene-main img')).toBeVisible();
-	await expect(page.locator('.r7-scene-main')).toHaveAttribute('href', '/workshops');
+	await expect(page.locator('.r8-opening')).toBeVisible();
+	await expect(page.locator('.r8-hero-art img')).toBeVisible();
+	await expect(
+		page.locator('.r8-hero-copy').getByRole('link', { name: 'Explore workshops', exact: true })
+	).toHaveAttribute('href', '/workshops');
 	if (await page.locator('.stage-banner').count()) {
 		expect(
 			await page.locator('.stage-banner').evaluate((e) => {
@@ -98,21 +100,78 @@ test('R7 identity separates readable display type from brand accents and keeps a
 	const displayFont = await page.locator('h1').evaluate((e) => getComputedStyle(e).fontFamily);
 	expect(displayFont).toContain('Manrope');
 	expect(displayFont).not.toContain('Orbitron');
-	expect(
-		await page
-			.locator('.r7-opening .eyebrow > span')
-			.first()
-			.evaluate((e) => getComputedStyle(e).fontFamily)
-	).toContain('Orbitron');
+	expect(await page.locator('body').evaluate((e) => getComputedStyle(e).fontFamily)).toContain(
+		'Inter'
+	);
 	expect(
 		await page.evaluate(
 			() => document.fonts.check('16px Manrope') && document.fonts.check('16px Inter')
 		)
 	).toBe(true);
-	await expect(page.locator('.hero-media')).toHaveCount(0);
 	await expect(page.locator('.chat-launcher')).toHaveCount(0);
 	await expect(page.locator('input[name="email"]')).toHaveCount(0);
 	expect(calls).toEqual([]);
+});
+
+test('homepage direction choices work with keyboard, translate and preserve honest destinations', async ({
+	page
+}) => {
+	const providerCalls: string[] = [];
+	page.on('request', (request) => {
+		if (/\/api\//.test(request.url())) providerCalls.push(request.url());
+	});
+	await page.goto('/');
+	const choices = page.getByRole('group', { name: 'Choose your direction', exact: true });
+	const preview = page.locator('#direction-preview');
+	const workshops = choices.locator('#direction-workshops');
+	const events = choices.locator('#direction-events');
+	const promptChoice = choices.locator('#direction-prompts');
+	await expect(choices.getByRole('button')).toHaveCount(3);
+	await expect(choices.locator('[aria-pressed="true"]')).toHaveCount(1);
+	await expect(workshops).toHaveAttribute('aria-pressed', 'true');
+	await expect(preview).toHaveAttribute('aria-labelledby', 'direction-workshops');
+	await expect(preview.getByRole('link')).toHaveAttribute('href', '/workshops');
+	await expect(preview).toContainText('Dates and pricing are pending. Registration is not open.');
+
+	await events.focus();
+	await page.keyboard.press('Enter');
+	await expect(events).toBeFocused();
+	await expect(events).toHaveAttribute('aria-pressed', 'true');
+	await expect(workshops).toHaveAttribute('aria-pressed', 'false');
+	await expect(choices.locator('[aria-pressed="true"]')).toHaveCount(1);
+	await expect(preview).toHaveAttribute('aria-labelledby', 'direction-events');
+	await expect(preview.getByRole('link')).toHaveAttribute('href', '/events');
+	await expect(preview.getByRole('heading', { level: 3 })).toHaveText(
+		'One good conversation can change what you try next.'
+	);
+	await expect(preview).toContainText('The next meetup date has not been announced.');
+
+	await promptChoice.click();
+	await expect(promptChoice).toHaveAttribute('aria-pressed', 'true');
+	await expect(choices.locator('[aria-pressed="true"]')).toHaveCount(1);
+	await expect(preview.getByRole('link')).toHaveAttribute('href', '/prompt-library');
+	await expect(preview).toContainText(`${prompts.length} editable templates. English + Spanish.`);
+	await page.getByRole('button', { name: 'Cambiar a español', exact: true }).click();
+	const spanishChoices = page.getByRole('group', { name: 'Elige tu camino', exact: true });
+	await expect(spanishChoices.locator('#direction-prompts')).toContainText(
+		'Prueba un mejor prompt'
+	);
+	await expect(preview).toContainText(`${prompts.length} plantillas editables. Inglés + español.`);
+	await expect(preview.getByRole('link')).toHaveText(/Abre la guía práctica de prompts/);
+	await spanishChoices.locator('#direction-workshops').focus();
+	await page.keyboard.press('Space');
+	await expect(spanishChoices.locator('#direction-workshops')).toHaveAttribute(
+		'aria-pressed',
+		'true'
+	);
+	await expect(spanishChoices.locator('[aria-pressed="true"]')).toHaveCount(1);
+	await expect(preview).toHaveAttribute('aria-labelledby', 'direction-workshops');
+	await expect(preview.getByRole('link')).toHaveAttribute('href', '/workshops');
+	await expect(preview).toContainText(
+		'Fechas y precios pendientes. Las inscripciones no están abiertas.'
+	);
+	expect(new URL(page.url()).pathname).toBe('/');
+	expect(providerCalls).toEqual([]);
 });
 
 test('desktop disclosure and native mobile drawer work with keyboard and return focus', async ({
@@ -407,7 +466,7 @@ test('language controls survive denied optional localStorage access', async ({ p
 	expect(errors).toEqual([]);
 });
 
-test('R7 opening renders a truthful CSP-safe fallback for corrupt cached artwork', async ({
+test('R8 opening renders a truthful CSP-safe fallback for corrupt cached artwork', async ({
 	page
 }) => {
 	const errors: string[] = [];
@@ -415,15 +474,15 @@ test('R7 opening renders a truthful CSP-safe fallback for corrupt cached artwork
 		if (m.type() === 'error') errors.push(m.text());
 	});
 	page.on('pageerror', (e) => errors.push(e.message));
-	await page.route(`**/assets/**/${images.workshops.base}*`, (route) =>
+	await page.route(`**/assets/**/${images.events.base}*`, (route) =>
 		route.fulfill({ status: 200, contentType: 'image/webp', body: 'not-an-image' })
 	);
 	const response = await page.goto('/');
 	expect(await response!.text()).not.toMatch(/\son[a-z]+\s*=/i);
 	await expect(
-		page.locator('.r7-scene-main').getByRole('img', { name: images.workshops.alt.en, exact: true })
+		page.locator('.r8-hero-art').getByRole('img', { name: images.events.alt.en, exact: true })
 	).toBeVisible();
-	await expect(page.locator('.r7-scene-main .image-fallback')).toContainText(
+	await expect(page.locator('.r8-hero-art .image-fallback')).toContainText(
 		'Concept artwork unavailable'
 	);
 	expect(errors).toEqual([]);

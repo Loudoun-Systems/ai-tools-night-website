@@ -21,20 +21,21 @@
 }
 :root {
 	font-family: Inter, Arial, sans-serif;
-	color: #f5f4fa;
-	background: #090f1e;
+	color: #f5f6ff;
+	background: #080b18;
 	font-synthesis: none;
 	color-scheme: dark;
-	--ink: #f5f4fa;
-	--paper: #f4f1e9;
-	--paper-alt: #eae6df;
-	--surface: #12192b;
-	--surface-raised: #192239;
-	--line: rgba(188, 200, 230, 0.18);
-	--muted: #a8b3ca;
-	--cyan: #8ce8df;
+	--ink: #f5f6ff;
+	--paper: #11172d;
+	--paper-alt: #191932;
+	--surface: #11172d;
+	--surface-raised: #1a213c;
+	--line: rgba(149, 170, 255, 0.22);
+	--muted: #b3bed6;
+	--cyan: #66eee5;
+	--pink: #ff83d4;
 	--blue: #8bbef3;
-	--violet: #c2b3ff;
+	--violet: #bca0ff;
 	--success: #9bdfb4;
 	--danger: #ffb7bb;
 	--font-display: Manrope, Arial, sans-serif;
@@ -48,8 +49,8 @@ html {
 body {
 	margin: 0;
 	min-width: 320px;
-	font-size: 17px;
-	line-height: 1.7;
+	font-size: 16px;
+	line-height: 1.65;
 	background: transparent;
 }
 button,
@@ -129,18 +130,8 @@ a svg {
 	outline: 3px solid var(--focus-ring, var(--cyan));
 	outline-offset: 5px;
 }
-:is(
-	.r7-workshop-chapter,
-	.r7-final-invitation,
-	.ws-practice,
-	.route-project-ideas,
-	.route-paths,
-	.route-about-statement
-) {
-	--focus-ring: #173e43;
-}
 .shell {
-	width: min(1440px, calc(100% - 112px));
+	width: min(1320px, calc(100% - 96px));
 	margin-inline: auto;
 }
 .sr-only {
@@ -178,7 +169,7 @@ small {
 	display: flex;
 	align-items: center;
 	gap: 12px;
-	margin-bottom: 24px;
+	margin-bottom: 16px;
 	font-size: 0.71rem;
 	line-height: 1.6;
 	font-weight: 650;
@@ -212,18 +203,21 @@ small {
 .site-header {
 	position: relative;
 	z-index: 50;
-	padding: 24px 0 0;
+	padding: 18px 0 0;
 }
 .header-inner {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 	gap: 24px;
-	min-height: 82px;
+	min-height: 72px;
 	padding: 10px 26px;
 	border: 1px solid var(--line);
-	border-radius: 22px;
-	background: rgba(12, 19, 34, 0.88);
+	border-radius: 18px;
+	background: rgba(11, 15, 34, 0.9);
+	box-shadow:
+		0 12px 50px #04040e55,
+		inset 0 1px #a7b5ff0d;
 	backdrop-filter: blur(20px);
 }
 .brand {
@@ -377,9 +371,12 @@ small {
 	transform: translate(2px, -2px);
 }
 .button.primary {
-	background: var(--cyan);
+	background: linear-gradient(110deg, #66eee5, #b0fff1);
 	border-color: var(--cyan);
 	color: #092b30;
+	box-shadow:
+		0 0 24px #4edfd024,
+		inset 0 1px #e1fff9;
 }
 .button.primary:hover {
 	background: #b6f3ec;
@@ -493,10 +490,10 @@ small {
 	margin-top: 12px;
 }
 .chapter {
-	padding-block: clamp(76px, 9vw, 148px);
+	padding-block: clamp(48px, 5.5vw, 76px);
 }
 .section {
-	padding-block: clamp(60px, 7vw, 112px);
+	padding-block: clamp(42px, 5vw, 68px);
 }
 .chapter.alt {
 	background: #131c30;
@@ -509,8 +506,8 @@ small {
 	display: grid;
 	grid-template-columns: 1.25fr 0.75fr;
 	align-items: end;
-	gap: 80px;
-	margin-bottom: 52px;
+	gap: 40px;
+	margin-bottom: 30px;
 }
 .section-header h2 {
 	max-width: 22ch;
@@ -524,7 +521,7 @@ small {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	align-items: center;
-	gap: clamp(40px, 7vw, 110px);
+	gap: clamp(28px, 4vw, 56px);
 }
 .editorial-copy h2 {
 	max-width: 18ch;
@@ -533,17 +530,17 @@ small {
 	color: var(--muted);
 }
 .page-intro {
-	padding: 100px 0 68px;
+	padding: 56px 0 36px;
 	position: relative;
 }
 .page-intro > .shell {
 	border-bottom: 1px solid var(--line);
-	padding-bottom: 56px;
+	padding-bottom: 30px;
 }
 .page-intro-inner {
 	display: grid;
 	grid-template-columns: 1.3fr 0.7fr;
-	gap: 80px;
+	gap: 40px;
 	align-items: end;
 }
 .page-intro h1 {
@@ -625,14 +622,14 @@ small {
 .site-footer {
 	position: relative;
 	z-index: 1;
-	padding: 64px 0 0;
-	background: #070d1a;
+	padding: 36px 0 0;
+	background: linear-gradient(180deg, #0a0f24d9, #080b18);
 }
 .footer-grid {
 	display: grid;
 	grid-template-columns: 1.4fr 1fr 1fr;
-	gap: 80px;
-	padding: 64px 0;
+	gap: 40px;
+	padding: 32px 0;
 }
 .footer-brand p {
 	font-size: 0.9rem;
@@ -666,10 +663,10 @@ small {
 	align-items: center;
 	justify-content: space-between;
 	gap: 40px;
-	padding: 16px 0 52px;
+	padding: 10px 0 28px;
 	border-bottom: 1px solid var(--line);
 	font:
-		550 clamp(2rem, 5.5vw, 5rem)/1.1 Manrope,
+		550 clamp(1.8rem, 4vw, 3.5rem)/1.1 Manrope,
 		sans-serif;
 	letter-spacing: -0.05em;
 	text-decoration: none;
@@ -677,8 +674,8 @@ small {
 .footer-statement > span:last-child {
 	display: grid;
 	place-items: center;
-	width: 88px;
-	height: 88px;
+	width: 64px;
+	height: 64px;
 	border-radius: 50%;
 	border: 1px solid var(--line);
 	color: var(--cyan);
@@ -967,15 +964,15 @@ fieldset {
 	z-index: -1;
 	pointer-events: none;
 	overflow: hidden;
-	background: radial-gradient(ellipse at 50% 0%, #28315355, transparent 65%), #090f1e;
+	background: radial-gradient(ellipse at 50% 0%, #24204e80, transparent 65%), #080b18;
 }
 .atmosphere-grid {
 	position: absolute;
 	inset: 0;
 	background-image:
-		linear-gradient(#8da6dd08 1px, transparent 1px),
-		linear-gradient(90deg, #8da6dd08 1px, transparent 1px);
-	background-size: 96px 96px;
+		linear-gradient(#8da6dd0c 1px, transparent 1px),
+		linear-gradient(90deg, #8da6dd0c 1px, transparent 1px);
+	background-size: 72px 72px;
 	mask-image: radial-gradient(ellipse at 50% 40%, #000, transparent 70%);
 }
 .atmosphere-stars {
@@ -999,20 +996,20 @@ fieldset {
 	animation: aurora-drift 24s ease-in-out infinite alternate;
 }
 .aurora-cyan {
-	top: 12%;
-	left: 4%;
-	background: radial-gradient(ellipse, #2caaa315, transparent 70%);
+	top: 20%;
+	left: 0;
+	background: radial-gradient(ellipse, #00d8cf29, transparent 68%);
 }
 .aurora-violet {
-	top: 7%;
-	right: 3%;
-	background: radial-gradient(ellipse, #7862b52b, transparent 70%);
+	top: 0;
+	right: 0;
+	background: radial-gradient(ellipse, #8b47ff38, transparent 68%);
 	animation-delay: -12s;
 }
 .aurora-pink {
 	bottom: 0;
 	left: 20%;
-	background: radial-gradient(ellipse, #714e9414, transparent 70%);
+	background: radial-gradient(ellipse, #ef39b82b, transparent 68%);
 	animation-delay: -18s;
 }
 .orbital-system {
@@ -1054,7 +1051,7 @@ fieldset {
 .atmosphere-horizon {
 	position: absolute;
 	inset: 0;
-	background: linear-gradient(0deg, #090f1e90, transparent 80%);
+	background: linear-gradient(0deg, #080b1870, transparent 80%);
 }
 .motion-control {
 	position: fixed;
@@ -1266,7 +1263,7 @@ fieldset {
 		gap: 40px;
 	}
 	.page-intro {
-		padding-top: 76px;
+		padding-top: 48px;
 	}
 	.split {
 		gap: 40px;
@@ -1308,7 +1305,7 @@ fieldset {
 		font-size: 0.72rem;
 	}
 	.chapter {
-		padding-block: 68px;
+		padding-block: 48px;
 	}
 	.section {
 		padding-block: 52px;
@@ -1322,7 +1319,7 @@ fieldset {
 		margin-bottom: 36px;
 	}
 	.page-intro {
-		padding: 60px 0 32px;
+		padding: 40px 0 24px;
 	}
 	.page-intro > .shell {
 		padding-bottom: 36px;

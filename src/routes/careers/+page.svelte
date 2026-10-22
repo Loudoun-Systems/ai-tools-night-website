@@ -212,10 +212,14 @@
 </section>
 
 <style>
+	section.chapter {
+		padding-block: 56px;
+	}
+
 	.route-careers-hero {
 		display: grid;
 		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-		gap: clamp(2.5rem, 7vw, 7rem);
+		gap: clamp(24px, 3vw, 36px);
 		align-items: center;
 	}
 	.route-careers-hero h1 {
@@ -229,25 +233,29 @@
 		align-self: end;
 	}
 	.route-careers-caption {
-		font-size: 0.9rem;
-		max-width: 32ch;
-		margin: 1.25rem 0 0 auto;
+		font-size: 0.85rem;
+		max-width: 38ch;
+		margin: 14px 0 0;
 		color: var(--muted);
 	}
 	.route-paths {
-		background: #f4f1e9;
-		color: #172033;
+		--focus-ring: var(--cyan);
+		background:
+			radial-gradient(ellipse at 0 20%, #7045af26, transparent 60%),
+			linear-gradient(135deg, #11172d, #101728);
+		color: var(--ink);
+		border-block: 1px solid var(--line);
 	}
 	.route-paths :global(.eyebrow) {
-		color: #596174;
+		color: var(--pink, #ff83d4);
 	}
 	.route-paths :global(.text-link) {
-		color: #253346;
+		color: var(--cyan);
 	}
 	.route-paths-layout {
 		display: grid;
 		grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.65fr);
-		gap: clamp(2rem, 6vw, 7rem);
+		gap: clamp(24px, 3vw, 36px);
 		align-items: start;
 	}
 	.route-paths-intro {
@@ -259,17 +267,17 @@
 		margin: 1rem 0 1.5rem;
 	}
 	.route-paths-intro :global(.muted) {
-		color: #596174;
+		color: var(--muted);
 	}
 	.route-paths-intro .text-link {
 		margin-top: 1.5rem;
 	}
 	.route-track {
-		border-bottom: 1px solid #cecac3;
-		padding: 1.5rem 0;
+		border-bottom: 1px solid var(--line);
+		padding: 22px 0;
 	}
 	.route-track:first-child {
-		border-top: 1px solid #cecac3;
+		border-top: 1px solid var(--line);
 	}
 	.route-track summary {
 		display: grid;
@@ -290,7 +298,7 @@
 	.route-track-number {
 		font-size: 0.75rem;
 		letter-spacing: 0.08em;
-		color: #596174;
+		color: var(--violet);
 	}
 	.route-track-plus {
 		font-size: 1.7rem;
@@ -302,7 +310,7 @@
 		transform: rotate(45deg);
 	}
 	.route-track-body {
-		padding: 1.75rem 0 0.5rem 3rem;
+		padding: 22px 0 4px 40px;
 	}
 	.route-track-overview {
 		font-size: 1.05rem;
@@ -311,8 +319,8 @@
 	.route-track-columns {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 2rem;
-		margin: 1.75rem 0;
+		gap: 24px;
+		margin: 22px 0;
 	}
 	.route-track-columns h3 {
 		font-size: 0.85rem;
@@ -322,12 +330,13 @@
 	}
 	.route-track-columns p {
 		font-size: 0.9rem;
-		color: #596174;
+		color: var(--muted);
 	}
 	.route-starter {
-		padding: 1.5rem;
-		background: #e8e3d9;
-		border-radius: 1rem;
+		padding: 20px;
+		background: linear-gradient(120deg, #7a3e992b, #17354d40);
+		border: 1px solid #b981ff3b;
+		border-radius: 14px;
 	}
 	.route-starter > p:not(.eyebrow) {
 		font-size: 0.95rem;
@@ -335,11 +344,12 @@
 	}
 	.route-starter-question {
 		font-weight: 600;
+		color: #f1e4ff;
 	}
 	.route-careers-next {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: clamp(2rem, 7vw, 8rem);
+		gap: clamp(24px, 3vw, 40px);
 	}
 	.route-careers-next h2 {
 		max-width: 12ch;
@@ -404,6 +414,21 @@
 	@media (prefers-reduced-motion: reduce) {
 		.route-track-plus {
 			transition: none;
+		}
+	}
+
+	.route-careers-art :global(.concept-art) {
+		margin: 0;
+	}
+
+	.route-careers-art :global(.concept-art picture) {
+		border: 1px solid #ac78ff70;
+		box-shadow: 0 0 76px -30px #a22bd565;
+	}
+
+	@media (max-width: 650px) {
+		section.chapter {
+			padding-block: 40px;
 		}
 	}
 </style>

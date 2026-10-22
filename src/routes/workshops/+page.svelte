@@ -200,14 +200,14 @@
 
 <style>
 	.ws-opening {
-		padding: 90px 0 48px;
+		padding: 44px 0 40px;
 	}
 	.ws-topline {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 24px;
-		margin-bottom: 42px;
+		margin-bottom: 26px;
 	}
 	.ws-topline .eyebrow {
 		margin: 0;
@@ -232,11 +232,11 @@
 		display: grid;
 		grid-template-columns: 1.2fr 0.8fr;
 		align-items: end;
-		gap: 100px;
-		margin-bottom: 54px;
+		gap: 44px;
+		margin-bottom: 30px;
 	}
 	.ws-heading h1 {
-		font-size: clamp(3rem, 5.8vw, 6.2rem);
+		font-size: clamp(2.7rem, 5vw, 5.1rem);
 		max-width: 13ch;
 		margin: 0;
 		letter-spacing: -0.055em;
@@ -249,8 +249,12 @@
 		position: relative;
 	}
 	.ws-visual :global(.concept-art picture) {
-		aspect-ratio: 2.8;
+		aspect-ratio: 3;
 		border-radius: 24px;
+		border: 1px solid #bc77ff60;
+		box-shadow:
+			0 0 50px #8e32d52b,
+			0 0 28px #26c6e521;
 	}
 	.ws-visual :global(.concept-art img) {
 		object-position: center 47%;
@@ -262,11 +266,13 @@
 		position: absolute;
 		right: 36px;
 		top: 36px;
-		background: #f4f1e9;
-		color: #19243b;
+		background: linear-gradient(135deg, #252044ee, #0f273cee);
+		color: #f2edff;
+		border: 1px solid #c59aff70;
+		backdrop-filter: blur(14px);
 		border-radius: 16px;
-		padding: 22px 26px;
-		transform: rotate(3deg);
+		padding: 18px 22px;
+		transform: rotate(2deg);
 		box-shadow: 0 10px 30px #060a1f40;
 	}
 	.ws-art-note > span {
@@ -292,23 +298,24 @@
 		border-top: 1px solid var(--line);
 	}
 	.ws-practice {
-		background: #f4f1e9;
-		color: #172238;
+		background: radial-gradient(ellipse at 25% 20%, #75279b22, transparent 65%), #12162bcc;
+		color: var(--ink);
+		border-block: 1px solid #d09aff28;
 	}
 	.ws-practice .eyebrow {
-		color: #50697e;
+		color: var(--pink);
 	}
 	.ws-practice .section-header > p {
-		color: #626b79;
+		color: var(--muted);
 	}
 	.ws-practice-list {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		gap: 48px;
-		margin-top: 64px;
+		gap: 28px;
+		margin-top: 32px;
 	}
 	.ws-practice-list article {
-		border-top: 1px solid #d1d3d4;
+		border-top: 1px solid #c08aff55;
 		padding-top: 26px;
 	}
 	.ws-number {
@@ -316,8 +323,8 @@
 		font:
 			0.7rem Orbitron,
 			sans-serif;
-		color: #586c7e;
-		margin-bottom: 44px;
+		color: var(--cyan);
+		margin-bottom: 24px;
 	}
 	.ws-practice-list h3 {
 		font-size: 1.5rem;
@@ -326,15 +333,15 @@
 	}
 	.ws-practice-list p {
 		font-size: 0.95rem;
-		color: #626b79;
+		color: var(--muted);
 	}
 	.ws-how {
-		background: #111c30;
+		background: radial-gradient(ellipse at 95% 30%, #0b9daf21, transparent 65%), #10152bb3;
 	}
 	.ws-how-grid {
 		display: grid;
 		grid-template-columns: 1fr 0.8fr;
-		gap: 150px;
+		gap: 52px;
 		align-items: start;
 	}
 	.ws-how-grid h2 {
@@ -354,7 +361,7 @@
 		grid-template-columns: 32px 1fr;
 		gap: 24px;
 		border-top: 1px solid var(--line);
-		padding: 28px 0;
+		padding: 22px 0;
 	}
 	.ws-flow li > span {
 		font-size: 0.74rem;
@@ -378,14 +385,15 @@
 	.ws-details-grid {
 		display: grid;
 		grid-template-columns: 0.75fr 1.25fr;
-		gap: 120px;
+		gap: 44px;
 		align-items: start;
 	}
 	.planning-note {
-		padding: 36px;
+		padding: 28px;
 		border: 1px solid var(--line);
 		border-radius: 24px;
-		background: #172037;
+		background: linear-gradient(145deg, #292044bb, #11182e);
+		box-shadow: 0 0 40px #852fcc16;
 	}
 	.planning-note h2 {
 		font-size: 2rem;
@@ -427,10 +435,10 @@
 			gap: 50px;
 		}
 		.ws-how-grid {
-			gap: 70px;
+			gap: 36px;
 		}
 		.ws-details-grid {
-			gap: 60px;
+			gap: 32px;
 		}
 		.ws-practice-list {
 			gap: 32px;
@@ -438,7 +446,7 @@
 	}
 	@media (max-width: 760px) {
 		.ws-opening {
-			padding-top: 60px;
+			padding-top: 36px;
 		}
 		.ws-topline {
 			align-items: start;

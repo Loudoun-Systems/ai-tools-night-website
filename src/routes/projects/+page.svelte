@@ -222,10 +222,14 @@
 </section>
 
 <style>
+	section.chapter {
+		padding-block: 56px;
+	}
+
 	.route-project-feature-grid {
 		display: grid;
 		grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-		gap: clamp(2rem, 6vw, 6rem);
+		gap: clamp(24px, 3vw, 36px);
 		align-items: center;
 	}
 	.route-project-feature-grid h2 {
@@ -236,51 +240,60 @@
 		margin-top: 1.5rem;
 	}
 	.route-project-ideas {
-		background: #f4f1e9;
-		color: #172033;
+		--focus-ring: var(--cyan);
+		background:
+			radial-gradient(ellipse at 95% 0%, #1db2be22, transparent 60%),
+			linear-gradient(130deg, #11172d, #15142c);
+		color: var(--ink);
+		border-block: 1px solid var(--line);
 	}
 	.route-project-ideas :global(.eyebrow),
 	.route-project-ideas :global(.section-header > p) {
-		color: #596174;
+		color: var(--muted);
 	}
 	.route-project-ideas :global(.text-link) {
-		color: #172033;
+		color: var(--ink);
 	}
 	.route-idea-list {
-		margin-top: 3rem;
-		border-top: 1px solid #cfcbc5;
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 24px;
+		margin-top: 28px;
 	}
 	.route-idea {
-		display: grid;
-		grid-template-columns: 2rem minmax(0, 1.5fr) minmax(0, 0.8fr);
-		gap: clamp(1.5rem, 4vw, 4rem);
-		padding: 2.75rem 0;
-		border-bottom: 1px solid #cfcbc5;
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+		padding: 24px;
+		border: 1px solid var(--line);
+		border-radius: 18px;
+		background: linear-gradient(145deg, #25304a66, #11172daa);
 		align-items: start;
 	}
 	.route-idea-index {
 		font-size: 0.8rem;
-		color: #596174;
-		padding-top: 0.25rem;
+		color: var(--violet);
 	}
 	.route-idea h3 {
-		font-size: clamp(1.4rem, 2.2vw, 2rem);
+		font-size: clamp(1.35rem, 1.8vw, 1.8rem);
 		max-width: 23ch;
-		margin: 0.75rem 0 1.25rem;
+		margin: 12px 0 18px;
 	}
 	.route-idea > div > p:not(.eyebrow) {
-		color: #596174;
+		color: var(--muted);
 		font-size: 1rem;
 	}
 	.route-idea-output {
-		padding: 1.5rem;
-		border: 1px solid #cfcbc5;
-		border-radius: 1rem;
+		width: 100%;
+		margin-top: auto;
+		padding-top: 20px;
+		border-top: 1px solid var(--line);
 	}
 	.route-idea-output > span {
 		font-size: 0.7rem;
 		letter-spacing: 0.09em;
 		font-weight: 600;
+		color: var(--cyan);
 	}
 	.route-idea-output p {
 		font-size: 0.9rem !important;
@@ -292,7 +305,7 @@
 	.route-project-brief {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: clamp(2rem, 7vw, 8rem);
+		gap: clamp(24px, 3vw, 40px);
 	}
 	.route-project-brief h2 {
 		max-width: 14ch;
@@ -384,6 +397,67 @@
 		}
 		.route-project-brief h2 {
 			max-width: 19ch;
+		}
+	}
+
+	.route-project-feature-grid :global(.concept-art) {
+		margin: 0;
+	}
+
+	.route-project-feature-grid :global(.concept-art picture) {
+		border: 1px solid #a98aff70;
+		box-shadow: 0 0 70px -28px #9b3ed76b;
+	}
+
+	.route-idea:nth-child(2) {
+		background: linear-gradient(145deg, #38264b66, #11172daa);
+	}
+
+	.route-idea:nth-child(3) {
+		background: linear-gradient(145deg, #143f4a66, #11172daa);
+	}
+
+	.route-related {
+		background: radial-gradient(ellipse at 10% 100%, #7e45ba24, transparent 65%);
+		border-block: 1px solid var(--line);
+	}
+
+	@media (max-width: 1000px) {
+		.route-idea-list {
+			grid-template-columns: 1fr;
+			gap: 18px;
+		}
+		.route-idea {
+			display: grid;
+			grid-template-columns: 26px minmax(0, 1.4fr) minmax(0, 0.9fr);
+			gap: 22px;
+		}
+		.route-idea-output {
+			grid-column: auto;
+			padding-top: 0;
+			padding-left: 22px;
+			border-top: 0;
+			border-left: 1px solid var(--line);
+			margin-top: 0;
+		}
+	}
+	@media (max-width: 650px) {
+		.route-idea {
+			display: flex;
+			padding: 22px;
+			gap: 14px;
+		}
+		.route-idea-output {
+			padding-left: 0;
+			padding-top: 18px;
+			border-left: 0;
+			border-top: 1px solid var(--line);
+		}
+	}
+
+	@media (max-width: 650px) {
+		section.chapter {
+			padding-block: 40px;
 		}
 	}
 </style>

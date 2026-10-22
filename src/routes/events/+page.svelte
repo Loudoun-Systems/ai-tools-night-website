@@ -193,12 +193,16 @@
 </section>
 
 <style>
+	section.chapter {
+		padding-block: 56px;
+	}
+
 	.route-event-heading {
 		display: grid;
 		grid-template-columns: 1.25fr 1fr;
-		gap: clamp(2rem, 7vw, 8rem);
+		gap: clamp(24px, 3vw, 40px);
 		align-items: end;
-		margin-bottom: 4rem;
+		margin-bottom: 30px;
 	}
 	.route-event-heading h1 {
 		max-width: 11ch;
@@ -211,27 +215,36 @@
 	}
 	.route-event-feature {
 		display: grid;
-		grid-template-columns: 1.15fr 1fr;
+		grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
 		gap: 0;
-		background: var(--surface);
-		border: 1px solid var(--line);
-		border-radius: 1.75rem;
+		background: radial-gradient(ellipse at 95% 0%, #8f38cb2e, transparent 70%), #11172d;
+		border: 1px solid #9682d54d;
+		border-radius: 24px;
 		overflow: hidden;
+		box-shadow:
+			0 0 72px -36px #983ae988,
+			0 16px 38px -26px #000;
 	}
 	.route-event-feature :global(.concept-art) {
 		margin: 0;
 		border-radius: 0;
 		align-self: stretch;
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+		background: linear-gradient(90deg, #10152a, #11172d);
 	}
 	.route-event-feature-copy {
-		padding: clamp(2rem, 4vw, 4rem);
+		padding: clamp(24px, 3vw, 36px);
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: 1.5rem;
+		justify-content: center;
+		gap: 20px;
 	}
 	.route-event-feature-copy h2 {
-		max-width: 13ch;
+		max-width: 14ch;
+		font-size: clamp(1.7rem, 3vw, 2.8rem);
 	}
 	.route-event-status {
 		font-size: 0.875rem;
@@ -241,8 +254,9 @@
 		align-items: baseline;
 	}
 	.route-event-status span {
-		color: var(--cyan);
+		color: var(--pink, #ff83d4);
 		font-size: 0.6rem;
+		text-shadow: 0 0 12px #ff83d4;
 	}
 	.route-event-directory {
 		border-top: 1px solid var(--line);
@@ -252,7 +266,7 @@
 		display: grid;
 		grid-template-columns: minmax(150px, 0.7fr) minmax(0, 2.1fr) 3rem;
 		gap: 2rem;
-		padding: 2.5rem 0;
+		padding: 26px 0;
 		border-bottom: 1px solid var(--line);
 		align-items: start;
 	}
@@ -280,12 +294,14 @@
 		margin-top: 1rem;
 	}
 	.route-event-arrow {
-		width: 3rem;
-		height: 3rem;
+		width: 48px;
+		height: 48px;
 		display: grid;
 		place-items: center;
-		border: 1px solid var(--line);
+		border: 1px solid #a581d86b;
 		border-radius: 50%;
+		background: #6b389321;
+		color: var(--pink, #ff83d4);
 		transition:
 			background 0.18s,
 			transform 0.18s;
@@ -322,7 +338,7 @@
 			grid-template-columns: 1fr;
 		}
 		.route-event-heading {
-			margin-bottom: 2.5rem;
+			margin-bottom: 28px;
 		}
 		.route-event-heading h1 {
 			max-width: 13ch;
@@ -365,6 +381,44 @@
 		}
 		.route-event-arrow:hover {
 			transform: none;
+		}
+	}
+
+	.route-event-feature :global(.concept-art picture) {
+		position: relative;
+		flex: 1;
+		min-height: 280px;
+		border-radius: 0;
+		border: 0;
+	}
+
+	.route-event-feature :global(.concept-art picture)::after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: linear-gradient(90deg, transparent 65%, #11172d85);
+	}
+
+	.route-event-feature :global(.concept-art figcaption) {
+		padding: 12px 20px;
+		font-size: 0.75rem;
+	}
+
+	.route-calendar {
+		border-top: 1px solid var(--line);
+		background: radial-gradient(ellipse at 0 50%, #26c1c518, transparent 65%);
+	}
+
+	@media (max-width: 650px) {
+		.route-event-feature :global(.concept-art picture)::after {
+			background: linear-gradient(180deg, transparent 65%, #11172d85);
+		}
+	}
+
+	@media (max-width: 650px) {
+		section.chapter {
+			padding-block: 40px;
 		}
 	}
 </style>

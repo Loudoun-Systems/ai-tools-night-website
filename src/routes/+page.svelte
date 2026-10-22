@@ -5,893 +5,1018 @@
 	import { images, MEETUP_URL, prompts, text } from '$lib/content';
 	import { useLanguage } from '$lib/language.svelte';
 	const language = useLanguage();
-	const featured = $derived(
-		prompts.filter((p) =>
-			[
-				'decision-brief-with-evidence',
-				'automation-opportunity-map',
-				'hands-on-workshop-design'
-			].includes(p.slug)
-		)
-	);
-	const formats = [
+	let selected = $state('workshops');
+	const directions = [
 		{
+			id: 'events',
 			n: '01',
-			en: 'See an idea in action.',
-			es: 'Ve una idea en acción.',
+			en: 'Meet your people',
+			es: 'Encuentra tu comunidad',
+			tagEn: 'THE CONVERSATION',
+			tagEs: 'LA CONVERSACIÓN',
+			titleEn: 'One good conversation can change what you try next.',
+			titleEs: 'Una buena conversación puede cambiar lo que pruebas después.',
 			bodyEn:
-				'Live demonstrations, thoughtful questions, and people who are exploring what comes next.',
-			bodyEs: 'Demostraciones, buenas preguntas y personas explorando lo que viene.',
+				'See an idea in action. Ask the question you have been sitting on. Meet other people exploring practical AI, one useful experiment at a time.',
+			bodyEs:
+				'Ve una idea en acción. Haz esa pregunta que tienes pendiente. Conoce a otras personas explorando la IA práctica, un experimento útil a la vez.',
+			statusEn: 'The next meetup date has not been announced.',
+			statusEs: 'La próxima fecha de encuentro aún no se ha anunciado.',
+			ctaEn: 'Explore the gatherings',
+			ctaEs: 'Conoce los encuentros',
 			href: '/events',
-			linkEn: 'Community meetups',
-			linkEs: 'Encuentros comunitarios'
+			art: images.events
 		},
 		{
+			id: 'workshops',
 			n: '02',
-			en: 'Make something of your own.',
-			es: 'Crea algo por tu cuenta.',
+			en: 'Make something useful',
+			es: 'Crea algo útil',
+			tagEn: 'THE HANDS-ON PART',
+			tagEs: 'MANOS A LA OBRA',
+			titleEn: 'Bring a task. Find a new way through it.',
+			titleEs: 'Trae una tarea. Encuentra otra forma de resolverla.',
 			bodyEn:
-				'Hands-on workshops built around a useful task. A little guidance. Plenty of room to try.',
+				'Better prompts. Clearer workflows. A small project you can explain. We’re shaping workshops around trying things together, with room to ask, get stuck, and improve.',
 			bodyEs:
-				'Talleres prácticos alrededor de una tarea útil. Un poco de guía. Mucho espacio para probar.',
+				'Mejores prompts. Flujos más claros. Un proyecto pequeño que puedas explicar. Estamos preparando talleres para probar juntos, preguntar, trabarnos y mejorar.',
+			statusEn: 'Dates and pricing are pending. Registration is not open.',
+			statusEs: 'Fechas y precios pendientes. Las inscripciones no están abiertas.',
+			ctaEn: 'Inside the workshop plan',
+			ctaEs: 'Conoce el plan del taller',
 			href: '/workshops',
-			linkEn: 'Hands-on workshops',
-			linkEs: 'Talleres prácticos'
+			art: images.workshops
 		},
 		{
+			id: 'prompts',
 			n: '03',
-			en: 'Keep your curiosity going.',
-			es: 'Sigue alimentando tu curiosidad.',
-			bodyEn: 'Go deeper with structured prompts, practical projects, and new ways to contribute.',
+			en: 'Follow a better prompt',
+			es: 'Prueba un mejor prompt',
+			tagEn: 'THE NEXT EXPERIMENT',
+			tagEs: 'EL SIGUIENTE EXPERIMENTO',
+			titleEn: 'Skip the blank page. Start with a real task.',
+			titleEs: 'Sal de la página en blanco. Empieza con una tarea real.',
+			bodyEn:
+				'Detailed workflows for research, content, automation, building and more. Add your context, edit the brief, and check what comes back.',
 			bodyEs:
-				'Profundiza con prompts estructurados, proyectos prácticos y nuevas formas de aportar.',
+				'Flujos detallados para investigar, crear contenido, automatizar y construir. Añade contexto, edita las instrucciones y revisa el resultado.',
+			statusEn: `${prompts.length} editable templates. English + Spanish.`,
+			statusEs: `${prompts.length} plantillas editables. Inglés + español.`,
+			ctaEn: 'Open the prompt field guide',
+			ctaEs: 'Abre la guía práctica de prompts',
 			href: '/prompt-library',
-			linkEn: 'The resource library',
-			linkEs: 'La biblioteca de recursos'
+			art: images.prompts
 		}
 	];
+	const active = $derived(directions.find((d) => d.id === selected) ?? directions[1]);
+	const featured = prompts.filter((p) =>
+		[
+			'decision-brief-with-evidence',
+			'automation-opportunity-map',
+			'hands-on-workshop-design'
+		].includes(p.slug)
+	);
 </script>
 
 <Seo
-	title={{
-		en: 'A curious mind. A useful next step.',
-		es: 'Una mente curiosa. Un siguiente paso útil.'
-	}}
+	title={{ en: 'Good ideas. Better together.', es: 'Buenas ideas. Mejor juntos.' }}
 	description={{
-		en: 'Explore AI with people, practical workshops and a library of thoughtful workflows. Learn, build, share and connect with We’ve Got Now.',
-		es: 'Explora la IA con personas, talleres prácticos y una biblioteca de flujos de trabajo. Aprende, crea, comparte y conecta con We’ve Got Now.'
+		en: 'A community for curious people exploring practical AI. Meet, make, and find your next experiment with We’ve Got Now.',
+		es: 'Una comunidad para explorar la IA práctica. Conecta, crea y descubre tu próximo experimento con We’ve Got Now.'
 	}}
 	path="/"
 />
-<section class="r7-opening">
-	<div class="shell">
-		<div class="r7-opening-copy">
+
+<section class="r8-opening">
+	<div class="shell r8-hero">
+		<div class="r8-hero-light" aria-hidden="true"></div>
+		<div class="r8-hero-art">
+			<ConceptArt base={images.events.base} alt={images.events.alt} eager />
+		</div>
+		<div class="r8-hero-copy">
 			<p class="eyebrow">
-				<span>WE’VE GOT NOW</span><span class="r7-eyebrow-separator">/</span>{language.locale ===
-				'en'
-					? 'A place for your curiosity'
-					: 'Un espacio para tu curiosidad'}
+				<span>WE’VE GOT NOW</span><span class="r8-slash" aria-hidden="true">/</span
+				>{language.locale === 'en' ? 'AI TOOLS EXPLORERS NIGHT' : 'AI TOOLS EXPLORERS NIGHT'}
 			</p>
 			<h1>
-				{#if language.locale === 'en'}A curious mind.<br /><span>A useful next step.</span
-					>{:else}Una mente curiosa.<br /><span>Un siguiente paso útil.</span>{/if}
+				{#if language.locale === 'en'}Good ideas.<br /><span>Better together.</span>{:else}Buenas
+					ideas.<br /><span>Mejor juntos.</span>{/if}
 			</h1>
-			<p class="lede">
+			<p class="r8-hero-description">
 				{language.locale === 'en'
-					? 'The tools will keep changing. The good part is figuring them out together. Explore AI, make something useful, and find your people.'
-					: 'Las herramientas seguirán cambiando. Lo bueno es descubrirlas juntos. Explora la IA, crea algo útil y encuentra tu comunidad.'}
+					? 'Less figuring it out alone. More “wait, let’s try that.” Explore AI, make something useful, and find your people.'
+					: 'Menos descubrirlo a solas. Más «espera, probemos eso». Explora la IA, crea algo útil y encuentra tu comunidad.'}
 			</p>
 			<div class="button-row">
-				<a class="button primary" href="/workshops"
-					>{language.locale === 'en'
-						? 'Find your starting point'
-						: 'Encuentra por dónde empezar'}<span aria-hidden="true">↗</span></a
-				><a class="r7-quiet-link" href="/prompt-library"
-					>{language.locale === 'en'
-						? 'Explore the prompt library'
-						: 'Explora la biblioteca de prompts'} <span aria-hidden="true">→</span></a
+				<a class="button primary" href="#find-your-spark"
+					>{language.locale === 'en' ? 'Find your next spark' : 'Encuentra tu próxima idea'}<span
+						aria-hidden="true">↘</span
+					></a
+				><a class="r8-text-link" href="/workshops"
+					>{language.locale === 'en' ? 'Explore workshops' : 'Explora los talleres'}<span
+						aria-hidden="true">↗</span
+					></a
 				>
 			</div>
+			<div class="r8-signature">
+				<span aria-hidden="true">✳</span>
+				<p>
+					{language.locale === 'en'
+						? 'Curious is a good place to start.'
+						: 'La curiosidad es un buen comienzo.'}
+				</p>
+			</div>
 		</div>
-		<div
-			class="r7-scene"
-			aria-label={language.locale === 'en'
-				? 'Three ways to explore with WGN'
-				: 'Tres formas de explorar con WGN'}
-		>
-			<a href="/events" class="r7-scene-card r7-scene-left"
-				><ConceptArt base={images.events.base} alt={images.events.alt} />
-				<div>
-					<span class="r7-card-kicker">01 / {language.locale === 'en' ? 'MEET' : 'CONECTA'}</span
-					><strong
-						>{language.locale === 'en'
-							? 'Ideas worth a conversation.'
-							: 'Ideas para conversar.'}</strong
-					><span aria-hidden="true">↗</span>
-				</div></a
-			>
-			<a href="/workshops" class="r7-scene-card r7-scene-main"
-				><ConceptArt base={images.workshops.base} alt={images.workshops.alt} eager />
-				<div>
-					<span class="r7-card-kicker">02 / {language.locale === 'en' ? 'MAKE' : 'CREA'}</span
-					><strong
-						>{language.locale === 'en'
-							? 'Bring a task. Leave with a new perspective.'
-							: 'Trae una tarea. Descubre otra perspectiva.'}</strong
-					><span aria-hidden="true">↗</span>
-				</div></a
-			>
-			<a href="/projects" class="r7-scene-card r7-scene-right"
-				><ConceptArt base={images.projects.base} alt={images.projects.alt} />
-				<div>
-					<span class="r7-card-kicker">03 / {language.locale === 'en' ? 'SHARE' : 'COMPARTE'}</span
-					><strong
-						>{language.locale === 'en'
-							? 'Build on each other’s curiosity.'
-							: 'Crea con la curiosidad de otros.'}</strong
-					><span aria-hidden="true">↗</span>
-				</div></a
-			>
-		</div>
-		<div class="r7-scene-credit">
+		<div class="r8-hero-footer">
 			<span
 				>{language.locale === 'en'
-					? 'AI-generated community illustrations'
-					: 'Ilustraciones de comunidad generadas con IA'}</span
-			><span>LEARN · BUILD · SHARE · CONNECT</span>
-		</div>
-	</div>
-</section>
-<section class="r7-introduction chapter">
-	<div class="shell r7-manifesto">
-		<p class="eyebrow">
-			{language.locale === 'en' ? 'THE THING ABOUT LEARNING' : 'LO BUENO DE APRENDER'}
-		</p>
-		<h2>
-			{language.locale === 'en'
-				? 'You don’t need all the answers. Just a place to begin.'
-				: 'No necesitas todas las respuestas. Solo un lugar para empezar.'}
-		</h2>
-		<p>
-			{language.locale === 'en'
-				? 'We’ve Got Now brings curious people together around practical AI. Some of us are taking a first step. Some are building the next thing. There’s room for both.'
-				: 'We’ve Got Now reúne a personas curiosas alrededor de la IA práctica. Algunas están dando su primer paso. Otras ya están creando algo nuevo. Hay espacio para ambas.'}
-		</p>
-	</div>
-	<div class="shell r7-paths">
-		{#each formats as f}<a href={f.href} class="r7-path"
-				><span class="r7-path-index">{f.n}</span>
-				<div>
-					<h3>{language.locale === 'en' ? f.en : f.es}</h3>
-					<p>{language.locale === 'en' ? f.bodyEn : f.bodyEs}</p>
-					<span class="r7-path-link"
-						>{language.locale === 'en' ? f.linkEn : f.linkEs}
-						<span aria-hidden="true">↗</span></span
-					>
-				</div></a
-			>{/each}
-	</div>
-</section>
-<section class="r7-workshop-chapter chapter">
-	<div class="shell r7-workshop-grid">
-		<div class="r7-workshop-copy">
-			<p class="eyebrow">
-				{language.locale === 'en'
-					? 'THE WORKSHOP SERIES · IN PLANNING'
-					: 'LA SERIE DE TALLERES · EN PREPARACIÓN'}
-			</p>
-			<h2>
-				{language.locale === 'en'
-					? 'Less watching. More “let me try.”'
-					: 'Menos mirar. Más «déjame probar».'}
-			</h2>
-			<p class="lede">
-				{language.locale === 'en'
-					? 'A real task is a much better starting point than a list of tools. We’re shaping workshops that turn curiosity into something you can work on.'
-					: 'Una tarea real es un mejor punto de partida que una lista de herramientas. Estamos preparando talleres para convertir la curiosidad en algo que puedas trabajar.'}
-			</p>
-			<a class="button dark-button" href="/workshops"
-				>{language.locale === 'en' ? 'Inside the workshop plan' : 'Conoce el plan del taller'}<span
-					aria-hidden="true">↗</span
-				></a
+					? 'PRACTICAL AI. HUMAN CONNECTIONS.'
+					: 'IA PRÁCTICA. CONEXIONES HUMANAS.'}</span
+			><span
+				>{language.locale === 'en' ? 'LEARN' : 'APRENDE'} <i>✦</i>
+				{language.locale === 'en' ? 'BUILD' : 'CREA'} <i>✦</i>
+				{language.locale === 'en' ? 'SHARE' : 'COMPARTE'} <i>✦</i>
+				{language.locale === 'en' ? 'CONNECT' : 'CONECTA'}</span
 			>
-			<p class="r7-pending">
+		</div>
+	</div>
+</section>
+
+<section id="find-your-spark" class="r8-discover chapter">
+	<div class="shell">
+		<div class="section-header r8-section-heading">
+			<div>
+				<p class="eyebrow">
+					{language.locale === 'en' ? 'CHOOSE YOUR OWN STARTING POINT' : 'ELIGE POR DÓNDE EMPEZAR'}
+				</p>
+				<h2>{language.locale === 'en' ? 'What brings you here?' : '¿Qué te trae por aquí?'}</h2>
+			</div>
+			<p>
 				{language.locale === 'en'
-					? 'Dates and pricing are being finalized. Registration is not open.'
-					: 'Fechas y precios en preparación. Las inscripciones aún no están abiertas.'}
+					? 'A conversation. An experiment. That thing you have been meaning to make. Take the next step that feels like you.'
+					: 'Una conversación. Un experimento. Eso que llevas tiempo queriendo crear. Da el siguiente paso a tu manera.'}
 			</p>
 		</div>
-		<div class="r7-session">
-			<div class="r7-session-top">
-				<span>{language.locale === 'en' ? 'A POSSIBLE SESSION' : 'UN POSIBLE ENCUENTRO'}</span><span
-					aria-hidden="true">✳</span
-				>
+		<div
+			class="r8-direction-buttons"
+			role="group"
+			aria-label={language.locale === 'en' ? 'Choose your direction' : 'Elige tu camino'}
+		>
+			{#each directions as d}<button
+					id={`direction-${d.id}`}
+					type="button"
+					aria-pressed={selected === d.id}
+					aria-controls="direction-preview"
+					onclick={() => (selected = d.id)}
+					><span>{d.n}</span><strong>{language.locale === 'en' ? d.en : d.es}</strong><span
+						aria-hidden="true">↗</span
+					></button
+				>{/each}
+		</div>
+		<div
+			id="direction-preview"
+			class="r8-direction-preview"
+			aria-labelledby={`direction-${active.id}`}
+		>
+			<div class="r8-direction-image">
+				{#key active.id}<ConceptArt base={active.art.base} alt={active.art.alt} eager />{/key}
 			</div>
-			{#each [{ en: 'Start with your question', es: 'Empieza con tu pregunta', subEn: 'One task. Your context.', subEs: 'Una tarea. Tu contexto.' }, { en: 'Build a useful first version', es: 'Crea una primera versión útil', subEn: 'Try an approach. See what happens.', subEs: 'Prueba una idea. Observa el resultado.' }, { en: 'Leave with a better question', es: 'Sal con una mejor pregunta', subEn: 'Compare, improve, share.', subEs: 'Compara, mejora, comparte.' }] as step, i}<div
-					class="r7-session-step"
+			<div class="r8-direction-copy">
+				<p class="eyebrow">{language.locale === 'en' ? active.tagEn : active.tagEs}</p>
+				<h3>{language.locale === 'en' ? active.titleEn : active.titleEs}</h3>
+				<p>{language.locale === 'en' ? active.bodyEn : active.bodyEs}</p>
+				<a class="button secondary" href={active.href}
+					>{language.locale === 'en' ? active.ctaEn : active.ctaEs}<span aria-hidden="true">↗</span
+					></a
 				>
-					<span>0{i + 1}</span>
-					<div>
-						<h3>{language.locale === 'en' ? step.en : step.es}</h3>
-						<p>{language.locale === 'en' ? step.subEn : step.subEs}</p>
-					</div>
-				</div>{/each}
-			<div class="r7-session-bottom">
-				{language.locale === 'en'
-					? 'An illustrative flow, not a finalized agenda.'
-					: 'Un recorrido ilustrativo, no una agenda final.'}<span aria-hidden="true">↗</span>
+				<p class="r8-pending">{language.locale === 'en' ? active.statusEn : active.statusEs}</p>
 			</div>
 		</div>
 	</div>
 </section>
-<section class="chapter r7-library-chapter">
+
+<section class="chapter r8-field-guide">
 	<div class="shell">
-		<div class="section-header">
+		<div class="section-header r8-section-heading">
 			<div>
 				<p class="eyebrow">
 					{language.locale === 'en' ? 'THE PROMPT FIELD GUIDE' : 'LA GUÍA PRÁCTICA DE PROMPTS'}
 				</p>
 				<h2>
 					{language.locale === 'en'
-						? 'Go beyond a blank prompt.'
-						: 'Ve más allá de un prompt en blanco.'}
+						? 'Less blank page. More possibility.'
+						: 'Menos página en blanco. Más posibilidades.'}
 				</h2>
 			</div>
-			<div>
-				<p class="muted">
+			<div class="r8-library-lead">
+				<p>
 					{language.locale === 'en'
-						? 'Detailed workflows for the work you actually do. With inputs, a method, an output structure, and a way to check it.'
-						: 'Flujos detallados para tareas reales. Con datos de entrada, un método, una estructura de salida y una forma de revisarla.'}
+						? 'Real workflows, with the missing middle filled in: what to provide, how to work, and how to check the result.'
+						: 'Flujos completos: qué aportar, cómo trabajar y cómo revisar el resultado.'}
 				</p>
-				<a class="text-link" href="/prompt-library"
+				<a class="r8-text-link" href="/prompt-library"
 					>{language.locale === 'en'
-						? `Explore ${prompts.length} templates`
-						: `Explora ${prompts.length} plantillas`} <span aria-hidden="true">↗</span></a
+						? `Explore all ${prompts.length} prompts`
+						: `Explora los ${prompts.length} prompts`}<span aria-hidden="true">↗</span></a
 				>
 			</div>
 		</div>
-		<div class="r7-prompt-picks">
-			{#each featured as prompt, i}<a href={`/prompt-library/${prompt.slug}`}
-					><div class="r7-pick-top">
+		<div class="r8-prompt-grid">
+			{#each featured as prompt, i}<a class="r8-prompt-pick" href={`/prompt-library/${prompt.slug}`}
+					><div class="r8-pick-top">
 						<span>0{i + 1}</span><span>{text(prompt.category, language.locale)}</span>
 					</div>
 					<h3>{text(prompt.title, language.locale)}</h3>
 					<p>{text(prompt.outcome ?? prompt.usefulFor, language.locale)}</p>
-					<span class="r7-pick-action"
-						>{language.locale === 'en' ? 'Make it your own' : 'Hazlo tuyo'}
-						<span aria-hidden="true">↗</span></span
+					<span class="r8-pick-action"
+						>{language.locale === 'en' ? 'Make it your own' : 'Hazlo tuyo'}<span aria-hidden="true"
+							>↗</span
+						></span
 					></a
 				>{/each}
 		</div>
+		<div class="r8-library-foot">
+			<span>EN + ES</span>
+			<p>
+				{language.locale === 'en'
+					? 'Editable. Saveable. Yours to experiment with.'
+					: 'Editables. Guardables. Listos para experimentar.'}
+			</p>
+			<a href="/prompt-library"
+				>{language.locale === 'en' ? 'Find your next workflow' : 'Encuentra tu próximo flujo'}
+				<span aria-hidden="true">→</span></a
+			>
+		</div>
 	</div>
 </section>
-<section class="chapter r7-community-room">
-	<div class="shell r7-room-grid">
-		<div>
+
+<section class="chapter r8-people">
+	<div class="shell r8-people-grid">
+		<div class="r8-people-image">
+			<ConceptArt base={images.about.base} alt={images.about.alt} /><span
+				class="r8-image-stamp"
+				aria-hidden="true"
+				>{language.locale === 'en' ? 'LEARN.' : 'APRENDE.'}<br />
+				{language.locale === 'en' ? 'BUILD.' : 'CREA.'}<br />
+				{language.locale === 'en' ? 'SHARE.' : 'COMPARTE.'}<br /><em
+					>{language.locale === 'en' ? 'CONNECT.' : 'CONECTA.'}</em
+				></span
+			>
+		</div>
+		<div class="r8-people-copy">
 			<p class="eyebrow">
-				{language.locale === 'en' ? 'AI TOOLS EXPLORERS NIGHT' : 'AI TOOLS EXPLORERS NIGHT'}
+				{language.locale === 'en' ? 'THE PEOPLE ARE THE POINT' : 'LO IMPORTANTE SON LAS PERSONAS'}
 			</p>
 			<h2>
-				{language.locale === 'en' ? 'The people are the point.' : 'Lo importante son las personas.'}
-			</h2>
-			<p class="lede">
 				{language.locale === 'en'
-					? 'A useful demo can start a conversation. A conversation can change what you try next. That’s the idea behind our community meetups.'
-					: 'Una buena demo puede iniciar una conversación. Una conversación puede cambiar lo que pruebas después. Esa es la idea de nuestros encuentros.'}
+					? 'Come for the tools. Stay for the people.'
+					: 'Ven por las herramientas. Quédate por las personas.'}
+			</h2>
+			<p>
+				{language.locale === 'en'
+					? 'You don’t need a perfect project or every answer. Bring the question, the rough version, the idea that won’t leave you alone. There’s a place for that here.'
+					: 'No necesitas un proyecto perfecto ni todas las respuestas. Trae tu pregunta, tu primer borrador, esa idea que no te deja en paz. Aquí hay espacio para eso.'}
 			</p>
-			<div class="button-row">
-				<a class="button primary" href={MEETUP_URL} target="_blank" rel="noreferrer"
-					>{language.locale === 'en' ? 'Find your people' : 'Encuentra tu comunidad'}<span
-						aria-hidden="true">↗</span
-					></a
-				><a class="text-link" href="/events"
-					>{language.locale === 'en' ? 'Explore the gatherings' : 'Conoce los encuentros'}</a
+			<div class="r8-people-notes">
+				<span
+					>{language.locale === 'en' ? 'Ask a better question.' : 'Haz una mejor pregunta.'}</span
+				><span
+					>{language.locale === 'en'
+						? 'Build on someone’s idea.'
+						: 'Crea a partir de otra idea.'}</span
+				><span
+					>{language.locale === 'en'
+						? 'Share what you figure out.'
+						: 'Comparte lo que descubras.'}</span
 				>
 			</div>
-			<p class="r7-room-note">
+			<div class="button-row">
+				<a class="button primary" href={MEETUP_URL} target="_blank" rel="noreferrer"
+					>{language.locale === 'en' ? 'Find WGN on Meetup' : 'Encuentra WGN en Meetup'}<span
+						aria-hidden="true">↗</span
+					></a
+				><a class="r8-text-link" href="/about"
+					>{language.locale === 'en' ? 'Meet the community' : 'Conoce la comunidad'}
+					<span aria-hidden="true">→</span></a
+				>
+			</div>
+			<p class="r8-pending">
 				{language.locale === 'en'
 					? 'The next meetup date has not been announced.'
 					: 'La próxima fecha de encuentro aún no se ha anunciado.'}
 			</p>
 		</div>
-		<ConceptArt base={images.about.base} alt={images.about.alt} />
 	</div>
 </section>
-<section class="r7-final-invitation chapter">
-	<div class="shell">
-		<p class="eyebrow">
-			{language.locale === 'en'
-				? 'YOUR NEXT STEP DOESN’T HAVE TO BE BIG'
-				: 'TU SIGUIENTE PASO NO TIENE QUE SER GRANDE'}
-		</p>
-		<h2>
-			{language.locale === 'en'
-				? 'A question is a good start.'
-				: 'Una pregunta es un buen comienzo.'}
-		</h2>
-		<a class="button secondary" href="/about"
-			>{language.locale === 'en' ? 'A little more about us' : 'Un poco más sobre nosotros'}<span
-				aria-hidden="true">↗</span
-			></a
-		>
+
+<section id="join" class="chapter r8-join">
+	<div class="shell r8-join-grid">
+		<div>
+			<p class="eyebrow">
+				{language.locale === 'en'
+					? 'THE NEXT THING STARTS SMALL'
+					: 'LO QUE SIGUE EMPIEZA EN PEQUEÑO'}
+			</p>
+			<h2>{language.locale === 'en' ? 'What are you curious about?' : '¿Qué te da curiosidad?'}</h2>
+			<p>
+				{language.locale === 'en'
+					? 'A useful question is all it takes to start a conversation.'
+					: 'Una buena pregunta basta para iniciar una conversación.'}
+			</p>
+		</div>
+		<div id="join-form"><IntakeForm formType="community" /></div>
 	</div>
-</section>
-<section id="join" class="section shell r7-intake">
-	<div id="join-form"><IntakeForm formType="community" /></div>
 </section>
 
 <style>
-	.r7-opening {
-		padding: 100px 0 32px;
+	.r8-opening {
+		padding: 28px 0 0;
+	}
+	.r8-hero {
 		position: relative;
+		isolation: isolate;
+		min-height: 590px;
+		padding: 60px 44px 0;
+		border: 1px solid #9b8dff42;
+		border-radius: 28px;
+		background: radial-gradient(ellipse at 10% 15%, #27417a30, transparent 60%), #0d1023;
+		box-shadow:
+			0 18px 90px #05051580,
+			0 0 65px #8b4bf012;
+		overflow: hidden;
 	}
-	.r7-opening-copy {
-		text-align: center;
-		max-width: 1080px;
-		margin: auto;
+	.r8-hero-light {
+		position: absolute;
+		z-index: -1;
+		inset: 0;
+		background:
+			radial-gradient(ellipse at 65% 40%, #ad38ff3b, transparent 55%),
+			radial-gradient(ellipse at 15% 100%, #00c7d322, transparent 65%);
 	}
-	.r7-opening .eyebrow {
-		justify-content: center;
+	.r8-hero-art {
+		position: absolute;
+		inset: 0 0 0 28%;
+		z-index: -1;
+		pointer-events: none;
+		mask-image: linear-gradient(90deg, transparent, #000 30%);
+	}
+	.r8-hero-art:after {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background:
+			linear-gradient(90deg, #0d1023 0%, #0d1023ed 15%, #0d10239c 38%, #0d10231a 74%),
+			linear-gradient(0deg, #0d1023 0%, transparent 40%, #0d102320 80%);
+	}
+	.r8-hero-art :global(.concept-art) {
+		height: 100%;
+	}
+	.r8-hero-art :global(picture) {
+		height: 100%;
+		aspect-ratio: auto;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+	}
+	.r8-hero-art :global(img) {
+		height: 100%;
+		width: 100%;
+		object-fit: cover;
+		object-position: 55% 45%;
+		opacity: 0.92;
+	}
+	.r8-hero-art :global(figcaption) {
+		position: absolute;
+		right: 24px;
+		bottom: 68px;
+		max-width: 26ch;
+		text-align: right;
+		color: #d2c9e9;
+		font-size: 0.65rem;
+		line-height: 1.5;
+		z-index: 2;
+	}
+	.r8-hero-copy {
+		position: relative;
+		max-width: 780px;
+		padding-bottom: 48px;
+	}
+	.r8-hero-copy .eyebrow {
+		font-size: 0.63rem;
+		letter-spacing: 0.13em;
 		gap: 12px;
+		color: #a1c4e8;
 	}
-	.r7-opening .eyebrow:before {
+	.r8-hero-copy .eyebrow:before {
 		display: none;
 	}
-	.r7-opening .eyebrow > span:first-child {
+	.r8-hero-copy .eyebrow > span:first-child {
 		font-family: Orbitron, sans-serif;
-		font-size: 0.66rem;
-		letter-spacing: 0.08em;
+		color: var(--cyan);
+		font-size: 0.63rem;
 	}
-	.r7-eyebrow-separator {
-		opacity: 0.4;
+	.r8-slash {
+		color: #59658e;
 	}
-	.r7-opening h1 {
-		font-size: clamp(3rem, 6.8vw, 7rem);
-		line-height: 1.06;
+	.r8-hero h1 {
+		font-size: clamp(3.25rem, 6.7vw, 6.7rem);
+		line-height: 1.02;
 		letter-spacing: -0.065em;
-		margin: 0 auto 30px;
+		font-weight: 650;
+		margin: 24px 0;
 	}
-	.r7-opening h1 > span {
-		color: #c6b8f2;
+	.r8-hero h1 > span {
+		color: #edb4ff;
+		background: linear-gradient(100deg, #9dfff1 0%, #c7adff 55%, #ff9ee0 100%);
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
 	}
-	.r7-opening .lede {
-		max-width: 53ch;
-		margin: 0 auto;
-		font-size: clamp(1.05rem, 1.4vw, 1.22rem);
+	.r8-hero-description {
+		font-size: 1.05rem;
+		line-height: 1.7;
+		max-width: 40ch;
+		color: #c0c9df;
 	}
-	.r7-opening .button-row {
-		justify-content: center;
-		gap: 32px;
-	}
-	.r7-quiet-link {
-		font-size: 0.88rem;
-		text-decoration: none;
-		padding: 12px 0;
-		min-height: 48px;
-		border-bottom: 1px solid #ffffff40;
-	}
-	.r7-quiet-link > span {
-		margin-left: 12px;
-	}
-	.r7-scene {
-		display: grid;
-		grid-template-columns: 0.86fr 1.28fr 0.86fr;
+	.r8-hero-copy .button-row {
 		gap: 24px;
+		margin-top: 24px;
+	}
+	.r8-text-link {
+		display: inline-flex;
 		align-items: center;
-		margin-top: 88px;
-		padding: 0 16px;
-	}
-	.r7-scene-card {
-		min-width: 0;
-		position: relative;
-		background: #151e32;
-		border: 1px solid #ffffff1e;
-		border-radius: 24px;
+		gap: 18px;
+		min-height: 44px;
+		padding: 10px 0;
+		font-size: 0.88rem;
+		font-weight: 600;
 		text-decoration: none;
-		box-shadow: 0 30px 80px #03071245;
-		transition:
-			transform 0.3s,
-			border-color 0.3s;
+		color: var(--ink);
 	}
-	.r7-scene-card:hover {
-		transform: translateY(-8px);
-		border-color: #99d9dd80;
-	}
-	.r7-scene-left {
-		transform: rotate(-4deg);
-	}
-	.r7-scene-right {
-		transform: rotate(4deg);
-	}
-	.r7-scene-left:hover {
-		transform: rotate(-2deg) translateY(-8px);
-	}
-	.r7-scene-right:hover {
-		transform: rotate(2deg) translateY(-8px);
-	}
-	.r7-scene-card :global(.concept-art picture) {
-		border-radius: 23px 23px 0 0;
-		aspect-ratio: 1.35;
-	}
-	.r7-scene-main :global(.concept-art picture) {
-		aspect-ratio: 1.5;
-	}
-	.r7-scene-card :global(.concept-art figcaption) {
-		display: none;
-	}
-	.r7-scene-card > div {
-		padding: 24px;
-		display: grid;
-		grid-template-columns: 1fr auto;
-		gap: 10px 16px;
-	}
-	.r7-card-kicker {
-		grid-column: 1/-1;
-		font-size: 0.64rem;
-		letter-spacing: 0.14em;
-		color: #a5b9d2;
-	}
-	.r7-scene-card strong {
-		font:
-			600 clamp(1rem, 1.4vw, 1.3rem)/1.4 Manrope,
-			sans-serif;
-		letter-spacing: -0.025em;
-	}
-	.r7-scene-card > div > span:last-child {
-		align-self: end;
+	.r8-text-link span {
 		color: var(--cyan);
 	}
-	.r7-scene-credit {
+	.r8-text-link:hover {
+		color: var(--cyan);
+	}
+	.r8-signature {
 		display: flex;
+		gap: 12px;
+		align-items: center;
+		margin-top: 24px;
+		color: #bec6dc;
+	}
+	.r8-signature > span {
+		font-size: 30px;
+		color: var(--pink);
+		text-shadow: 0 0 24px #ff83d44d;
+		animation: spark-turn 30s linear infinite;
+	}
+	:global([data-ambient-paused]) .r8-signature > span {
+		animation-play-state: paused;
+	}
+	@keyframes spark-turn {
+		to {
+			transform: rotate(360deg);
+		}
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.r8-signature > span {
+			animation: none;
+		}
+	}
+	.r8-signature p {
+		font-size: 0.8rem;
+		margin: 0;
+	}
+	.r8-hero-footer {
+		position: relative;
+		display: flex;
+		gap: 24px;
 		justify-content: space-between;
-		gap: 20px;
-		font-size: 0.66rem;
-		color: #8495b2;
-		margin-top: 40px;
-		padding-top: 24px;
-		border-top: 1px solid var(--line);
-		letter-spacing: 0.05em;
+		align-items: center;
+		border-top: 1px solid #a9b5ff29;
+		min-height: 56px;
+		font-size: 0.61rem;
+		letter-spacing: 0.12em;
+		color: #b4b9d3;
 	}
-	.r7-manifesto {
-		display: grid;
-		grid-template-columns: 0.7fr 1.5fr 1fr;
-		gap: 60px;
-		align-items: start;
+	.r8-hero-footer i {
+		font-style: normal;
+		color: var(--pink);
+		margin-inline: 12px;
 	}
-	.r7-manifesto .eyebrow {
-		margin-top: 10px;
-	}
-	.r7-manifesto h2 {
-		font-size: clamp(2rem, 3vw, 3.2rem);
+	.r8-section-heading h2 {
+		font-size: clamp(2rem, 3.4vw, 3.2rem);
 		max-width: 20ch;
 	}
-	.r7-manifesto > p:last-child {
+	.r8-section-heading > p,
+	.r8-library-lead > p {
+		font-size: 0.94rem;
+		line-height: 1.7;
 		color: var(--muted);
-		margin-top: 8px;
-		font-size: 0.98rem;
+		margin-bottom: 8px;
 	}
-	.r7-paths {
+	.r8-direction-buttons {
 		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 44px;
-		margin-top: 68px;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		border: 1px solid var(--line);
+		border-radius: 16px;
+		background: #10152b;
+		overflow: hidden;
 	}
-	.r7-path {
-		display: grid;
-		grid-template-columns: 30px 1fr;
+	.r8-direction-buttons button {
+		display: flex;
 		gap: 16px;
-		padding-top: 28px;
-		border-top: 1px solid var(--line);
-		text-decoration: none;
+		align-items: center;
+		text-align: left;
+		padding: 22px 24px;
+		min-height: 82px;
+		border: 0;
+		border-right: 1px solid var(--line);
+		background: transparent;
+		color: #b8c2da;
+		transition:
+			background 0.18s,
+			color 0.18s;
 	}
-	.r7-path-index {
-		font-size: 0.7rem;
-		color: var(--cyan);
+	.r8-direction-buttons button:last-child {
+		border-right: 0;
+	}
+	.r8-direction-buttons button > span:first-child {
 		font-family: Orbitron, sans-serif;
-		padding-top: 3px;
+		font-size: 0.62rem;
+		color: #9eaeca;
 	}
-	.r7-path h3 {
-		font-size: 1.3rem;
-		line-height: 1.35;
-		margin-bottom: 14px;
+	.r8-direction-buttons strong {
+		font-family: Manrope, sans-serif;
+		font-size: 1.04rem;
+		font-weight: 600;
+		flex: 1;
 	}
-	.r7-path p {
-		font-size: 0.9rem;
+	.r8-direction-buttons button[aria-pressed='true'] {
+		color: var(--ink);
+		background: linear-gradient(115deg, #2c2554, #172f43);
+		box-shadow: inset 0 -2px var(--cyan);
+	}
+	.r8-direction-buttons button[aria-pressed='true'] > span {
+		color: var(--cyan);
+	}
+	.r8-direction-buttons button:focus-visible {
+		outline-offset: -5px;
+	}
+	.r8-direction-buttons button:hover {
+		background: #24213f;
+	}
+	.r8-direction-preview {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 40px;
+		align-items: center;
+		padding-top: 30px;
+		min-width: 0;
+	}
+	.r8-direction-image {
+		position: relative;
+		min-width: 0;
+	}
+	.r8-direction-image:before {
+		content: '';
+		position: absolute;
+		inset: 8% -3%;
+		background: radial-gradient(ellipse, #983cd52b, transparent 70%);
+		z-index: -1;
+	}
+	.r8-direction-image :global(picture) {
+		aspect-ratio: 1.6;
+		border-radius: 18px;
+		border: 1px solid #bd7aff55;
+		box-shadow:
+			0 0 35px #a63de01c,
+			0 0 22px #21d6d61a;
+	}
+	.r8-direction-image :global(figcaption) {
+		font-size: 0.64rem;
+		line-height: 1.5;
+		color: #a9b5cf;
+		margin-top: 10px;
+	}
+	.r8-direction-copy h3 {
+		font-size: clamp(1.6rem, 2.8vw, 2.7rem);
+		max-width: 22ch;
+		line-height: 1.15;
+	}
+	.r8-direction-copy > p:not(.eyebrow, .r8-pending) {
+		color: var(--muted);
+		font-size: 0.95rem;
+		line-height: 1.7;
+		max-width: 47ch;
+	}
+	.r8-direction-copy .button {
+		margin-top: 4px;
+		border-color: #7c81af;
+		background: #171c36;
+	}
+	.r8-pending {
+		font-size: 0.75rem;
+		line-height: 1.6;
+		color: #a9b5cf;
+		margin: 16px 0 0;
+		max-width: 58ch;
+	}
+	.r8-field-guide {
+		border-block: 1px solid #b797ff26;
+		background:
+			radial-gradient(ellipse at 80% 20%, #6530c324, transparent 60%),
+			linear-gradient(100deg, #10162bba, #111026bb);
+	}
+	.r8-prompt-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 18px;
+	}
+	.r8-prompt-pick {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		padding: 26px;
+		border: 1px solid var(--line);
+		border-radius: 18px;
+		background: linear-gradient(135deg, #1a2444b3, #11142b);
+		text-decoration: none;
+		transition:
+			transform 0.2s,
+			border-color 0.2s,
+			box-shadow 0.2s;
+		min-width: 0;
+	}
+	.r8-prompt-pick:nth-child(2) {
+		background: linear-gradient(135deg, #23374680, #11142b);
+	}
+	.r8-prompt-pick:nth-child(3) {
+		background: linear-gradient(135deg, #38214880, #11142b);
+	}
+	.r8-prompt-pick:hover {
+		transform: translateY(-3px);
+		border-color: #ad8cff;
+		box-shadow: 0 10px 34px #7844c51c;
+	}
+	.r8-pick-top {
+		display: flex;
+		gap: 16px;
+		justify-content: space-between;
+		align-items: start;
+		font-size: 0.66rem;
+		line-height: 1.5;
+		color: #bbb9d8;
+		margin-bottom: 22px;
+	}
+	.r8-pick-top > span:first-child {
+		font-family: Orbitron, sans-serif;
+		color: var(--cyan);
+	}
+	.r8-prompt-pick h3 {
+		font-size: 1.35rem;
+		line-height: 1.3;
+		letter-spacing: -0.035em;
+	}
+	.r8-prompt-pick p {
+		font-size: 0.87rem;
+		line-height: 1.7;
 		color: var(--muted);
 		margin-bottom: 24px;
 	}
-	.r7-path-link {
-		font-size: 0.8rem;
+	.r8-pick-action {
 		display: flex;
 		justify-content: space-between;
-		gap: 16px;
-	}
-	.r7-path:hover .r7-path-link {
-		color: var(--cyan);
-	}
-	.r7-workshop-chapter {
-		background: #f3f0e8;
-		color: #182238;
-		position: relative;
-	}
-	.r7-workshop-chapter .eyebrow {
-		color: #4c677b;
-	}
-	.r7-workshop-chapter .lede {
-		color: #5b6575;
-		max-width: 42ch;
-	}
-	.r7-workshop-grid {
-		display: grid;
-		grid-template-columns: 1.15fr 0.85fr;
-		gap: clamp(56px, 9vw, 150px);
-		align-items: center;
-	}
-	.r7-workshop-copy h2 {
-		font-size: clamp(2.4rem, 4.2vw, 4.6rem);
-		max-width: 13ch;
-	}
-	.r7-workshop-copy .button {
-		margin-top: 20px;
-	}
-	.r7-pending {
-		font-size: 0.78rem;
-		color: #656e7b;
-		max-width: 40ch;
-		margin: 22px 0 0;
-	}
-	.r7-session {
-		padding: 32px 36px;
-		border-radius: 22px;
-		border: 1px solid #d8d5cd;
-		background: #fcfaf6;
-		box-shadow: 0 12px 50px #17273e08;
-		transform: rotate(1deg);
-	}
-	.r7-session-top {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		gap: 24px;
-		padding-bottom: 24px;
-		font-size: 0.68rem;
-		letter-spacing: 0.12em;
-		color: #637184;
-	}
-	.r7-session-top > span:last-child {
-		color: #647c74;
-		font-size: 32px;
-		line-height: 1;
-	}
-	.r7-session-step {
-		display: grid;
-		grid-template-columns: 30px 1fr;
-		gap: 18px;
-		padding: 26px 0;
-		border-top: 1px solid #d8d5cd;
-	}
-	.r7-session-step > span {
-		font-size: 0.7rem;
-		color: #627286;
-		padding-top: 4px;
-	}
-	.r7-session-step h3 {
-		font-size: 1.15rem;
-		letter-spacing: -0.03em;
-		margin-bottom: 8px;
-	}
-	.r7-session-step p {
-		font-size: 0.83rem;
-		color: #687080;
-		margin: 0;
-	}
-	.r7-session-bottom {
-		display: flex;
-		justify-content: space-between;
-		gap: 20px;
-		padding-top: 16px;
-		border-top: 1px solid #d8d5cd;
-		font-size: 0.68rem;
-		color: #687080;
-	}
-	.r7-library-chapter {
-		background: #0e1729;
-	}
-	.r7-library-chapter .section-header {
-		grid-template-columns: 1fr 1fr;
-		gap: 140px;
-	}
-	.r7-library-chapter h2 {
-		max-width: 14ch;
-	}
-	.r7-prompt-picks {
-		display: grid;
-		grid-template-columns: repeat(3, 1fr);
-		gap: 24px;
-	}
-	.r7-prompt-picks > a {
-		display: flex;
-		flex-direction: column;
-		padding: 30px;
-		border: 1px solid var(--line);
-		border-radius: 20px;
-		min-height: 330px;
-		background: #151f33;
-		text-decoration: none;
-		transition:
-			background 0.2s,
-			transform 0.2s;
-	}
-	.r7-prompt-picks > a:hover {
-		background: #1a2940;
-		transform: translateY(-4px);
-	}
-	.r7-pick-top {
-		display: flex;
-		justify-content: space-between;
-		gap: 20px;
-		font-size: 0.66rem;
-		color: #acbad0;
-		letter-spacing: 0.06em;
-		margin-bottom: 32px;
-	}
-	.r7-pick-top > span:first-child {
-		color: var(--cyan);
-	}
-	.r7-prompt-picks h3 {
-		font-size: 1.4rem;
-		line-height: 1.3;
-	}
-	.r7-prompt-picks p {
-		font-size: 0.88rem;
-		color: var(--muted);
-	}
-	.r7-pick-action {
-		display: flex;
-		justify-content: space-between;
+		gap: 14px;
 		margin-top: auto;
-		padding-top: 24px;
 		font-size: 0.8rem;
 		color: var(--cyan);
 	}
-	.r7-room-grid {
+	.r8-library-foot {
+		display: flex;
+		gap: 16px;
+		align-items: center;
+		flex-wrap: wrap;
+		padding-top: 24px;
+		font-size: 0.78rem;
+		color: #b5bed5;
+	}
+	.r8-library-foot > span {
+		color: var(--pink);
+		border: 1px solid #d27dce42;
+		border-radius: 5px;
+		padding: 3px 6px;
+		font-size: 0.64rem;
+	}
+	.r8-library-foot p {
+		margin: 0;
+		flex: 1;
+	}
+	.r8-library-foot a {
+		min-height: 44px;
+		display: inline-flex;
+		align-items: center;
+		gap: 12px;
+		color: #ddd7f7;
+	}
+	.r8-people-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 100px;
+		gap: 48px;
 		align-items: center;
 	}
-	.r7-room-grid h2 {
-		font-size: clamp(2.5rem, 4.4vw, 4.6rem);
-		max-width: 13ch;
+	.r8-people-image {
+		position: relative;
+		min-width: 0;
 	}
-	.r7-room-grid :global(.concept-art picture) {
-		border-radius: 48% 48% 24px 24px;
+	.r8-people-image :global(picture) {
 		aspect-ratio: 1.1;
+		border: 1px solid #69d8dd50;
+		border-radius: 22px;
+		box-shadow: 0 0 50px #14b8cc1b;
 	}
-	.r7-room-note {
+	.r8-people-image :global(img) {
+		object-position: 55% center;
+	}
+	.r8-people-image :global(figcaption) {
+		font-size: 0.64rem;
+		line-height: 1.5;
+		color: #a9b5cf;
+	}
+	.r8-image-stamp {
+		position: absolute;
+		bottom: 46px;
+		left: 24px;
+		font:
+			750 clamp(1rem, 2.4vw, 2rem)/1.08 Manrope,
+			sans-serif;
+		letter-spacing: -0.04em;
+		color: white;
+		text-shadow:
+			0 2px 14px #070b18,
+			0 0 22px #070b18;
+		background: linear-gradient(90deg, #11142bcc, transparent);
+		padding: 12px;
+	}
+	.r8-image-stamp em {
+		color: var(--cyan);
+		font-style: normal;
+	}
+	.r8-people-copy h2 {
+		font-size: clamp(2rem, 3.5vw, 3.5rem);
+		max-width: 16ch;
+	}
+	.r8-people-copy > p:not(.eyebrow, .r8-pending) {
 		color: var(--muted);
-		font-size: 0.75rem;
-		margin-top: 28px;
+		font-size: 0.97rem;
+		max-width: 47ch;
 	}
-	.r7-final-invitation {
-		text-align: center;
-		background: linear-gradient(135deg, #c4bbe8, #b7dcd7);
-		color: #182438;
+	.r8-people-notes {
+		display: grid;
+		gap: 10px;
+		margin-block: 22px;
+		color: #d2c9ee;
+		font-size: 0.87rem;
 	}
-	.r7-final-invitation .eyebrow {
-		justify-content: center;
-		color: #4e6575;
+	.r8-people-notes > span:before {
+		content: '✦';
+		color: var(--pink);
+		margin-right: 12px;
 	}
-	.r7-final-invitation h2 {
-		max-width: 20ch;
-		margin: 0 auto 34px;
-		font-size: clamp(2.3rem, 4.8vw, 5rem);
+	.r8-people-copy .button-row {
+		gap: 20px;
+		margin-top: 16px;
 	}
-	.r7-final-invitation .button {
-		border-color: #6c7a87;
+	.r8-join {
+		background: radial-gradient(ellipse at 20% 20%, #92368630, transparent 65%), #15152acc;
+		border-block: 1px solid #ab88d935;
 	}
-	.r7-intake {
-		padding-block: 40px;
+	.r8-join-grid {
+		display: grid;
+		grid-template-columns: 0.85fr 1.15fr;
+		gap: 40px;
+		align-items: start;
 	}
-	.r7-opening-copy {
-		animation: arrive 0.65s ease-out;
+	.r8-join h2 {
+		font-size: clamp(2rem, 3.6vw, 3.5rem);
+		max-width: 15ch;
+	}
+	.r8-join-grid > div > p:not(.eyebrow) {
+		color: var(--muted);
+	}
+	.r8-join :global(.intake-card) {
+		padding: 26px;
+		background: #11162ce6;
+		border-color: #b29be042;
+		box-shadow: 0 0 28px #74378415;
+	}
+	.r8-join :global(.intake-card h2) {
+		font-size: 1.55rem;
+		letter-spacing: -0.035em;
+		max-width: 25ch;
+	}
+	@media (min-width: 1700px) {
+		.r8-hero h1 {
+			font-size: 7rem;
+		}
+		.r8-hero {
+			min-height: 630px;
+		}
 	}
 	@media (max-width: 1100px) {
-		.r7-opening {
-			padding-top: 80px;
+		.r8-hero {
+			padding: 44px 30px 0;
+			min-height: 550px;
 		}
-		.r7-scene {
-			gap: 16px;
-			padding: 0;
+		.r8-hero h1 {
+			font-size: 6.4vw;
 		}
-		.r7-scene-card > div {
-			padding: 18px;
+		.r8-hero-art {
+			left: 20%;
 		}
-		.r7-manifesto {
-			grid-template-columns: 1fr 1fr;
-			gap: 30px 60px;
+		.r8-direction-buttons button {
+			padding: 18px 16px;
+			gap: 10px;
 		}
-		.r7-manifesto > .eyebrow {
-			grid-column: 1/-1;
+		.r8-direction-buttons strong {
+			font-size: 0.92rem;
 		}
-		.r7-manifesto h2 {
-			margin: 0;
-		}
-		.r7-library-chapter .section-header {
-			gap: 70px;
-		}
-		.r7-room-grid {
-			gap: 50px;
-		}
-		.r7-workshop-grid {
-			gap: 50px;
-		}
-		.r7-paths {
+		.r8-direction-preview,
+		.r8-people-grid {
 			gap: 28px;
 		}
-		.r7-session {
-			padding: 26px;
+		.r8-people-copy .button-row {
+			gap: 12px;
 		}
 	}
 	@media (max-width: 760px) {
-		.r7-opening {
-			padding-top: 64px;
+		.r8-opening {
+			padding-top: 18px;
 		}
-		.r7-opening .eyebrow {
-			flex-wrap: wrap;
-			font-size: 0.62rem;
-		}
-		.r7-opening h1 {
-			font-size: clamp(2.6rem, 8.7vw, 4.5rem);
-			letter-spacing: -0.05em;
-			line-height: 1.1;
-		}
-		.r7-opening .lede {
-			font-size: 1rem;
-			max-width: 40ch;
-		}
-		.r7-opening .button-row {
-			gap: 14px;
-			margin-top: 28px;
-		}
-		.r7-quiet-link {
-			font-size: 0.8rem;
-		}
-		.r7-scene {
-			grid-template-columns: 1fr 1fr;
-			gap: 16px;
-			margin-top: 54px;
-		}
-		.r7-scene-main {
-			grid-column: 1/-1;
-			grid-row: 1;
-		}
-		.r7-scene-left,
-		.r7-scene-right {
-			transform: none;
-		}
-		.r7-scene-left:hover,
-		.r7-scene-right:hover {
-			transform: translateY(-3px);
-		}
-		.r7-scene-card {
-			border-radius: 16px;
-		}
-		.r7-scene-card :global(.concept-art picture) {
-			border-radius: 15px 15px 0 0;
-			aspect-ratio: 1.3;
-		}
-		.r7-scene-main :global(.concept-art picture) {
-			aspect-ratio: 2;
-		}
-		.r7-scene-card > div {
-			padding: 16px;
-			gap: 8px;
-		}
-		.r7-scene-card strong {
-			font-size: 0.95rem;
-		}
-		.r7-card-kicker {
-			font-size: 0.59rem;
-		}
-		.r7-scene-credit {
-			font-size: 0.59rem;
-			margin-top: 24px;
-			gap: 16px;
-		}
-		.r7-scene-credit > span:last-child {
-			max-width: 18ch;
-			text-align: right;
-		}
-		.r7-manifesto {
-			grid-template-columns: 1fr;
-			gap: 24px;
-		}
-		.r7-manifesto .eyebrow {
-			margin: 0;
-		}
-		.r7-manifesto h2 {
-			max-width: 21ch;
-		}
-		.r7-manifesto > p:last-child {
-			margin: 0;
-		}
-		.r7-paths {
-			grid-template-columns: 1fr;
-			gap: 20px;
-			margin-top: 40px;
-		}
-		.r7-path {
-			padding-top: 22px;
-		}
-		.r7-path p {
-			max-width: 48ch;
-		}
-		.r7-path-link {
-			max-width: 320px;
-		}
-		.r7-workshop-grid {
-			grid-template-columns: 1fr;
-			gap: 44px;
-		}
-		.r7-workshop-copy h2 {
-			max-width: 16ch;
-		}
-		.r7-session {
-			transform: none;
-			padding: 24px;
-		}
-		.r7-library-chapter .section-header {
-			grid-template-columns: 1fr;
-			gap: 28px;
-		}
-		.r7-library-chapter h2 {
-			max-width: 20ch;
-		}
-		.r7-prompt-picks {
-			grid-template-columns: 1fr;
-			gap: 16px;
-		}
-		.r7-prompt-picks > a {
+		.r8-hero {
+			padding: 34px 26px 0;
 			min-height: 0;
-			padding: 26px;
+			border-radius: 22px;
 		}
-		.r7-pick-top {
-			margin-bottom: 20px;
-		}
-		.r7-room-grid {
-			grid-template-columns: 1fr;
-			gap: 44px;
-		}
-		.r7-room-grid h2 {
+		.r8-hero h1 {
+			font-size: clamp(3rem, 8.7vw, 4.5rem);
 			max-width: 17ch;
 		}
-		.r7-room-grid :global(.concept-art picture) {
-			aspect-ratio: 1.4;
+		.r8-hero-copy {
+			padding-bottom: 180px;
+			max-width: 100%;
 		}
-		.r7-intake {
-			padding-block: 24px;
+		.r8-hero-description {
+			max-width: 38ch;
+			font-size: 0.95rem;
 		}
-		.r7-opening h1 br {
+		.r8-hero-art {
+			inset: 0 0 0 10%;
+			mask-image: linear-gradient(180deg, transparent, #000 45%);
+		}
+		.r8-hero-art:after {
+			background:
+				linear-gradient(180deg, #0d1023f7 0%, #0d1023e8 35%, #0d10232b 75%, #0d1023 100%),
+				linear-gradient(90deg, #0d102390, transparent);
+		}
+		.r8-hero-art :global(img) {
+			object-position: 62% bottom;
+		}
+		.r8-hero-art :global(figcaption) {
+			bottom: 72px;
+			max-width: 30ch;
+			font-size: 0.6rem;
+		}
+		.r8-hero-footer {
+			font-size: 0.55rem;
+			gap: 12px;
+			flex-wrap: wrap;
+			justify-content: center;
+			padding-block: 14px;
+		}
+		.r8-hero-footer > span:first-child {
 			display: none;
 		}
-		.r7-opening h1 > span {
-			display: block;
+		.r8-hero-footer i {
+			margin-inline: 6px;
+		}
+		.r8-signature {
+			margin-top: 14px;
+		}
+		.r8-direction-buttons {
+			grid-template-columns: 1fr;
+		}
+		.r8-direction-buttons button {
+			min-height: 62px;
+			border-right: 0;
+			border-bottom: 1px solid var(--line);
+			padding: 14px 18px;
+		}
+		.r8-direction-buttons button:last-child {
+			border-bottom: 0;
+		}
+		.r8-direction-buttons strong {
+			font-size: 1rem;
+		}
+		.r8-direction-preview {
+			grid-template-columns: 1fr;
+			gap: 22px;
+		}
+		.r8-direction-image :global(picture) {
+			aspect-ratio: 1.7;
+		}
+		.r8-direction-copy h3 {
+			max-width: 26ch;
+			font-size: 1.9rem;
+		}
+		.r8-prompt-grid {
+			grid-template-columns: 1fr;
+		}
+		.r8-prompt-pick {
+			padding: 22px;
+		}
+		.r8-pick-top {
+			margin-bottom: 14px;
+		}
+		.r8-prompt-pick p {
+			margin-bottom: 20px;
+		}
+		.r8-people-grid {
+			grid-template-columns: 1fr;
+			gap: 26px;
+		}
+		.r8-people-image :global(picture) {
+			aspect-ratio: 1.4;
+		}
+		.r8-people-copy h2 {
+			max-width: 21ch;
+		}
+		.r8-join-grid {
+			grid-template-columns: 1fr;
+			gap: 20px;
+		}
+		.r8-join h2 {
+			max-width: 22ch;
+		}
+		.r8-library-foot {
+			gap: 12px;
+		}
+		.r8-library-foot p {
+			flex-basis: calc(100% - 90px);
+		}
+		.r8-library-foot a {
+			width: 100%;
+		}
+		.r8-image-stamp {
+			font-size: 1.65rem;
 		}
 	}
-	@media (max-width: 374px) {
-		.r7-opening .eyebrow {
-			max-width: 28ch;
-			margin-inline: auto;
+	@media (max-width: 450px) {
+		.r8-hero {
+			padding: 28px 20px 0;
 		}
-		.r7-opening .button-row {
+		.r8-hero-copy .eyebrow {
+			flex-wrap: wrap;
+			gap: 8px;
+			font-size: 0.55rem;
+		}
+		.r8-hero-copy .eyebrow > span:first-child {
+			font-size: 0.55rem;
+		}
+		.r8-hero h1 {
+			font-size: clamp(2.7rem, 10vw, 3.8rem);
+			line-height: 1.05;
+			letter-spacing: -0.06em;
+		}
+		.r8-hero-copy .button-row {
+			gap: 8px;
+			align-items: flex-start;
 			flex-direction: column;
+			margin-top: 20px;
 		}
-		.r7-scene-card > div {
-			padding: 12px;
+		.r8-hero-copy {
+			padding-bottom: 165px;
 		}
-		.r7-scene-card strong {
-			font-size: 0.85rem;
+		.r8-hero-description {
+			font-size: 0.91rem;
+		}
+		.r8-hero-art {
+			left: 0;
+		}
+		.r8-hero-art :global(figcaption) {
+			right: 16px;
+			bottom: 70px;
+			max-width: 30ch;
+		}
+		.r8-hero-footer {
+			font-size: 0.5rem;
+		}
+		.r8-join :global(.intake-card) {
+			padding: 22px;
+		}
+		.r8-prompt-pick h3 {
+			font-size: 1.3rem;
 		}
 	}
 </style>

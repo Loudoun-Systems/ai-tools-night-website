@@ -72,7 +72,11 @@
 		</div>
 		<div class="route-about-image">
 			<ConceptArt base={images.about.base} alt={images.about.alt} eager />
-			<div class="route-about-image-label" aria-hidden="true">LEARN · BUILD · SHARE · CONNECT</div>
+			<div class="route-about-image-label" aria-hidden="true">
+				{language.locale === 'en'
+					? 'LEARN · BUILD · SHARE · CONNECT'
+					: 'APRENDE · CREA · COMPARTE · CONECTA'}
+			</div>
 		</div>
 	</div>
 </section>
@@ -168,12 +172,16 @@
 <CommunityInvite />
 
 <style>
+	section.chapter {
+		padding-block: 56px;
+	}
+
 	.route-about-title {
 		display: grid;
 		grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.8fr);
-		gap: clamp(2rem, 5vw, 6rem);
+		gap: clamp(24px, 3vw, 36px);
 		align-items: end;
-		margin: 2rem 0 4rem;
+		margin: 20px 0 30px;
 	}
 	.route-about-title h1 {
 		max-width: 17ch;
@@ -202,52 +210,59 @@
 		text-shadow: 0 1px 12px #050714;
 	}
 	.route-about-statement {
-		background: #f4f1e9;
-		color: #172033;
+		--focus-ring: var(--cyan);
+		background:
+			radial-gradient(ellipse at 12% 0%, #8d3cc924, transparent 60%),
+			linear-gradient(110deg, #171330, #101a2d);
+		color: var(--ink);
+		border-block: 1px solid var(--line);
 	}
 	.route-about-manifesto {
 		display: grid;
 		grid-template-columns: minmax(0, 0.55fr) minmax(0, 1.5fr);
-		gap: 4rem;
+		gap: 32px;
 	}
 	.route-about-manifesto > .eyebrow {
-		color: #596174;
-		margin-top: 0.5rem;
+		color: var(--pink, #ff83d4);
+		margin-top: 8px;
 	}
 	.route-about-manifesto h2 {
 		max-width: 18ch;
-		margin-bottom: 2.5rem;
+		margin-bottom: 28px;
 	}
 	.route-about-prose {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: 2.5rem;
+		gap: 28px;
 	}
 	.route-about-prose p {
 		font-size: 1rem;
-		color: #596174;
+		color: var(--muted);
 	}
 	.route-about-values {
-		margin-top: 3rem;
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 0 32px;
+		margin-top: 28px;
 	}
 	.route-about-values article {
 		display: grid;
-		grid-template-columns: 2rem minmax(0, 0.8fr) minmax(0, 1.35fr);
-		gap: 2rem;
+		grid-template-columns: 24px minmax(0, 1fr);
+		gap: 10px 16px;
 		align-items: start;
 		border-top: 1px solid var(--line);
-		padding: 2.5rem 0;
+		padding: 24px 0;
 	}
 	.route-about-value-number {
 		font-size: 0.75rem;
 		color: var(--muted);
-		padding-top: 0.75rem;
+		padding-top: 10px;
 	}
 	.route-about-verb {
-		font-size: clamp(2rem, 4.5vw, 4rem);
+		font-size: clamp(2rem, 3.4vw, 3rem);
 		line-height: 1.1;
-		letter-spacing: -0.055em;
-		font-weight: 500;
+		letter-spacing: -0.05em;
+		font-weight: 600;
 		color: var(--violet);
 	}
 	.route-about-values h3 {
@@ -260,19 +275,18 @@
 		max-width: 52ch;
 	}
 	.route-about-formats {
-		border-top: 1px solid var(--line);
-		border-bottom: 1px solid var(--line);
-		background: var(--surface);
+		border-block: 1px solid var(--line);
+		background: radial-gradient(ellipse at 85% 100%, #1baab523, transparent 60%), #0e142a;
 	}
 	.route-about-format-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		gap: clamp(2rem, 7vw, 7rem);
+		gap: clamp(24px, 3vw, 40px);
 		margin-top: 2.5rem;
 	}
 	.route-about-format-grid article + article {
 		border-left: 1px solid var(--line);
-		padding-left: clamp(2rem, 5vw, 5rem);
+		padding-left: clamp(24px, 3vw, 36px);
 	}
 	.route-about-format-label {
 		font-size: 0.7rem;
@@ -306,7 +320,7 @@
 			gap: 2rem;
 		}
 		.route-about-values article {
-			grid-template-columns: 1.5rem minmax(0, 0.75fr) minmax(0, 1.4fr);
+			grid-template-columns: 24px minmax(0, 1fr);
 			gap: 1.25rem;
 		}
 		.route-about-format-grid article + article {
@@ -315,7 +329,7 @@
 	}
 	@media (max-width: 650px) {
 		.route-about-title {
-			margin-bottom: 2.5rem;
+			margin-bottom: 28px;
 		}
 		.route-about-title h1 {
 			max-width: 17ch;
@@ -351,6 +365,35 @@
 			padding-left: 0;
 			border-top: 1px solid var(--line);
 			padding-top: 2.5rem;
+		}
+	}
+
+	.route-about-image :global(.concept-art picture) {
+		aspect-ratio: 2.2;
+		border: 1px solid rgba(179, 148, 255, 0.4);
+		box-shadow:
+			0 0 64px -28px #9e61ff88,
+			0 18px 42px -24px #000;
+	}
+
+	.route-about-image :global(.concept-art img) {
+		object-position: 50% 44%;
+	}
+
+	.route-about-values article:nth-child(2) .route-about-verb {
+		color: var(--cyan);
+	}
+
+	.route-about-values article:nth-child(3) .route-about-verb {
+		color: var(--pink, #ff83d4);
+	}
+
+	@media (max-width: 650px) {
+		.route-about-values {
+			grid-template-columns: 1fr;
+		}
+		.route-about-image :global(.concept-art picture) {
+			aspect-ratio: 1.4;
 		}
 	}
 </style>

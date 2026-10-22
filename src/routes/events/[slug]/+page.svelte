@@ -125,9 +125,13 @@
 	</section>{/if}
 
 <style>
+	section.chapter {
+		padding-block: 56px;
+	}
+
 	.route-record-heading {
 		max-width: 1000px;
-		margin: 3rem 0 4rem;
+		margin: 28px 0 32px;
 	}
 	.route-record-heading h1 {
 		max-width: 18ch;
@@ -139,7 +143,7 @@
 	.route-record-layout {
 		display: grid;
 		grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr);
-		gap: clamp(2rem, 5vw, 5rem);
+		gap: clamp(24px, 3vw, 36px);
 		align-items: start;
 	}
 	.route-record-image :global(.concept-art) {
@@ -151,24 +155,26 @@
 		margin-top: 1.5rem;
 	}
 	.route-record-facts {
-		padding: 2.25rem;
-		border: 1px solid var(--line);
-		border-radius: 1.5rem;
-		background: var(--surface);
+		padding: 28px;
+		border: 1px solid #9785e85e;
+		border-radius: 20px;
+		background:
+			radial-gradient(ellipse at 100% 0%, #8748b62b, transparent 70%),
+			linear-gradient(140deg, #171c34, #10172a);
 	}
 	.route-record-facts dl {
-		margin: 1.5rem 0 2rem;
+		margin: 20px 0 24px;
 	}
 	.route-record-facts dl > div {
-		padding: 1.25rem 0;
+		padding: 18px 0;
 		border-bottom: 1px solid var(--line);
 	}
 	.route-record-facts dt {
 		font-size: 0.75rem;
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
-		color: var(--muted);
-		margin-bottom: 0.5rem;
+		color: var(--cyan);
+		margin-bottom: 8px;
 	}
 	.route-record-facts dd {
 		margin: 0;
@@ -192,6 +198,17 @@
 		}
 		.route-record-heading h1 {
 			max-width: none;
+		}
+	}
+
+	.route-record-image :global(.concept-art picture) {
+		border: 1px solid #9785e85e;
+		box-shadow: 0 0 64px -30px #8a4dd76b;
+	}
+
+	@media (max-width: 650px) {
+		section.chapter {
+			padding-block: 40px;
 		}
 	}
 </style>
