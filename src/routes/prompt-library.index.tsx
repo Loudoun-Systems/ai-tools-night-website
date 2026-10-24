@@ -233,7 +233,7 @@ function PromptLibrary() {
       )}
       <section className="pb-16" hidden={area !== "prompts"}>
         <div className="shell">
-          <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 border-b border-border pb-5">
+          <div className="grid grid-cols-1 items-center gap-3 border-b border-border pb-5 min-[400px]:grid-cols-[minmax(0,1fr)_auto]">
             <div
               className="flex gap-1"
               role="group"
@@ -259,7 +259,7 @@ function PromptLibrary() {
             </div>
             <Control
               ref={filtersRef}
-              className="filter-mobile btn btn-ghost btn-sm"
+              className="filter-mobile btn btn-ghost btn-sm justify-self-start min-[400px]:justify-self-end"
               aria-haspopup="dialog"
               aria-expanded={drawer}
               onClick={() => setDrawer(true)}

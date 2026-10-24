@@ -29,6 +29,27 @@ for (const route of [
               .map((i) => i.alt),
           ),
       ).toEqual([]);
+      if (route === "/prompt-library" && (page.viewportSize()?.width ?? 1440) < 400) {
+        const saved = await page
+          .getByRole("group", { name: /^(Prompt view|Vista de prompts)$/ })
+          .getByRole("button")
+          .nth(1)
+          .boundingBox();
+        const filters = await page
+          .getByRole("button", { name: /^(Filters|Filtros)/ })
+          .first()
+          .boundingBox();
+        expect(saved).not.toBeNull();
+        expect(filters).not.toBeNull();
+        if (saved && filters) {
+          const intersects =
+            Math.min(saved.x + saved.width, filters.x + filters.width) >
+              Math.max(saved.x, filters.x) &&
+            Math.min(saved.y + saved.height, filters.y + filters.height) >
+              Math.max(saved.y, filters.y);
+          expect(intersects, "Saved and Filters controls must not overlap").toBe(false);
+        }
+      }
       await page.screenshot({ path: testInfo.outputPath(`${language}-top.png`) });
     }
     expect(errors).toEqual([]);
