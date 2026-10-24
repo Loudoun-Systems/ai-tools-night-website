@@ -13,25 +13,38 @@ export function NightStage({
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const motion = matchMedia(
+    const mq = matchMedia(
       "(min-width: 1024px) and (pointer: fine) and (prefers-reduced-motion: no-preference)",
     );
     let visible = true;
     let frame = 0;
+    const clearScene = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      for (const prop of ["--scene-x", "--scene-y", "--scene-scroll"])
+        el.style.removeProperty(prop);
+    };
+    const motion = () => {
+      if (!mq.matches) clearScene();
+    };
+    mq.addEventListener("change", motion);
+    motion();
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry?.isIntersecting ?? false;
     });
     observer.observe(el);
     const move = (e: PointerEvent) => {
-      if (!motion.matches || !visible || document.hidden) return;
+      if (!mq.matches || !visible || document.hidden) return;
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
+        frame = 0;
+        if (!mq.matches || !visible || document.hidden) return;
         el.style.setProperty("--scene-x", `${(e.clientX / innerWidth - 0.5) * 14}px`);
         el.style.setProperty("--scene-y", `${(e.clientY / innerHeight - 0.5) * 10}px`);
       });
     };
     const scroll = () => {
-      if (motion.matches && visible && !document.hidden)
+      if (mq.matches && visible && !document.hidden)
         el.style.setProperty(
           "--scene-scroll",
           `${Math.min(28, Math.max(0, -el.getBoundingClientRect().top * 0.05))}px`,
@@ -39,18 +52,12 @@ export function NightStage({
     };
     el.addEventListener("pointermove", move);
     window.addEventListener("scroll", scroll, { passive: true });
-    const reset = () => {
-      if (motion.matches) return;
-      cancelAnimationFrame(frame);
-      for (const key of ["--scene-x", "--scene-y", "--scene-scroll"]) el.style.removeProperty(key);
-    };
-    motion.addEventListener("change", reset);
     return () => {
       observer.disconnect();
-      cancelAnimationFrame(frame);
+      clearScene();
+      mq.removeEventListener("change", motion);
       el.removeEventListener("pointermove", move);
       window.removeEventListener("scroll", scroll);
-      motion.removeEventListener("change", reset);
     };
   }, []);
   return (
