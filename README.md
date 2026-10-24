@@ -1,38 +1,34 @@
-# We've Got Now — R5 application
+# We've Got Now — R13
 
-SvelteKit 2 + Svelte 5. The completed R5 design/assets are preserved. The default build now targets Haytham's **existing Vercel project**, using the official Node 22 adapter. Repository ownership remains `Loudoun-Systems`.
+The complete bilingual Lovable design is implemented with React, TypeScript and TanStack Start. Nitro produces Vercel Build Output API v3 functions using Node 22. This replaces the old SvelteKit/static presentation while preserving its Git history, legacy URL redirects, workshop registration links and all 37 source prompts.
 
-## Vercel first release
+## Develop and verify
+
+Use Node 22 and Bun 1.3.14:
 
 ```sh
 bun install --frozen-lockfile
-bun run qa
-# With Node 22 on PATH:
-bun run test:vercel
-bun run test:vercel:preview
-```
-
-`bun run build` emits `.vercel/output` and verifies that the actual function bundles exclude local SQLite/Bun/provider implementation. Forms and chat remain honestly disabled in both public preview and production. No database, provider secret or paid public-chat budget is needed to publish the existing design. A local build/test pass is not a hosted Vercel deployment.
-
-See [the exact existing-project Vercel setup and promotion checklist](docs/VERCEL-DEPLOYMENT.md). Record rollback identity and disable automatic custom-domain assignment **before** reconnecting Git. Actual Vercel preview checks must pass before merging/promoting the follow-up PR.
-
-## Retained local fixture/durable implementation
-
-```sh
 bun run dev
-# Explicit Bun-only standalone fixture build:
-bun run build:local
-bun run test:e2e
-bun run test:production
+bun run lint
+bun run check
+bun run test
+bun run build:vercel
+bun run test:http
+bunx playwright install --with-deps chromium
+bun run test:browser
+bun audit
 ```
 
-Local development uses clearly labelled fixtures. The local Bun target retains atomic SQLite idempotency, uncertain-outcome handling, rate limits, multiprocess durability and conservative chat-budget reservations; it is rejected on Vercel. Never replace these with in-memory or ephemeral-disk controls when re-enabling providers later.
+The compiled HTTP checks exercise actual Vercel function output and verify 20 locally hosted image hashes. Browser tests use local output and intercept inquiry sends; they never send real emails. Browser evidence is not proof of a hosted production release.
 
-## Integration safety
+## Content and inquiries
 
-- No fixture is represented as a real submission or AI answer. Disabled UI has no personal-data entry/send control; direct valid API calls return HTTP 503 without receipts/provider activity.
-- Google integration remains retained QA-only code. Current automation exclusions, approved destination mapping and real acknowledgements are prerequisites to any later enabled release. Preserve Forms, response tabs, QR links and follow-up workflows.
-- The bounded US$0.25 / 10-request benchmark approval is not public-chat funding. No visitor-provider call is required or made by the compatibility tests.
-- Workshop dates/prices and paid openings remain unconfirmed; content is not changed by this adaptation.
+- Source content is in `src/content`; supporting images are materialized in `public/__l5e`. Do not replace confirmed workshop facts or registration URLs with invented details.
+- The birthday workflow runs a 23-second loop without playback buttons. Reduced-motion preferences receive a readable static result.
+- Poster rotation waits for decoded images; controls are below the artwork. Reduced-motion preferences stop automatic motion.
+- Workshop registration stays on the existing Google Form / Meetup routes. No database or Sheet is required or created.
+- Production inquiries use a fixed server-to-server proxy to the existing owned Lovable Gmail gateway. It sends HTML/plain-text tickets to `gus@myguygus.com`, CC `haytham@lsmp.video`. Credentials stay in the gateway; none are copied to GitHub or Vercel. The gateway must stay published and its Gmail connection enabled.
+- The inquiry gateway has bounded, best-effort per-instance deduplication and rate limits. It is not durable/shared exactly-once processing. Ambiguous sends are never automatically retried.
+- Vercel Preview rejects inquiries with HTTP 503. Automated checks use fake transports. The visitor chatbot is not reintroduced.
 
-`docs/PRODUCTION-RUNBOOK.md` links the current Vercel procedure. `docs/STAGING-RUNBOOK.md` is historical optional Bun-host guidance, not a required hosting path. `docs/PRIVATE-RUNTIME.md` covers local private credential mapping and read-only preflight, not Vercel configuration.
+See [the production runbook](docs/VERCEL-DEPLOYMENT.md) for the existing-project release and rollback procedure.

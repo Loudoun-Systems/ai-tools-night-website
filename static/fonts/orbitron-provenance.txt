@@ -1,7 +1,0 @@
-Orbitron — locally hosted display typeface.
-Copyright 2018 The Orbitron Project Authors (https://github.com/theleagueof/orbitron)
-License: SIL Open Font License 1.1; see orbitron-OFL.txt.
-Metadata: https://cdn.jsdelivr.net/npm/@fontsource/orbitron@5.3.0/metadata.json
-Binary: https://cdn.jsdelivr.net/npm/@fontsource-variable/orbitron@5.2.8/files/orbitron-latin-wght-normal.woff2
-License: https://cdn.jsdelivr.net/npm/@fontsource/orbitron@5.3.0/LICENSE
-Downloaded for self-hosting; no runtime font CDN or tracking request.
