@@ -48,12 +48,9 @@ const steps = [
 ];
 
 const chunks = [
-  L("Happy birthday, Alex! 🎉", "¡Feliz cumpleaños, Alex! 🎉"),
-  L(
-    "Thank you for the thoughtful design reviews this year.",
-    "Gracias por tus revisiones de diseño tan cuidadosas este año.",
-  ),
-  L("Enjoy your day — from the whole team.", "Disfruta tu día, de parte de todo el equipo."),
+  L("A personal birthday greeting.", "Un saludo de cumpleaños personal."),
+  L("A thoughtful note that reflects your relationship.", "Un mensaje que refleja tu relación."),
+  L("Your sign-off, ready for review.", "Tu despedida, lista para revisar."),
 ];
 
 export function stepAt(time: number) {
@@ -203,20 +200,15 @@ export function BirthdayFlow() {
               <span>{t(L("Relation", "Relación"))}</span>
             </div>
             <div className="sheet-row sheet-pick" data-on={reached(0)}>
-              <span>Alex Example</span>
-              <span>Nov 12</span>
-              <span>{t(L("Teammate", "Compañero"))}</span>
-            </div>
-            <div className="sheet-row sheet-dim">
-              <span>Sam Sample</span>
-              <span>Mar 3</span>
-              <span>{t(L("Friend", "Amistad"))}</span>
+              <span>{t(L("[Name]", "[Nombre]"))}</span>
+              <span>{t(L("[Birthday]", "[Cumpleaños]"))}</span>
+              <span>{t(L("[Relationship]", "[Relación]"))}</span>
             </div>
           </div>
           <div className="flow-chips" data-moving={active === 0 && running}>
-            <span>Alex</span>
-            <span>Nov 12</span>
-            <span>{t(L("Teammate", "Compañero"))}</span>
+            <span>{t(L("[Name]", "[Nombre]"))}</span>
+            <span>{t(L("[Birthday]", "[Cumpleaños]"))}</span>
+            <span>{t(L("[Relationship]", "[Relación]"))}</span>
           </div>
         </div>
         <div className="flow-link" data-on={reached(1)}>
@@ -231,7 +223,7 @@ export function BirthdayFlow() {
               <path d="M12 56c3-12 11-18 20-18s17 6 20 18" />
             </svg>
           </div>
-          <p className="flow-meta">alex-photo.jpg · {t(L("selected by you", "elegida por ti"))}</p>
+          <p className="flow-meta">{t(L("Your selected photo", "Tu foto elegida"))}</p>
         </div>
         <div className="flow-link" data-on={reached(2)}>
           <span className="flow-packet" style={packet(1)} />
@@ -240,7 +232,7 @@ export function BirthdayFlow() {
         <div className="flow-module" data-on={active === 2} data-reached={reached(2)}>
           <p className="flow-module-title">{t(L("AI message", "mensaje con IA"))}</p>
           <p className="flow-context" data-on={reached(2)}>
-            {t(L("Context: Alex · teammate · Nov 12", "Contexto: Alex · compañero · 12 nov."))}
+            {t(L("Your chosen contact and relationship", "El contacto y la relación que elegiste"))}
           </p>
           <div className="flow-message">
             {chunks.map((c, k) => (
@@ -259,11 +251,11 @@ export function BirthdayFlow() {
           <dl className="draft-fields">
             <div>
               <dt>{t(L("To", "Para"))}</dt>
-              <dd>alex@example.com</dd>
+              <dd>{t(L("[Contact email]", "[Correo del contacto]"))}</dd>
             </div>
             <div>
               <dt>{t(L("Subject", "Asunto"))}</dt>
-              <dd>{t(L("Happy birthday, Alex!", "¡Feliz cumpleaños, Alex!"))}</dd>
+              <dd>{t(L("Happy birthday!", "¡Feliz cumpleaños!"))}</dd>
             </div>
           </dl>
           <div className="draft-body" data-on={reached(3)}>
@@ -290,8 +282,8 @@ export function BirthdayFlow() {
           <span className="sr-only">
             {t(
               L(
-                " Final result: an unsent email draft for Alex Example, ready for human review.",
-                " Resultado final: un borrador de correo sin enviar para Alex Example, listo para revisión humana.",
+                " Final result: an unsent birthday draft, ready for human review.",
+                " Resultado final: un borrador de cumpleaños sin enviar, listo para revisión humana.",
               ),
             )}
           </span>
