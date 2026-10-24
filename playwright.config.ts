@@ -1,39 +1,28 @@
-import { defineConfig, devices } from '@playwright/test';
-import { resolve } from 'node:path';
-
-const scratch = process.env.WGN_TEST_SCRATCH ?? resolve(process.cwd(), '../scratch');
-const port = process.env.WGN_TEST_PORT ?? '4176';
-const origin = `http://127.0.0.1:${port}`;
-const runId = `${Date.now()}-${process.pid}`;
-const databasePath = resolve(scratch, `playwright-${runId}.sqlite`);
+import { defineConfig } from "@playwright/test";
 
 export default defineConfig({
-	testDir: './tests/e2e',
-	testIgnore: ['**/production.spec.ts', '**/vercel.spec.ts', '**/r6.spec.ts'],
-	fullyParallel: false,
-	workers: 1,
-	retries: 0,
-	reporter: [['list'], ['json', { outputFile: '../scratch/playwright-results.json' }]],
-	use: {
-		baseURL: origin,
-		trace: 'retain-on-failure',
-		screenshot: 'only-on-failure',
-		permissions: ['clipboard-read', 'clipboard-write']
-	},
-	projects: [
-		{
-			name: 'desktop-chromium',
-			use: { ...devices['Desktop Chrome'], viewport: { width: 1440, height: 900 } }
-		},
-		{
-			name: 'mobile-chromium',
-			use: { ...devices['Desktop Chrome'], viewport: { width: 390, height: 844 }, isMobile: true }
-		}
-	],
-	webServer: {
-		command: `WGN_ENV=testing WGN_FORMS_MODE=fixture WGN_CHAT_MODE=fixture WGN_ALLOWED_ORIGINS=${origin} WGN_SQLITE_PATH=${JSON.stringify(databasePath)} WGN_RATE_LIMIT_SALT=playwright-${runId} ORIGIN=${origin} HOST=127.0.0.1 PORT=${port} bun run build/index.js`,
-		url: `${origin}/healthz`,
-		reuseExistingServer: false,
-		timeout: 30_000
-	}
+  testDir: "./tests/browser",
+  timeout: 65_000,
+  expect: { timeout: 10_000 },
+  fullyParallel: false,
+  workers: 1,
+  retries: process.env["CI"] ? 1 : 0,
+  reporter: [["list"], ["html", { open: "never" }]],
+  use: {
+    baseURL: "http://127.0.0.1:4173",
+    browserName: "chromium",
+    reducedMotion: "reduce",
+    trace: "retain-on-failure",
+  },
+  projects: [
+    { name: "desktop", use: { viewport: { width: 1440, height: 1000 } } },
+    { name: "tablet", use: { viewport: { width: 834, height: 1112 } } },
+    { name: "mobile", use: { viewport: { width: 375, height: 900 } } },
+    { name: "narrow", use: { viewport: { width: 320, height: 900 } } },
+  ],
+  webServer: {
+    command: "node ops/serve-vercel-output.mjs",
+    url: "http://127.0.0.1:4173/healthz",
+    reuseExistingServer: false,
+  },
 });
