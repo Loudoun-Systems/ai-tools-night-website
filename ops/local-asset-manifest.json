@@ -1,0 +1,125 @@
+{
+  "source_origin": "https://now-we-make-together.lovable.app",
+  "assets": [
+    {
+      "url": "/__l5e/assets-v1/0c15c8c7-fb16-4a66-9ad1-fd29eb791a63/wgn-logo-256.webp",
+      "path": "public/__l5e/assets-v1/0c15c8c7-fb16-4a66-9ad1-fd29eb791a63/wgn-logo-256.webp",
+      "bytes": 15486,
+      "sha256": "ea860917651500967f5cb1f79c66e3f61197bf2a32a3e8be96403904ca638546"
+    },
+    {
+      "url": "/__l5e/assets-v1/201b185c-bee4-42e3-ae70-915412fad3a5/poster-next-invitation-900.webp",
+      "path": "public/__l5e/assets-v1/201b185c-bee4-42e3-ae70-915412fad3a5/poster-next-invitation-900.webp",
+      "bytes": 104960,
+      "sha256": "0225577dac56a9dd17febe9a1f30c1c1edefe16424a84ebf0c993450728c286a"
+    },
+    {
+      "url": "/__l5e/assets-v1/3fe0e45d-a778-4d9b-8425-2954036cdbc7/learn-build-share-connect-768.webp",
+      "path": "public/__l5e/assets-v1/3fe0e45d-a778-4d9b-8425-2954036cdbc7/learn-build-share-connect-768.webp",
+      "bytes": 36774,
+      "sha256": "a4be50c898394287d9e8608f7075089bd75352c397e4460e4a334f6fd1dd3e27"
+    },
+    {
+      "url": "/__l5e/assets-v1/4157e985-8b94-4912-9ba7-31e796029ee6/careers-builders-768.webp",
+      "path": "public/__l5e/assets-v1/4157e985-8b94-4912-9ba7-31e796029ee6/careers-builders-768.webp",
+      "bytes": 48636,
+      "sha256": "2a1e43d31c566863ea539ae805284158b822654be3fd6db0dced6a7af1fca2bd"
+    },
+    {
+      "url": "/__l5e/assets-v1/4db36afc-dfcf-450c-a161-adb364a5ee46/workshop-hands-on-768.webp",
+      "path": "public/__l5e/assets-v1/4db36afc-dfcf-450c-a161-adb364a5ee46/workshop-hands-on-768.webp",
+      "bytes": 29340,
+      "sha256": "69e7fd7a04f5558c11e512fa70675e6f020583283a5457256bfc428b07549fdd"
+    },
+    {
+      "url": "/__l5e/assets-v1/50bf9815-e881-4390-8e18-8f0dddd6267c/community-live-demo-768.webp",
+      "path": "public/__l5e/assets-v1/50bf9815-e881-4390-8e18-8f0dddd6267c/community-live-demo-768.webp",
+      "bytes": 37768,
+      "sha256": "963f117ff63489181e5ec3b4301d56fb817fb4ea977245615156a3c26d779fee"
+    },
+    {
+      "url": "/__l5e/assets-v1/58c066e4-b580-4e92-8505-229d82f0171c/learn-build-share-connect-1280.webp",
+      "path": "public/__l5e/assets-v1/58c066e4-b580-4e92-8505-229d82f0171c/learn-build-share-connect-1280.webp",
+      "bytes": 79132,
+      "sha256": "fe5c2dbc0f772a2cef39fa996571d809c780bd63c3fda0ddbc11dd36e1bff96e"
+    },
+    {
+      "url": "/__l5e/assets-v1/5a334572-8e7c-48d3-a6c9-1cc023674b49/wgn-hero-1536.webp",
+      "path": "public/__l5e/assets-v1/5a334572-8e7c-48d3-a6c9-1cc023674b49/wgn-hero-1536.webp",
+      "bytes": 154792,
+      "sha256": "2eefb71998c3759f9369c4076053e063c1ce71729025aa42aa2dc0c590489dd2"
+    },
+    {
+      "url": "/__l5e/assets-v1/5f2eab7e-7f73-493f-9ad3-138ba32b5870/poster-not-just-networking-900.webp",
+      "path": "public/__l5e/assets-v1/5f2eab7e-7f73-493f-9ad3-138ba32b5870/poster-not-just-networking-900.webp",
+      "bytes": 138068,
+      "sha256": "4b2caae4f898f38d01e8bf9521273da296626f4ae41020c947d74128839c0d76"
+    },
+    {
+      "url": "/__l5e/assets-v1/630f4508-4b8f-44eb-97e2-7efb8e4ce598/project-sharing-768.webp",
+      "path": "public/__l5e/assets-v1/630f4508-4b8f-44eb-97e2-7efb8e4ce598/project-sharing-768.webp",
+      "bytes": 27924,
+      "sha256": "959f9b5a2f43adda4166e6275c7dc0385d7e72abef25957fb27e6d64a9fa8369"
+    },
+    {
+      "url": "/__l5e/assets-v1/781a4c62-22d1-40dc-9ac6-e7d1cc99460d/community-live-demo-1280.webp",
+      "path": "public/__l5e/assets-v1/781a4c62-22d1-40dc-9ac6-e7d1cc99460d/community-live-demo-1280.webp",
+      "bytes": 76478,
+      "sha256": "66e243d9decdda6c8dfbac9000c2e966669852e30d68610240dd6a9edcc69fdc"
+    },
+    {
+      "url": "/__l5e/assets-v1/8589bf5b-7bab-4d80-bee7-574ad347683f/prompt-library-768.webp",
+      "path": "public/__l5e/assets-v1/8589bf5b-7bab-4d80-bee7-574ad347683f/prompt-library-768.webp",
+      "bytes": 29324,
+      "sha256": "96e25043ed99bfb0ee7d6fe947efa4fce7ac04034cad35a08c822157cc292506"
+    },
+    {
+      "url": "/__l5e/assets-v1/86f1c338-5f83-435c-8a8a-62042e9e675c/workshop-social-1200.webp",
+      "path": "public/__l5e/assets-v1/86f1c338-5f83-435c-8a8a-62042e9e675c/workshop-social-1200.webp",
+      "bytes": 78030,
+      "sha256": "171c98e6e452a75802ff706c9026a26b60b3ebeb2dc2ba159928154913a844cb"
+    },
+    {
+      "url": "/__l5e/assets-v1/957a50c3-5b22-41da-a679-bae3ca285fb1/workshop-cover-900.webp",
+      "path": "public/__l5e/assets-v1/957a50c3-5b22-41da-a679-bae3ca285fb1/workshop-cover-900.webp",
+      "bytes": 50178,
+      "sha256": "99ee29f721e4cccaf7398bd5166b9d553642da61130eddf606628eab506357dc"
+    },
+    {
+      "url": "/__l5e/assets-v1/9b92b1f9-38a0-40c3-8924-b6d0fb99e81c/workshop-hands-on-1280.webp",
+      "path": "public/__l5e/assets-v1/9b92b1f9-38a0-40c3-8924-b6d0fb99e81c/workshop-hands-on-1280.webp",
+      "bytes": 59528,
+      "sha256": "3af32433bdb63360f15aa215cfc38d075e58d587478f2462356c85b3ff3b7840"
+    },
+    {
+      "url": "/__l5e/assets-v1/b9fdb18f-0747-431b-b738-1871c12b11e9/prompt-library-1280.webp",
+      "path": "public/__l5e/assets-v1/b9fdb18f-0747-431b-b738-1871c12b11e9/prompt-library-1280.webp",
+      "bytes": 67602,
+      "sha256": "3cd8508125e7fc96eeabb5df1a192709283d05547407ed14cfda054e96cd2b45"
+    },
+    {
+      "url": "/__l5e/assets-v1/e67b223e-8cb5-4610-8850-17db5b007e85/careers-builders-1280.webp",
+      "path": "public/__l5e/assets-v1/e67b223e-8cb5-4610-8850-17db5b007e85/careers-builders-1280.webp",
+      "bytes": 107436,
+      "sha256": "4b23ecfd7133a1ae521173dd8045058526868cb4fd38ec8db5d8b189ff1e1c7c"
+    },
+    {
+      "url": "/__l5e/assets-v1/e783afb3-a51f-4490-a766-549ad0092698/workshop-cover-1672.webp",
+      "path": "public/__l5e/assets-v1/e783afb3-a51f-4490-a766-549ad0092698/workshop-cover-1672.webp",
+      "bytes": 129432,
+      "sha256": "6fc35ebbc10118faf4876bb58de821559fa497731546a8a717c4f411cf98e4d2"
+    },
+    {
+      "url": "/__l5e/assets-v1/e9bfa16c-5209-4636-8516-ee5027892d0f/poster-our-dna-900.webp",
+      "path": "public/__l5e/assets-v1/e9bfa16c-5209-4636-8516-ee5027892d0f/poster-our-dna-900.webp",
+      "bytes": 159684,
+      "sha256": "e6bfc70b2708d81938653fbfc77887e11a09ab2c1ea213bdf5bd0d2124edf0a9"
+    },
+    {
+      "url": "/__l5e/assets-v1/f4b1ba67-1bed-401d-af97-ebdb59e92fb9/project-sharing-1280.webp",
+      "path": "public/__l5e/assets-v1/f4b1ba67-1bed-401d-af97-ebdb59e92fb9/project-sharing-1280.webp",
+      "bytes": 58986,
+      "sha256": "c0394a3c2864b229a2dadb38f7a605b063616d9f6e9f66203b827d0aab300e57"
+    }
+  ]
+}

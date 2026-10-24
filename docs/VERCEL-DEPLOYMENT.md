@@ -1,88 +1,32 @@
-# WGN — existing Vercel project deployment
+# R13 — existing Vercel project release
 
-## Scope and release gate
+Target repository: `Loudoun-Systems/ai-tools-night-website`.
+Target existing project: Haytham's `ai-tools-night-website`.
+Target public origin: `https://wevegotnow.com`.
 
-Canonical repo: `Loudoun-Systems/ai-tools-night-website`. PR #1 is merged. Use Haytham's **existing** `ai-tools-night-website` Vercel project and retain its root/www domains and previous production deployment. Do not transfer/fork the repository, create a replacement project, purchase a plan/database, or change DNS merely to connect Git.
+Production release is authorized by Haytham's October 24 request. Access must still be available; authorization does not provide credentials or bypass organization restrictions. No new project, paid upgrade, database, DNS change or repository transfer is required.
 
-This follow-up adapts the completed design to Node serverless hosting. Preparing/passing GitHub CI or locally executing adapter output is **not an actual Vercel preview or production deployment**. Merge/promotion must wait for actual Vercel preview acceptance. No VPS/SSH access is needed.
+## Preflight and deploy
 
-## Implementation and storage boundary
+1. Use an implementation-authorized session authenticated for this organization repository and existing Vercel project. Fetch current `main`; inspect concurrent changes before merging. Preserve the prior serving Vercel deployment ID/URL for rollback.
+2. Import the verified R13 Git bundle or branch without rebuilding the design. Check it descends from the recorded parent. If main advanced, resolve against current source and rerun checks; do not overwrite another contributor's work.
+3. Project settings: Framework **Other** (repository `framework: null`), root repository root, Node **22.x**, install **`bun install --frozen-lockfile`**, build **`bun run build:vercel`**, Output Directory override **OFF**. Remove old Vite/SvelteKit/output overrides from the project. Nitro emits `.vercel/output` automatically. Enable access to Vercel System Environment Variables so runtime `VERCEL`/`VERCEL_ENV` and `VERCEL_GIT_COMMIT_SHA` are available. Only the production environment may send inquiries.
+4. Run all README checks and both GitHub CI jobs. Review the actual Vercel deployment output, not only GitHub status.
+5. Open a PR, merge the verified branch into main and allow the existing Vercel Git integration to build Production. If auto-domain assignment is off, promote that exact successful deployment to the existing production domains. Do not change DNS or create a second project.
+6. Confirm `/healthz` reports `release: wgn-r13` and the merged deployed SHA. Check HTTPS root/www, EN/ES, home, community, workshops, event detail, prompt library, careers, contact and legacy redirects on public production.
+7. Inspect actual desktop/mobile screenshots: 23-second birthday sequence loops with no playback UI/banner; poster autoplay/controls/readable copy; brand colors; Community spacing; no overflow/broken assets. Check normal and reduced motion.
+8. Confirm registration links still lead to existing Google Form / Meetup. With authorization, send one clearly labelled QA contact inquiry, verify ticket in Gus's mailbox and CC Haytham, and do not retry an unknown outcome. A successful API response alone is not proof of inbox delivery.
 
-- Default `bun run build` uses official `@sveltejs/adapter-vercel` **6.3.4**, compatible with the existing SvelteKit 2 line. Adapter 7 requires SvelteKit 3 and is intentionally not used.
-- Runtime is `nodejs22.x`; `engines.node` is `22.x`. Bun 1.3.14 remains the package manager/test runner. `bun.lock` is canonical; the stale legacy npm lock was removed.
-- `$integrations` resolves at build time to `integrations.disabled.ts`. That module imports no provider/database code. HTTP hashing is a separate pure Node module. Forms/chat handlers return honest HTTP 503 unavailable responses after existing request safety checks, without receipts, answers, private-file reads, provider requests or SQLite writes.
-- `ops/verify-vercel-output.mjs` recursively checks all unique generated function bundles, their runtime metadata, and absence of retained SQLite/provider implementation. A failed assertion fails the build.
-- The old root `api/chat.js` and `api/submit.js` are preserved under `legacy-static/api/`, not exposed as independent Vercel functions. `.vercelignore` also excludes the retired static implementation and local/private artifacts.
-- `WGN_BUILD_TARGET=bun` is an **explicit local-only** opt-in used by `build:local` and the original fixture suite. The config rejects it when `VERCEL=1`. The retained SQLite constructor independently refuses Vercel. No in-memory replacement or ephemeral `/tmp` database was introduced.
-- Re-enabling integrations later requires separately verified shared durable storage, provider/automation approvals, real destination acknowledgements and public-chat funding. Existing local durability/idempotency/budget tests remain intact.
-- Original logo, hero, six supporting images, bilingual content and visual components are unchanged. Workshop dates/prices remain pending.
+## Runtime dependencies and limits
 
-## Exact next human action — before reconnecting Git
+No Google/OpenRouter secrets or SQLite path belong in Vercel for this release. On Vercel Production the API forwards validated requests to `https://now-we-make-together.lovable.app/api/public/inquiry` using one 14-second attempt. That already-owned published Lovable app retains the Gmail connection. Preview returns unavailable and does not send mail. Keep the gateway published; if it is unavailable, show an honest error rather than success. No incoming cookies/auth headers or caller-selected URLs are forwarded.
 
-1. Sign into Vercel as Haytham. Open the account/team containing the EXISTING `ai-tools-night-website` project. In **Settings → Domains**, confirm `wevegotnow.com` and `www.wevegotnow.com` belong there. Privately record the current production deployment URL/ID and domain/redirect assignments for rollback. Do not delete or rebuild it.
-2. Verify the existing plan against actual use, not repository ownership or a brand name. The owner has clarified that WGN is intended for noncommercial use. This release has no active payments, sales/affiliate links or advertisements; workshop dates/pricing remain unconfirmed, not a sale or booking. Reassessment against Vercel's current Hobby/Fair Use policy supports proceeding on that declared noncommercial basis, not an assertion of Vercel-issued approval. Reassess before monetization, paid workshop promotion, or other financial-gain activity (including compensated site production). No paid upgrade, trial or purchase is authorized; stop if an actual platform restriction requires one.
-3. Before reconnecting Git, open **Settings → Environments → Production → Branch Tracking** and turn **Auto-assign Custom Production Domains OFF**, if available. Record the selected behavior. If unavailable, do not reconnect/push main into an uncontrolled automatic cutover: use authorized normal local Vercel sign-in and the documented staged-production CLI flow instead.
-4. Resolve GitHub access if needed: Haytham's Vercel-connected GitHub identity must be an Owner/Member of Loudoun-Systems with repository access, not only an Outside Collaborator. A Loudoun-Systems owner installs/approves the Vercel GitHub app with access to **only this repository**. Do not move/copy the repository as a workaround.
-5. Then use **Settings → Git → Connected Git Repository → Connect** and select `Loudoun-Systems/ai-tools-night-website`. Retain production branch `main`. Request a **Preview deployment of `feat/wgn-vercel-compatibility`**, not a production-domain deployment of old main.
+The gateway's deduplication/rate protection is per instance and memory-bound. It is not a persistent ticket database or a guarantee against duplicates after a restart. No new database or spreadsheet has been provisioned.
 
-## Committed build settings
+## Rollback
 
-| Setting           | Required value                                                               |
-| ----------------- | ---------------------------------------------------------------------------- |
-| Framework preset  | SvelteKit (current preset, JSON slug `sveltekit-1`, NOT legacy SvelteKit v0) |
-| Root directory    | Repository root (`.`)                                                        |
-| Node.js version   | 22.x                                                                         |
-| Install command   | `bun install --frozen-lockfile`                                              |
-| Build command     | `bun run build`                                                              |
-| Output directory  | Leave override OFF; adapter manages `.vercel/output`                         |
-| Start command     | None — do NOT use `build/index.js`, PM2 or the local preview command         |
-| Production branch | `main`, custom-domain auto-assignment initially OFF                          |
+If the exact public release fails, use Vercel to promote the recorded previously serving deployment back to the same production domains. Do not delete it, change DNS, or rewrite Git history. Verify the restored public site and record the failed/new/restored deployment IDs. Revert application changes by normal Git commit if needed. Keep the separate Lovable Gmail gateway live unless its own integration is the verified cause.
 
-`vercel.json` commits the framework/install/build settings. Remove only the verified obsolete dashboard overrides (blank build, output `.`, legacy framework/static serving). Do not add `bunVersion`/Bun Functions beta configuration. Enable Vercel's automatic System Environment Variables exposure; Git metadata must reach the functions for release identity.
+## Evidence
 
-## Nonsecret environment variables and scopes
-
-Set these explicitly in Vercel's UI; they need no secret values:
-
-| Variable               | Production   | Preview    |
-| ---------------------- | ------------ | ---------- |
-| `WGN_ENV`              | `production` | `staging`  |
-| `WGN_FORMS_MODE`       | `disabled`   | `disabled` |
-| `WGN_CHAT_MODE`        | `disabled`   | `disabled` |
-| `WGN_CHAT_ENABLED`     | `false`      | `false`    |
-| `WGN_CHAT_KILL_SWITCH` | `true`       | `true`     |
-| `WGN_ALLOWED_ORIGINS`  | Omit/empty   | Omit/empty |
-
-Do NOT set `WGN_BUILD_TARGET=bun`. No SQLite path, rate-limit salt, private local runtime file, Google credential, Sheet ID, OpenRouter key, chat-model flag or benchmark-cap override is needed. Preserve existing secrets privately; do not copy them into this release or logs. Closed integrations do not consume provider budget.
-
-Vercel supplies `VERCEL=1`, `VERCEL_ENV`, and `VERCEL_GIT_COMMIT_SHA`; do not invent/manual-pin these values. Platform scope takes precedence over stale `WGN_ENV`. Both Vercel preview and production force disabled UI modes even if old fixture/provider flags remain. `/healthz` prefers a valid Vercel Git SHA over an old `WGN_RELEASE_SHA`; manually deployed non-Git candidates may explicitly supply their exact reviewed `WGN_RELEASE_SHA`. Missing/invalid identity reports `unverified`, not a made-up release.
-
-Origin handling: the official adapter uses the incoming deployment request, so same-origin API validation works on each preview URL and on the live domain without wildcard origins. The local Bun-only `ORIGIN` variable is not a Vercel start setting. Production canonical/OG/sitemap URLs intentionally remain `https://wevegotnow.com`, including on noindex previews. The old `WGN_PUBLIC_ORIGIN` example is not read by current SEO code and is not required; setting it alone cannot change canonicals. Do not invent a preview wildcard/secret to solve origin checks. Preview gets staging/noindex notices; actual production gets neither staging banner nor staging-only noindex.
-
-## Required actual Vercel preview acceptance
-
-After account/Git connection, open the PR preview or use **Deployments → Create Deployment** with this adaptation branch. Capture its actual deployment URL, environment, Git SHA, framework/runtime and build log. Require build success including the artifact isolation assertion.
-
-At that URL verify: `/healthz` exact branch SHA, staging scope, both modes disabled; all 19 public routes; dynamic event/prompt routes; all legacy 308 redirects with queries; sitemap/robots/assets; desktop/mobile images and no horizontal overflow; EN/ES persistence; prompt search/copy/edit; unavailable form/chat UI without PII entry; direct API HTTP 503 without fake receipts/answers. Confirm no retired `/api/submit` endpoint. Do not submit synthetic data into a real provider or call paid chat. Local tests are not proof of Vercel's hosting/edge/domain behavior.
-
-Only after GitHub checks AND actual preview pass, merge the follow-up PR under existing release authorization. Build the exact merged SHA as a Production-environment deployment while domain auto-assignment stays OFF. Verify its own deployment URL, exact health SHA, production indexing/banner state, routes/assets/UI. Then promote that tested deployment to Current/Production in the SAME project. Verify root/www HTTPS, canonical redirects and exact live health SHA. Preserve current DNS unless Vercel reports a verified domain-specific mismatch; preserve mail/unrelated records.
-
-If any live acceptance fails, immediately reassign/promote the captured previous working deployment in this project; restore only changed website-specific routing to captured values and verify externally. Keep both old/new deployment evidence. Merge alone is not deployment.
-
-## Reproducible local/CI checks
-
-```sh
-bun install --frozen-lockfile
-bun run qa
-# Node 22 must be on PATH for the actual generated-handler tests:
-bun run test:vercel
-bun run test:vercel:preview
-# Retained local fixtures/durable implementation, deliberately separate:
-bun run build:local
-bun run test:e2e
-bun run test:production
-```
-
-The Vercel tests execute the actual generated Vercel Fetch handler under Node 22 through a loopback-only QA shim, with outbound fetch disabled, no private credentials, conflicting activation flags and a database path that must never be created. The shim serves emitted static files but does not emulate Vercel edge routing, TLS, plan limits or deployments. Node checks are necessary compatibility evidence, not a hosted preview.
-
-Official references: https://svelte.dev/docs/kit/adapter-vercel ; https://vercel.com/docs/frameworks/full-stack/sveltekit ; https://vercel.com/docs/deployments/promoting-a-deployment ; https://vercel.com/docs/git/vercel-for-github ; https://vercel.com/docs/plans/hobby . Framework slug verified against Vercel's published framework catalog (`packages/frameworks/src/frameworks.ts`).
+Distinguish local tests, auxiliary Lovable visual review and actual Vercel production receipts. Record exact commit, Vercel deployment ID/URL, public health response, screenshots, API status and mailbox readback (if tested). Never report a release completed solely because the PR merged.

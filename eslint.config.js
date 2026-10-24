@@ -1,53 +1,40 @@
-import js from '@eslint/js';
-import tsPlugin from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
-import sveltePlugin from 'eslint-plugin-svelte';
-import svelteParser from 'svelte-eslint-parser';
-import prettierConfig from 'eslint-config-prettier';
-import globals from 'globals';
+import js from "@eslint/js";
+import eslintPluginPrettier from "eslint-plugin-prettier/recommended";
+import globals from "globals";
+import reactHooks from "eslint-plugin-react-hooks";
+import reactRefresh from "eslint-plugin-react-refresh";
+import tseslint from "typescript-eslint";
 
-/** @type {import('eslint').Linter.Config[]} */
-export default [
-	js.configs.recommended,
-	{
-		files: ['**/*.{js,mjs,cjs,ts}'],
-		languageOptions: {
-			parser: tsParser,
-			parserOptions: { sourceType: 'module', ecmaVersion: 2022 },
-			globals: { ...globals.browser, ...globals.node, ...globals.es2022 }
-		},
-		plugins: { '@typescript-eslint': tsPlugin },
-		rules: { ...tsPlugin.configs.recommended.rules, 'no-undef': 'off' }
-	},
-	{
-		files: ['**/*.svelte'],
-		languageOptions: {
-			parser: svelteParser,
-			parserOptions: { parser: tsParser, extraFileExtensions: ['.svelte'] },
-			globals: {
-				...globals.browser,
-				...globals.es2022,
-				$state: 'readonly',
-				$derived: 'readonly',
-				$props: 'readonly'
-			}
-		},
-		processor: sveltePlugin.processors['.svelte'],
-		plugins: { svelte: sveltePlugin },
-		rules: { ...sveltePlugin.configs.recommended.rules, 'no-undef': 'off' }
-	},
-	prettierConfig,
-	{
-		ignores: [
-			'.vercel/**',
-			'.svelte-kit/**',
-			'build/**',
-			'node_modules/**',
-			'legacy-static/**',
-			'api/**',
-			'js/**',
-			'server.js',
-			'run.mjs'
-		]
-	}
-];
+export default tseslint.config(
+  { ignores: ["dist", ".output", ".vinxi", ".vercel", "playwright-report", "test-results"] },
+  {
+    extends: [js.configs.recommended, ...tseslint.configs.recommended],
+    files: ["**/*.{ts,tsx}"],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+    },
+    plugins: {
+      "react-hooks": reactHooks,
+      "react-refresh": reactRefresh,
+    },
+    rules: {
+      ...reactHooks.configs.recommended.rules,
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            {
+              name: "server-only",
+              message:
+                "TanStack Start does not use the Next.js `server-only` package. Rename the module to `*.server.ts` or mark it with `@tanstack/react-start/server-only`.",
+            },
+          ],
+        },
+      ],
+      "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
+  eslintPluginPrettier,
+);
