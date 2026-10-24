@@ -25,6 +25,7 @@ import { Route as LegacyReceiptRouteImport } from './routes/legacy-receipt'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PromptLibraryDothtmlRouteImport } from './routes/prompt-library[.]html'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SuccessRouteImport } from './routes/success'
 import { Route as SuccessDothtmlRouteImport } from './routes/success[.]html'
 import { Route as TermsRouteImport } from './routes/terms'
@@ -115,6 +116,11 @@ const PromptLibraryDothtmlRoute = PromptLibraryDothtmlRouteImport.update({
   path: '/prompt-library.html',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SuccessRoute = SuccessRouteImport.update({
   id: '/success',
   path: '/success',
@@ -178,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/prompt-library.html': typeof PromptLibraryDothtmlRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success': typeof SuccessRoute
   '/success.html': typeof SuccessDothtmlRoute
   '/terms': typeof TermsRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/prompt-library.html': typeof PromptLibraryDothtmlRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success': typeof SuccessRoute
   '/success.html': typeof SuccessDothtmlRoute
   '/terms': typeof TermsRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/projects': typeof ProjectsRoute
   '/prompt-library.html': typeof PromptLibraryDothtmlRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/success': typeof SuccessRoute
   '/success.html': typeof SuccessDothtmlRoute
   '/terms': typeof TermsRoute
@@ -262,6 +271,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/prompt-library.html'
+    | '/sitemap.xml'
     | '/success'
     | '/success.html'
     | '/terms'
@@ -289,6 +299,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/prompt-library.html'
+    | '/sitemap.xml'
     | '/success'
     | '/success.html'
     | '/terms'
@@ -316,6 +327,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/projects'
     | '/prompt-library.html'
+    | '/sitemap.xml'
     | '/success'
     | '/success.html'
     | '/terms'
@@ -344,6 +356,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ProjectsRoute: typeof ProjectsRoute
   PromptLibraryDothtmlRoute: typeof PromptLibraryDothtmlRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SuccessRoute: typeof SuccessRoute
   SuccessDothtmlRoute: typeof SuccessDothtmlRoute
   TermsRoute: typeof TermsRoute
@@ -469,6 +482,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PromptLibraryDothtmlRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/success': {
       id: '/success'
       path: '/success'
@@ -552,6 +572,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ProjectsRoute: ProjectsRoute,
   PromptLibraryDothtmlRoute: PromptLibraryDothtmlRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SuccessRoute: SuccessRoute,
   SuccessDothtmlRoute: SuccessDothtmlRoute,
   TermsRoute: TermsRoute,

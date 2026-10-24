@@ -8,6 +8,7 @@ import app from "../.vercel/output/functions/__server.func/index.mjs";
 process.env.WGN_COMMIT_SHA = "portable-test";
 const routes = [
   ["/healthz", 200],
+  ["/sitemap.xml", 200],
   ["/", 200],
   ["/about", 200],
   ["/prompt-library", 200],
@@ -29,6 +30,11 @@ for (const [pathname, expected] of routes) {
     assert.equal(health.ok, true);
     assert.equal(health.release, "wgn-r13");
     assert.equal(health.commit, process.env.VERCEL_GIT_COMMIT_SHA ?? "portable-test");
+  } else if (pathname === "/sitemap.xml") {
+    assert.match(response.headers.get("content-type"), /application\/xml/);
+    assert.match(body, /<loc>https:\/\/wevegotnow.com\/about<\/loc>/);
+    assert.equal((body.match(/<loc>/g) ?? []).length, 51);
+    assert.doesNotMatch(body, /lovable\.app/);
   } else if (expected === 200) {
     assert.match(body, /id="main"/);
     const canonical = body.match(/<link[^>]+rel="canonical"[^>]+href="([^"]+)"/);
