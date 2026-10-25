@@ -1894,26 +1894,55 @@
 .birthday-flow[data-reset="true"] .flow-workspace {
   opacity: 0.72;
 }
-/* A compact, click-to-play community film beneath the approved hero. */
+/* A continuous community film with a single corner sound control. */
 .community-film {
-  padding-block: clamp(2.5rem, 5vw, 4.5rem);
+  padding-block: clamp(3rem, 6vw, 5rem);
+  background:
+    radial-gradient(ellipse at 82% 45%, #7433e82c, transparent 68%),
+    radial-gradient(ellipse at 8% 70%, #167dff24, transparent 62%),
+    linear-gradient(125deg, #070d1b, #100d23 70%, #080d1c);
 }
 .community-film-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.25fr);
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.5fr);
   align-items: center;
-  gap: clamp(1.75rem, 4vw, 3.5rem);
+  gap: clamp(1.75rem, 3.5vw, 3.25rem);
+}
+.community-film-copy .display-2 {
+  font-size: clamp(2.6rem, 4.6vw, 4.65rem);
+  line-height: 1.04;
+  max-width: 11ch;
+}
+.community-film-copy .body-copy {
+  max-width: 36ch;
+}
+.community-film-stage {
+  position: relative;
+  isolation: isolate;
+  padding: clamp(0.3rem, 0.7vw, 0.6rem);
+  border: 1px solid #99baff66;
+  border-radius: 1.5rem;
+  background: linear-gradient(135deg, #3ce0ee40, #7665f645 48%, #c34cff45);
+}
+.community-film-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow:
+    -20px 0 75px #177fff40,
+    24px 0 85px #9a3bff4a;
 }
 .community-film-player {
   position: relative;
   aspect-ratio: 16 / 9;
-  border: 1px solid color-mix(in srgb, var(--color-primary, #48deee) 38%, transparent);
+  border: 1px solid #97ceff4d;
   border-radius: 1rem;
   overflow: hidden;
-  background: #090b1a;
-  box-shadow:
-    0 0 32px #4cdeee12,
-    0 16px 56px #a45aff16;
+  background: #070b18;
+  box-shadow: 0 20px 55px #03030c66;
 }
 .community-film-player video {
   display: block;
@@ -1921,35 +1950,88 @@
   height: 100%;
   object-fit: contain;
 }
-.community-film-play {
+.community-film-player video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+.community-film-sound {
   position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  display: grid;
-  place-items: center;
-  width: 4rem;
-  height: 4rem;
-  padding-left: 0.15rem;
-  border: 1px solid #b9f8ff;
-  border-radius: 50%;
-  background: #080e21e6;
-  color: #b9f8ff;
-  box-shadow: 0 0 26px #4cdeee55;
+  right: clamp(0.65rem, 1.5vw, 1rem);
+  top: clamp(0.65rem, 1.5vw, 1rem);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.65rem 0.9rem;
+  border: 1px solid #c6e8ff80;
+  border-radius: 999px;
+  background: #080f25ed;
+  color: #e2faff;
+  box-shadow:
+    0 3px 20px #0007,
+    0 0 20px #2a9dff33;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
 }
-.community-film-play:hover {
-  background: #183244;
+.community-film-sound:hover {
+  background: #16374b;
+  border-color: #b9f8ff;
 }
-.community-film-play:focus-visible {
+.community-film-sound:focus-visible {
   outline: 3px solid #ffffff;
-  outline-offset: 5px;
+  outline-offset: -5px;
+}
+
+/* Neon atmosphere stays below content, including sections with opaque surfaces. */
+body {
+  background-image:
+    radial-gradient(ellipse 55rem 40rem at -16rem 24rem, #155eff30, transparent 75%),
+    radial-gradient(ellipse 52rem 42rem at calc(100% + 12rem) 62rem, #9f38ff2e, transparent 75%);
+  background-repeat: no-repeat;
+}
+#main .section {
+  position: relative;
+  isolation: isolate;
+}
+#main .section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 45rem 30rem at -14% 32%, #195eff2c, transparent 75%),
+    radial-gradient(ellipse 48rem 36rem at 113% 65%, #a13fff30, transparent 76%);
+}
+#main .section:nth-of-type(even)::before {
+  background:
+    radial-gradient(ellipse 45rem 32rem at -12% 60%, #9143ff29, transparent 75%),
+    radial-gradient(ellipse 48rem 34rem at 112% 28%, #197bff2c, transparent 76%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .community-film-stage::before {
+    animation: community-film-glow 9s ease-in-out infinite alternate;
+  }
+}
+@keyframes community-film-glow {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @media (max-width: 767px) {
   .community-film-grid {
     grid-template-columns: minmax(0, 1fr);
   }
-  .community-film-grid .display-2 {
-    max-width: 18ch;
+  .community-film-copy .display-2 {
+    font-size: clamp(2.4rem, 9vw, 3.8rem);
+    max-width: 16ch;
+  }
+  .community-film-sound {
+    padding-inline: 0.75rem;
+    font-size: 0.75rem;
   }
 }
