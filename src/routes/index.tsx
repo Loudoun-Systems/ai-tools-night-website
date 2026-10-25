@@ -8,6 +8,7 @@ import { WorkshopFeature } from "@/components/site/workshop";
 import { NightStage } from "@/components/site/NightStage";
 import { Chapters } from "@/components/site/Chapters";
 import { BirthdayFlow } from "@/components/site/BirthdayFlow";
+import { CommunityFilm } from "@/components/site/CommunityFilm";
 
 const howTo = [
   L(
@@ -154,6 +155,7 @@ function Home() {
           </span>
         </Link>
       </NightStage>
+      <CommunityFilm />
       <section className="section invitation-band">
         <div className="shell">
           <p className="eyebrow">
