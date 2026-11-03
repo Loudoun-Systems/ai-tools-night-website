@@ -4,7 +4,7 @@ import { useLocale, L } from "@/lib/locale-context";
 import { images, MEETUP_URL, LINKEDIN_URL } from "@/content/site";
 import { prompts } from "@/content/prompts-tracks";
 import { Img } from "@/components/site/ui";
-import { WorkshopFeature } from "@/components/site/workshop";
+import { Nov15Feature, WorkshopFeature } from "@/components/site/workshop";
 import { NightStage } from "@/components/site/NightStage";
 import { Chapters } from "@/components/site/Chapters";
 import { BirthdayFlow } from "@/components/site/BirthdayFlow";
@@ -183,22 +183,27 @@ function Home() {
               {t(L("All events", "Todos los eventos"))}
             </Link>
           </div>
-          <WorkshopFeature headingLevel={3} />
+          <Nov15Feature headingLevel={3} />
+          <div className="mt-8">
+            <WorkshopFeature headingLevel={3} />
+          </div>
         </div>
       </section>
 
       <section className="section workflow-band">
         <div className="shell">
           <div className="max-w-2xl">
-            <p className="eyebrow">{t(L("Inside the workshop", "Dentro del taller"))}</p>
+            <p className="eyebrow">
+              {t(L("Inside the November 8 workshop", "Dentro del taller del 8 de noviembre"))}
+            </p>
             <h2 className="display-2 mt-4">
               {t(L("One birthday. Four useful steps.", "Un cumpleaños. Cuatro pasos útiles."))}
             </h2>
             <p className="body-copy mt-4">
               {t(
                 L(
-                  "The birthday helper you’ll build in Make.com — with a human review before anything is sent.",
-                  "El asistente de cumpleaños que crearás en Make.com, con revisión humana antes de enviar algo.",
+                  "The birthday helper you’ll build in Make.com on Sunday, November 8 — with a human review before anything is sent.",
+                  "El asistente de cumpleaños que crearás en Make.com el domingo 8 de noviembre, con revisión humana antes de enviar algo.",
                 ),
               )}
             </p>

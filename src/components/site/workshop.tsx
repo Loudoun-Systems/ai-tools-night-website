@@ -4,6 +4,7 @@ import { useLocale, L } from "@/lib/locale-context";
 import { useWorkshopCopy } from "@/lib/workshop-copy";
 import { REGISTER_URL, WORKSHOP_MEETUP_URL, WORKSHOP_SLUG, images } from "@/content/site";
 import { Img } from "./ui";
+import { NOV15_MEETUP_URL, NOV15_SLUG, workshopNov15 } from "@/content/workshop-nov15";
 
 export function RegisterActions({
   showDetails = false,
@@ -92,6 +93,75 @@ export function WorkshopFeature({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) 
           <p className="body-copy">{w.home_card.summary}</p>
           <div className="mt-auto pt-2">
             <RegisterActions showDetails size="btn-sm" />
+          </div>
+        </div>
+      </div>
+    </article>
+  );
+}
+
+/** Image-led feature of the November 15 community session. */
+export function Nov15Feature({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) {
+  const { t, locale } = useLocale();
+  const w = workshopNov15[locale];
+  const H = headingLevel === 2 ? "h2" : "h3";
+  const nt = t(L(" (opens in a new tab)", " (se abre en una pestaña nueva)"));
+  return (
+    <article className="workshop-ticket overflow-hidden">
+      <div className="grid lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+        <Link
+          to="/events/$slug"
+          params={{ slug: NOV15_SLUG }}
+          className="zoom-img relative block aspect-[1672/941] overflow-hidden lg:self-center"
+          tabIndex={-1}
+          aria-hidden
+        >
+          <Img
+            pic={images.workshopNov15Cover}
+            sizes="(min-width: 1024px) 55vw, 100vw"
+            className="absolute inset-0 h-full w-full object-contain"
+          />
+        </Link>
+        <div className="ticket-stub flex min-w-0 flex-col gap-5 p-6 sm:p-8">
+          <div className="flex flex-wrap gap-2">
+            <span className="pill pill-live">{w.label}</span>
+          </div>
+          <H className="display-3">
+            <Link
+              to="/events/$slug"
+              params={{ slug: NOV15_SLUG }}
+              className="transition-colors hover:text-primary"
+            >
+              {w.title}
+            </Link>
+          </H>
+          <p className="font-display text-lg text-gradient font-semibold">{w.tagline}</p>
+          <dl className="grid gap-2.5 text-[0.975rem]">
+            <div className="flex gap-3">
+              <dt className="sr-only">{t(L("Date", "Fecha"))}</dt>
+              <CalendarDays className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden />
+              <dd>{w.date_time}</dd>
+            </div>
+            <div className="flex gap-3">
+              <dt className="sr-only">{t(L("Location", "Lugar"))}</dt>
+              <MapPin className="mt-1 h-4 w-4 shrink-0 text-primary" aria-hidden />
+              <dd>1920 Association Dr, Reston, VA 20191</dd>
+            </div>
+          </dl>
+          <p className="body-copy">{w.short_description}</p>
+          <div className="mt-auto flex flex-wrap items-center gap-3 pt-2">
+            <a
+              className="btn btn-primary btn-sm"
+              href={NOV15_MEETUP_URL}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {w.rsvp_cta}
+              <span className="sr-only">{nt}</span>
+            </a>
+            <Link to="/events/$slug" params={{ slug: NOV15_SLUG }} className="text-link ml-1">
+              {t(L("Workshop details", "Detalles del taller"))}
+            </Link>
           </div>
         </div>
       </div>
