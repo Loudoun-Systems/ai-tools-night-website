@@ -17,6 +17,7 @@ const routes = [
   ["/workshops", 200],
   ["/events", 200],
   ["/events/build-your-first-ai-automation-2026-11-08", 200],
+  ["/events/practical-ai-workshop-2026-11-15", 200],
   ["/events.html?utm_source=qa", 308],
   ["/this-route-does-not-exist", 404],
 ];
@@ -33,7 +34,7 @@ for (const [pathname, expected] of routes) {
   } else if (pathname === "/sitemap.xml") {
     assert.match(response.headers.get("content-type"), /application\/xml/);
     assert.match(body, /<loc>https:\/\/wevegotnow.com\/about<\/loc>/);
-    assert.equal((body.match(/<loc>/g) ?? []).length, 51);
+    assert.equal((body.match(/<loc>/g) ?? []).length, 52);
     assert.doesNotMatch(body, /lovable\.app/);
   } else if (expected === 200) {
     assert.match(body, /id="main"/);

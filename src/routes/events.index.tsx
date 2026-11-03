@@ -12,7 +12,8 @@ import {
   WORKSHOP_SLUG,
 } from "@/content/site";
 import { Img, Segmented } from "@/components/site/ui";
-import { WorkshopFeature } from "@/components/site/workshop";
+import { Nov15Feature, WorkshopFeature } from "@/components/site/workshop";
+import { NOV15_SLUG } from "@/content/workshop-nov15";
 
 export const Route = createFileRoute("/events/")({
   head: () => ({
@@ -21,7 +22,7 @@ export const Route = createFileRoute("/events/")({
       {
         name: "description",
         content:
-          "What's next at We've Got Now: the November 8 Make.com workshop in Reston, plus past AI Tools Explorers Night meetups in Herndon.",
+          "What's next at We've Got Now: free workshops in Reston on November 8 and November 15, plus past AI Tools Explorers Night meetups in Herndon.",
       },
       { property: "og:title", content: "Events — Good ideas. Better company." },
       {
@@ -82,8 +83,13 @@ function EventsPage() {
           <h2 id="next-h" className="display-2 mb-6">
             {t(L("What’s next", "Lo que viene"))}
           </h2>
-          {upcoming.some((e) => e.slug === WORKSHOP_SLUG) ? (
-            <WorkshopFeature headingLevel={3} />
+          {upcoming.some((e) => e.slug === WORKSHOP_SLUG || e.slug === NOV15_SLUG) ? (
+            <div className="grid gap-8">
+              {upcoming.some((e) => e.slug === WORKSHOP_SLUG) && (
+                <WorkshopFeature headingLevel={3} />
+              )}
+              {upcoming.some((e) => e.slug === NOV15_SLUG) && <Nov15Feature headingLevel={3} />}
+            </div>
           ) : (
             <div className="surface p-8">
               <p className="lede">

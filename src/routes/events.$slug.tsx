@@ -21,6 +21,13 @@ import { WORKSHOP_SOCIAL_URL } from "@/content/published-site";
 import { Img } from "@/components/site/ui";
 import { BirthdayFlow } from "@/components/site/BirthdayFlow";
 import { RegisterActions } from "@/components/site/workshop";
+import {
+  NOV15_COVER_URL,
+  NOV15_MEETUP_URL,
+  NOV15_SLUG,
+  OWNED_ORIGIN,
+  workshopNov15,
+} from "@/content/workshop-nov15";
 
 export const Route = createFileRoute("/events/$slug")({
   beforeLoad: ({ params }) => {
@@ -58,6 +65,28 @@ export const Route = createFileRoute("/events/$slug")({
         ],
         links: [{ rel: "canonical", href: siteUrl(url) }],
         scripts: [{ type: "application/ld+json", children: JSON.stringify(workshopJsonLd()) }],
+      };
+    }
+    if (event.slug === NOV15_SLUG) {
+      const m = workshopNov15.en.metadata;
+      const abs = `${OWNED_ORIGIN}/events/${NOV15_SLUG}`;
+      return {
+        meta: [
+          { title: m.title },
+          { name: "description", content: m.description },
+          { property: "og:title", content: workshopNov15.en.title },
+          { property: "og:description", content: m.description },
+          { property: "og:image", content: NOV15_COVER_URL },
+          { property: "og:image:width", content: "1200" },
+          { property: "og:image:height", content: "675" },
+          { property: "og:image:alt", content: m.cover_alt },
+          { name: "twitter:image", content: NOV15_COVER_URL },
+          { property: "og:type", content: "article" },
+          { name: "twitter:card", content: "summary_large_image" },
+          { property: "og:url", content: abs },
+        ],
+        links: [{ rel: "canonical", href: abs }],
+        scripts: [{ type: "application/ld+json", children: JSON.stringify(nov15JsonLd()) }],
       };
     }
     const title = `${event.title.en} — ${formatDate(event.dateStart ?? "", "en")} | We've Got Now`;
@@ -120,11 +149,57 @@ function workshopJsonLd() {
   };
 }
 
+function nov15JsonLd() {
+  const e = workshopNov15.event;
+  const url = `${OWNED_ORIGIN}/events/${NOV15_SLUG}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    name: workshopNov15.en.title,
+    url,
+    image: NOV15_COVER_URL,
+    description: workshopNov15.en.short_description,
+    startDate: e.start_iso,
+    endDate: e.end_iso,
+    eventStatus: "https://schema.org/EventScheduled",
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    inLanguage: ["en", "es"],
+    isAccessibleForFree: true,
+    location: {
+      "@type": "Place",
+      name: "Reston, Virginia",
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: e.street_address,
+        addressLocality: e.locality,
+        addressRegion: e.region,
+        postalCode: e.postal_code,
+        addressCountry: e.country,
+      },
+    },
+    organizer: { "@type": "Organization", name: "We've Got Now", url: OWNED_ORIGIN },
+    performer: [
+      { "@type": "Person", name: "Gus Gonzalez" },
+      { "@type": "Person", name: "Haytham" },
+    ],
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+      url: NOV15_MEETUP_URL,
+      availability: "https://schema.org/InStock",
+      validThrough: e.start_iso,
+    },
+  };
+}
+
 function EventDetail() {
   const { slug } = Route.useLoaderData();
   const event = events.find((e) => e.slug === slug);
   if (!event) return null;
-  return event.slug === WORKSHOP_SLUG ? <WorkshopDetail /> : <MeetupDetail event={event} />;
+  if (event.slug === WORKSHOP_SLUG) return <WorkshopDetail />;
+  if (event.slug === NOV15_SLUG) return <Nov15Detail />;
+  return <MeetupDetail event={event} />;
 }
 
 function BackLink() {
@@ -261,6 +336,132 @@ function WorkshopDetail() {
             <div className="mt-5">
               <RegisterActions />
             </div>
+            <p className="body-copy mt-4 text-sm">{w.registration_note}</p>
+          </div>
+        </aside>
+      </div>
+    </article>
+  );
+}
+
+function Nov15Detail() {
+  const { t, locale } = useLocale();
+  const w = workshopNov15[locale];
+  const e = workshopNov15.event;
+  const nt = t(L(" (opens in a new tab)", " (se abre en una pestaña nueva)"));
+  const facts = [
+    {
+      icon: CalendarDays,
+      label: L("Date", "Fecha"),
+      value: formatDate(e.start_iso, locale, { weekday: "long" }),
+    },
+    {
+      icon: Clock,
+      label: L("Time", "Hora"),
+      value: formatTimeRange(e.start_iso, e.end_iso, locale),
+    },
+    { icon: MapPin, label: L("Location", "Lugar"), value: "1920 Association Dr, Reston, VA 20191" },
+    { icon: Ticket, label: L("Admission", "Entrada"), value: w.admission },
+    { icon: User, label: L("Host", "Anfitrión"), value: "Gus Gonzalez · MyGuyGus" },
+    { icon: Users, label: L("Co-host", "Coanfitrión"), value: "Haytham" },
+  ];
+  return (
+    <article>
+      <header className="glow-hero">
+        <div className="shell pt-8 md:pt-10">
+          <BackLink />
+          <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end lg:gap-14">
+            <div className="rise">
+              <div className="flex flex-wrap gap-2">
+                <span className="pill pill-live">{t(L("Workshop", "Taller"))}</span>
+                <span className="pill pill-free">{w.label}</span>
+              </div>
+              <h1 className="display-2 mt-5">{w.title}</h1>
+              <p className="mt-4 font-display text-xl font-semibold text-gradient sm:text-2xl">
+                {w.tagline}
+              </p>
+            </div>
+            <p className="lede rise rise-2">{w.short_description}</p>
+          </div>
+          <div className="frame frame-clear rise rise-3 mt-10 aspect-[1672/941]">
+            <Img
+              pic={images.workshopNov15Cover}
+              eager
+              sizes="(min-width: 1320px) 1240px, 100vw"
+              className="h-full w-full object-contain"
+            />
+          </div>
+        </div>
+      </header>
+
+      <div className="shell section grid gap-12 lg:grid-cols-[minmax(0,1fr)_23rem] lg:gap-16">
+        <div className="min-w-0">
+          <p className="text-xl leading-relaxed text-foreground">{w.intro}</p>
+
+          <section className="mt-12" aria-labelledby="learn-h">
+            <h2 id="learn-h" className="display-3">
+              {t(L("What we’ll cover", "Lo que veremos"))}
+            </h2>
+            <ul className="body-copy mt-5 grid gap-3 text-[1.0625rem]">
+              {w.learn.map((item) => (
+                <li key={item} className="flex gap-3">
+                  <span
+                    className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-primary"
+                    aria-hidden
+                  />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="mt-14" aria-labelledby="agenda15-h">
+            <h2 id="agenda15-h" className="display-3">
+              {t(L("Agenda", "Agenda"))}
+            </h2>
+            <p className="body-copy mt-2 text-sm">
+              {t(L("All times Eastern.", "Todas las horas son del Este."))}
+            </p>
+            <ol className="mt-6 border-t border-border">
+              {workshopNov15.agenda.map((a) => (
+                <li
+                  key={a.time_et}
+                  className="grid gap-1 border-b border-border py-4 sm:grid-cols-[9.5rem_minmax(0,1fr)] sm:gap-6"
+                >
+                  <span className="font-semibold tabular-nums text-primary">
+                    {locale === "en" ? a.time_et : a.time_et.replace(/ PM/g, " p. m.")}
+                  </span>
+                  <span>{a[locale]}</span>
+                </li>
+              ))}
+            </ol>
+          </section>
+        </div>
+
+        <aside className="lg:sticky lg:top-[calc(var(--header-h)+1.5rem)] lg:self-start">
+          <div className="surface p-6 sm:p-7">
+            <h2 className="font-display text-lg font-semibold">
+              {t(L("Event details", "Detalles"))}
+            </h2>
+            <dl className="mt-5 grid gap-4">
+              {facts.map((f) => (
+                <div key={f.label.en} className="flex gap-3">
+                  <f.icon className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden />
+                  <div className="min-w-0">
+                    <dt className="text-sm text-muted-foreground">{t(f.label)}</dt>
+                    <dd className="font-medium">{f.value}</dd>
+                  </div>
+                </div>
+              ))}
+            </dl>
+            <div className="rule my-6" />
+            <p className="text-sm font-semibold">{t(L("What to bring", "Qué traer"))}</p>
+            <p className="body-copy mt-1 text-[0.95rem]">{w.bring}</p>
+            <div className="rule my-6" />
+            <a className="btn btn-primary" href={NOV15_MEETUP_URL} target="_blank" rel="noreferrer">
+              {w.rsvp_cta}
+              <span className="sr-only">{nt}</span>
+            </a>
             <p className="body-copy mt-4 text-sm">{w.registration_note}</p>
           </div>
         </aside>

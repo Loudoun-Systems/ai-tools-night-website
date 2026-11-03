@@ -1,5 +1,6 @@
 import type { EventRecord, Locale, Localized } from "./types";
 import { workshop } from "./workshop-data";
+import { NOV15_COVER_PATH, NOV15_MEETUP_URL, NOV15_SLUG, workshopNov15 } from "./workshop-nov15";
 import heroImg from "@/assets/wgn-hero-1536.webp.asset.json";
 import logoImg from "@/assets/wgn-logo-256.webp.asset.json";
 import cover1672 from "@/assets/workshop-cover-1672.webp.asset.json";
@@ -52,6 +53,15 @@ export const images = {
     alt: {
       en: workshop.en.metadata.social_image_alt,
       es: workshop.es.metadata.social_image_alt,
+    },
+  },
+  workshopNov15Cover: {
+    src: NOV15_COVER_PATH,
+    width: 1672,
+    height: 941,
+    alt: {
+      en: workshopNov15.en.metadata.cover_alt,
+      es: workshopNov15.es.metadata.cover_alt,
     },
   },
   workshops: {
@@ -140,6 +150,23 @@ export const events: SiteEvent[] = [
     reviewedAt: "2026-10-22",
     image: images.workshopCover,
     host: workshop.event.host,
+  },
+  {
+    slug: NOV15_SLUG,
+    type: "workshop",
+    status: "upcoming",
+    title: { en: workshopNov15.en.title, es: workshopNov15.es.title },
+    summary: { en: workshopNov15.en.short_description, es: workshopNov15.es.short_description },
+    dateStart: workshopNov15.event.start_iso,
+    dateEnd: workshopNov15.event.end_iso,
+    timezone: "America/New_York",
+    venue: { en: "Reston, Virginia", es: "Reston, Virginia" },
+    address: "1920 Association Dr, Reston, VA 20191",
+    rsvpUrl: NOV15_MEETUP_URL,
+    source: "approved second-workshop brief 2026-11-02",
+    reviewedAt: "2026-11-02",
+    image: images.workshopNov15Cover,
+    host: workshopNov15.event.host,
   },
   {
     slug: "ai-tools-explorers-night-april-22-2026",

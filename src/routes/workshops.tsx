@@ -4,7 +4,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useLocale, L } from "@/lib/locale-context";
 import { images, WORKSHOP_SLUG } from "@/content/site";
 import { Img, PageIntro } from "@/components/site/ui";
-import { WorkshopFeature } from "@/components/site/workshop";
+import { Nov15Feature, WorkshopFeature } from "@/components/site/workshop";
+import { NOV15_SLUG } from "@/content/workshop-nov15";
 import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/workshops")({
@@ -14,13 +15,13 @@ export const Route = createFileRoute("/workshops")({
       {
         name: "description",
         content:
-          "Beginner-friendly, hands-on AI workshops from MyGuyGus and We've Got Now. First pilot: Build Your First AI Automation with Make.com, November 8 in Reston.",
+          "Beginner-friendly, hands-on AI workshops from MyGuyGus and We've Got Now. Free sessions in Reston on November 8 (Make.com automation) and November 15 (practical AI tools).",
       },
       { property: "og:title", content: "Hands-on AI workshops — We've Got Now" },
       {
         property: "og:description",
         content:
-          "A little less theory. A lot more trying. Free first pilot November 8 in Reston, VA.",
+          "A little less theory. A lot more trying. Free sessions November 8 and November 15 in Reston, VA.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -67,31 +68,38 @@ function WorkshopsPage() {
   const w = useWorkshopCopy();
   const faq = [
     {
-      q: L("When is the next workshop?", "¿Cuándo será el próximo taller?"),
+      q: L("When are the upcoming workshops?", "¿Cuándo son los próximos talleres?"),
       a: L(
-        "Sunday, November 8, 2026, from 2:00 to 4:00 PM Eastern, at 1920 Association Dr, Reston, VA 20191.",
-        "El domingo 8 de noviembre de 2026, de 2:00 a 4:00 p. m., hora del Este, en 1920 Association Dr, Reston, VA 20191.",
+        "Two separate sessions, both from 2:00 to 4:00 PM Eastern at 1920 Association Dr, Reston, VA 20191: Sunday, November 8, 2026 (Build Your First AI Automation with Make.com) and Sunday, November 15, 2026 (Practical AI Workshop to Level Up and Get Paid).",
+        "Dos sesiones distintas, ambas de 2:00 a 4:00 p. m., hora del Este, en 1920 Association Dr, Reston, VA 20191: el domingo 8 de noviembre de 2026 (Crea tu primera automatización con IA en Make.com) y el domingo 15 de noviembre de 2026 (Taller práctico de IA para avanzar y generar ingresos).",
+      ),
+    },
+    {
+      q: L("How are the two sessions different?", "¿En qué se diferencian las dos sesiones?"),
+      a: L(
+        "November 8 is a guided Make.com build of a birthday-draft workflow. November 15 explains chat assistants, browser agents and agentic workflows, shows which tools our team uses for which work, and guides one practical task.",
+        "El 8 de noviembre es una construcción guiada en Make.com de un flujo de borrador de cumpleaños. El 15 de noviembre explica los asistentes de chat, los agentes de navegador y los flujos agénticos, muestra qué herramientas usa nuestro equipo para cada trabajo y guía una tarea práctica.",
       ),
     },
     {
       q: L("How much does it cost?", "¿Cuánto cuesta?"),
       a: L(
-        "This first pilot is free. Space is limited, and a request is confirmed or waitlisted by email — submitting the form does not guarantee a seat.",
-        "Esta primera sesión piloto es gratuita. Los cupos son limitados y cada solicitud se confirma o pasa a lista de espera por correo; enviar el formulario no garantiza un lugar.",
+        "Both sessions are free. For November 8, space is limited and a direct request is confirmed or waitlisted by email — submitting the form does not guarantee a seat. November 15 is a free community session with a normal Meetup RSVP.",
+        "Ambas sesiones son gratuitas. Para el 8 de noviembre los cupos son limitados y cada solicitud directa se confirma o pasa a lista de espera por correo; enviar el formulario no garantiza un lugar. El 15 de noviembre es una sesión comunitaria gratuita con confirmación normal en Meetup.",
       ),
     },
     {
       q: L("Is it suitable for beginners?", "¿Está pensado para principiantes?"),
       a: L(
-        "Yes. No coding experience is needed. Bring a laptop and charger; we’ll send simple account and spreadsheet preparation steps before the workshop.",
-        "Sí. No necesitas saber programar. Trae tu laptop y su cargador; antes del taller enviaremos instrucciones sencillas para preparar tu cuenta y tu hoja de cálculo.",
+        "Yes. Both sessions are beginner-friendly. Bring a laptop and charger. November 8 includes account and spreadsheet preparation; for November 15, bring one task you would like AI to help with.",
+        "Sí. Ambas sesiones son para principiantes. Trae tu laptop y su cargador. El 8 de noviembre incluye preparación de cuentas y una hoja de cálculo; para el 15 de noviembre, trae una tarea en la que quieras ayuda de la IA.",
       ),
     },
     {
       q: L("How do I register?", "¿Cómo me registro?"),
       a: L(
-        "Use one route per person: “Request a seat” for a direct request without a Meetup account, or “RSVP on Meetup” if you already use Meetup. Invite a friend — each person registers separately.",
-        "Usa una sola vía por persona: «Solicitar un lugar» si no tienes cuenta de Meetup, o «Confirmar asistencia en Meetup» si ya la usas. Invita a alguien; cada persona se registra por separado.",
+        "Each session has its own registration, and each person registers separately. For November 8, use one route per person: “Request a seat” for a direct request without a Meetup account, or “RSVP on Meetup” if you already use Meetup. For November 15, RSVP on Meetup.",
+        "Cada sesión tiene su propio registro y cada persona se registra por separado. Para el 8 de noviembre, usa una sola vía por persona: «Solicitar un lugar» si no tienes cuenta de Meetup, o «Confirmar asistencia en Meetup» si ya la usas. Para el 15 de noviembre, confirma tu asistencia en Meetup.",
       ),
     },
     {
@@ -124,9 +132,12 @@ function WorkshopsPage() {
       <section className="section pt-4" aria-labelledby="first-h">
         <div className="shell">
           <h2 id="first-h" className="display-2 mb-6">
-            {t(L("The first pilot", "La primera sesión piloto"))}
+            {t(L("Upcoming sessions", "Próximas sesiones"))}
           </h2>
-          <WorkshopFeature headingLevel={3} />
+          <div className="grid gap-8">
+            <WorkshopFeature headingLevel={3} />
+            <Nov15Feature headingLevel={3} />
+          </div>
         </div>
       </section>
 
@@ -178,6 +189,10 @@ function WorkshopsPage() {
                 )}{" "}
                 <Link to="/events/$slug" params={{ slug: WORKSHOP_SLUG }} className="text-link">
                   {t(L("See the November 8 agenda", "Ver la agenda del 8 de noviembre"))}
+                </Link>{" "}
+                ·{" "}
+                <Link to="/events/$slug" params={{ slug: NOV15_SLUG }} className="text-link">
+                  {t(L("See the November 15 agenda", "Ver la agenda del 15 de noviembre"))}
                 </Link>
               </p>
             </div>
