@@ -1,10 +1,9 @@
 import { siteUrl } from "@/content/published-site";
-import { useWorkshopCopy } from "@/lib/workshop-copy";
 import { createFileRoute } from "@tanstack/react-router";
 import { useLocale, L } from "@/lib/locale-context";
 import { images, WORKSHOP_SLUG } from "@/content/site";
 import { Img, PageIntro } from "@/components/site/ui";
-import { Nov15Feature, WorkshopFeature } from "@/components/site/workshop";
+import { Nov15Feature } from "@/components/site/workshop";
 import { NOV15_SLUG } from "@/content/workshop-nov15";
 import { Link } from "@tanstack/react-router";
 
@@ -15,13 +14,13 @@ export const Route = createFileRoute("/workshops")({
       {
         name: "description",
         content:
-          "Beginner-friendly, hands-on AI workshops from MyGuyGus and We've Got Now. Free sessions in Reston on November 8 (Make.com automation) and November 15 (practical AI tools).",
+          "Beginner-friendly, hands-on AI workshops from MyGuyGus and We've Got Now. The next free community session is December 6, 2–4 PM ET in Reston.",
       },
       { property: "og:title", content: "Hands-on AI workshops — We've Got Now" },
       {
         property: "og:description",
         content:
-          "A little less theory. A lot more trying. Free sessions November 8 and November 15 in Reston, VA.",
+          "A little less theory. A lot more trying. Free community workshop December 6 in Reston, VA.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -65,41 +64,40 @@ const flow = [
 
 function WorkshopsPage() {
   const { t } = useLocale();
-  const w = useWorkshopCopy();
   const faq = [
     {
       q: L("When are the upcoming workshops?", "¿Cuándo son los próximos talleres?"),
       a: L(
-        "Two separate sessions, both from 2:00 to 4:00 PM Eastern at 1920 Association Dr, Reston, VA 20191: Sunday, November 8, 2026 (Build Your First AI Automation with Make.com) and Sunday, November 15, 2026 (Practical AI Workshop to Level Up and Get Paid).",
-        "Dos sesiones distintas, ambas de 2:00 a 4:00 p. m., hora del Este, en 1920 Association Dr, Reston, VA 20191: el domingo 8 de noviembre de 2026 (Crea tu primera automatización con IA en Make.com) y el domingo 15 de noviembre de 2026 (Taller práctico de IA para avanzar y generar ingresos).",
+        "The next session is Sunday, December 6, 2026, from 2:00 to 4:00 PM Eastern at 1920 Association Dr, Reston, VA 20191. This replaces the November 15 date; the November 8 workshop is now a past session.",
+        "La próxima sesión es el domingo 6 de diciembre de 2026, de 2:00 a 4:00 p. m., hora del Este, en 1920 Association Dr, Reston, VA 20191. Reemplaza la fecha del 15 de noviembre; el taller del 8 de noviembre ya se realizó.",
       ),
     },
     {
       q: L("How are the two sessions different?", "¿En qué se diferencian las dos sesiones?"),
       a: L(
-        "November 8 is a guided Make.com build of a birthday-draft workflow. November 15 explains chat assistants, browser agents and agentic workflows, shows which tools our team uses for which work, and guides one practical task.",
-        "El 8 de noviembre es una construcción guiada en Make.com de un flujo de borrador de cumpleaños. El 15 de noviembre explica los asistentes de chat, los agentes de navegador y los flujos agénticos, muestra qué herramientas usa nuestro equipo para cada trabajo y guía una tarea práctica.",
+        "The November 8 session was a guided Make.com build of a birthday-draft workflow. December 6 explains chat assistants, browser agents and agentic workflows, shows which tools our team uses for which work, and guides one practical task.",
+        "El taller del 8 de noviembre fue una construcción guiada en Make.com de un flujo de borrador de cumpleaños. El 6 de diciembre explica los asistentes de chat, los agentes de navegador y los flujos agénticos, muestra qué herramientas usa nuestro equipo para cada trabajo y guía una tarea práctica.",
       ),
     },
     {
       q: L("How much does it cost?", "¿Cuánto cuesta?"),
       a: L(
-        "Both sessions are free. For November 8, space is limited and a direct request is confirmed or waitlisted by email — submitting the form does not guarantee a seat. November 15 is a free community session with a normal Meetup RSVP.",
-        "Ambas sesiones son gratuitas. Para el 8 de noviembre los cupos son limitados y cada solicitud directa se confirma o pasa a lista de espera por correo; enviar el formulario no garantiza un lugar. El 15 de noviembre es una sesión comunitaria gratuita con confirmación normal en Meetup.",
+        "December 6 is a free community session. RSVP on Meetup; each person registers separately.",
+        "El 6 de diciembre es una sesión comunitaria gratuita. Confirma tu asistencia en Meetup; cada persona se registra por separado.",
       ),
     },
     {
       q: L("Is it suitable for beginners?", "¿Está pensado para principiantes?"),
       a: L(
-        "Yes. Both sessions are beginner-friendly. Bring a laptop and charger. November 8 includes account and spreadsheet preparation; for November 15, bring one task you would like AI to help with.",
-        "Sí. Ambas sesiones son para principiantes. Trae tu laptop y su cargador. El 8 de noviembre incluye preparación de cuentas y una hoja de cálculo; para el 15 de noviembre, trae una tarea en la que quieras ayuda de la IA.",
+        "Yes. The December 6 session is beginner-friendly. Bring a laptop, charger and one task you would like AI to help with.",
+        "Sí. La sesión del 6 de diciembre es para principiantes. Trae tu laptop, su cargador y una tarea en la que quieras ayuda de la IA.",
       ),
     },
     {
       q: L("How do I register?", "¿Cómo me registro?"),
       a: L(
-        "Each session has its own registration, and each person registers separately. For November 8, use one route per person: “Request a seat” for a direct request without a Meetup account, or “RSVP on Meetup” if you already use Meetup. For November 15, RSVP on Meetup.",
-        "Cada sesión tiene su propio registro y cada persona se registra por separado. Para el 8 de noviembre, usa una sola vía por persona: «Solicitar un lugar» si no tienes cuenta de Meetup, o «Confirmar asistencia en Meetup» si ya la usas. Para el 15 de noviembre, confirma tu asistencia en Meetup.",
+        "RSVP on Meetup for December 6. Each person registers separately. The same Meetup event has the updated date.",
+        "Confirma tu asistencia en Meetup para el 6 de diciembre. Cada persona se registra por separado. El mismo evento de Meetup tiene la fecha actualizada.",
       ),
     },
     {
@@ -135,7 +133,6 @@ function WorkshopsPage() {
             {t(L("Upcoming sessions", "Próximas sesiones"))}
           </h2>
           <div className="grid gap-8">
-            <WorkshopFeature headingLevel={3} />
             <Nov15Feature headingLevel={3} />
           </div>
         </div>
@@ -192,7 +189,7 @@ function WorkshopsPage() {
                 </Link>{" "}
                 ·{" "}
                 <Link to="/events/$slug" params={{ slug: NOV15_SLUG }} className="text-link">
-                  {t(L("See the November 15 agenda", "Ver la agenda del 15 de noviembre"))}
+                  {t(L("See the December 6 agenda", "Ver la agenda del 6 de diciembre"))}
                 </Link>
               </p>
             </div>
@@ -206,7 +203,14 @@ function WorkshopsPage() {
             <h2 id="faq-h" className="display-2">
               {t(L("Questions, answered.", "Preguntas frecuentes."))}
             </h2>
-            <p className="body-copy mt-4 max-w-md">{w.registration_note}</p>
+            <p className="body-copy mt-4 max-w-md">
+              {t(
+                L(
+                  "The next free community session is December 6, 2–4 PM ET.",
+                  "La próxima sesión comunitaria gratuita es el 6 de diciembre, de 2 a 4 p. m., hora del Este.",
+                ),
+              )}
+            </p>
           </div>
           <div className="divide-y divide-border border-y border-border">
             {faq.map((f) => (

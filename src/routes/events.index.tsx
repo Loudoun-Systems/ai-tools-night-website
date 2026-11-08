@@ -22,7 +22,7 @@ export const Route = createFileRoute("/events/")({
       {
         name: "description",
         content:
-          "What's next at We've Got Now: free workshops in Reston on November 8 and November 15, plus past AI Tools Explorers Night meetups in Herndon.",
+          "What's next at We've Got Now: a free workshop in Reston on December 6, plus past workshops and AI Tools Explorers Night meetups.",
       },
       { property: "og:title", content: "Events — Good ideas. Better company." },
       {

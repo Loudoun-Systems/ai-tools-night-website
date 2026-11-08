@@ -17,7 +17,8 @@ const routes = [
   ["/workshops", 200],
   ["/events", 200],
   ["/events/build-your-first-ai-automation-2026-11-08", 200],
-  ["/events/practical-ai-workshop-2026-11-15", 200],
+  ["/events/practical-ai-workshop-2026-12-06", 200],
+  ["/events/practical-ai-workshop-2026-11-15?utm_source=qa", 301],
   ["/events.html?utm_source=qa", 308],
   ["/this-route-does-not-exist", 404],
 ];
@@ -44,6 +45,18 @@ for (const [pathname, expected] of routes) {
     assert.doesNotMatch(body, /This page didn't load/);
     assert.doesNotMatch(body, /https:\/\/now-we-make-together\.lovable\.app/);
   }
+  if (pathname === "/events/practical-ai-workshop-2026-12-06") {
+    assert.match(body, /2026-12-06T14:00:00-05:00/);
+    assert.match(body, /EventRescheduled/);
+    assert.match(body, /previousStartDate/);
+    assert.match(body, /Sunday, December 6/);
+    assert.match(body, /events\/317263389/);
+  }
+  if (expected === 301)
+    assert.equal(
+      response.headers.get("location"),
+      "/events/practical-ai-workshop-2026-12-06?utm_source=qa",
+    );
   if (expected === 308) assert.equal(response.headers.get("location"), "/events?utm_source=qa");
   report.push({ pathname, status: response.status });
 }

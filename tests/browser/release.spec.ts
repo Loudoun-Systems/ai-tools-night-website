@@ -7,7 +7,7 @@ for (const route of [
   "/careers",
   "/contact",
   "/events/build-your-first-ai-automation-2026-11-08",
-  "/events/practical-ai-workshop-2026-11-15",
+  "/events/practical-ai-workshop-2026-12-06",
 ]) {
   test(`EN/ES responsive route ${route}`, async ({ page }, testInfo) => {
     const errors: string[] = [];

@@ -4,11 +4,12 @@ import { useLocale, L } from "@/lib/locale-context";
 import { images, MEETUP_URL, LINKEDIN_URL } from "@/content/site";
 import { prompts } from "@/content/prompts-tracks";
 import { Img } from "@/components/site/ui";
-import { Nov15Feature, WorkshopFeature } from "@/components/site/workshop";
+import { Nov15Feature } from "@/components/site/workshop";
 import { NightStage } from "@/components/site/NightStage";
 import { Chapters } from "@/components/site/Chapters";
 import { BirthdayFlow } from "@/components/site/BirthdayFlow";
 import { CommunityFilm } from "@/components/site/CommunityFilm";
+import { NOV15_SLUG, workshopNov15 } from "@/content/workshop-nov15";
 
 const howTo = [
   L(
@@ -138,19 +139,15 @@ function Home() {
             {t(L("Meet the community", "Conocer la comunidad"))}
           </Link>
         </div>
-        <Link
-          to="/events/$slug"
-          params={{ slug: "build-your-first-ai-automation-2026-11-08" }}
-          className="stage-ticket"
-        >
+        <Link to="/events/$slug" params={{ slug: NOV15_SLUG }} className="stage-ticket">
           <span className="stage-ticket-label">
-            {t(L("NEXT / FREE FIRST PILOT", "PRÓXIMO / PILOTO GRATUITO"))}
+            {t(L("NEXT / FREE COMMUNITY SESSION", "PRÓXIMO / SESIÓN COMUNITARIA GRATUITA"))}
           </span>
           <span className="font-display font-semibold">
-            {t(L("Build Your First AI Automation", "Crea tu primera automatización con IA"))}
+            {t(L(workshopNov15.en.title, workshopNov15.es.title))}
           </span>
           <span className="text-sm text-primary">
-            {t(L("Nov 8 · 2–4 PM ET · Reston", "8 nov. · 2–4 p. m., hora del Este · Reston"))}{" "}
+            {t(L("Dec 6 · 2–4 PM ET · Reston", "6 dic. · 2–4 p. m., hora del Este · Reston"))}{" "}
             <span aria-hidden="true">↗</span>
           </span>
         </Link>
@@ -184,9 +181,6 @@ function Home() {
             </Link>
           </div>
           <Nov15Feature headingLevel={3} />
-          <div className="mt-8">
-            <WorkshopFeature headingLevel={3} />
-          </div>
         </div>
       </section>
 
@@ -202,8 +196,8 @@ function Home() {
             <p className="body-copy mt-4">
               {t(
                 L(
-                  "The birthday helper you’ll build in Make.com on Sunday, November 8 — with a human review before anything is sent.",
-                  "El asistente de cumpleaños que crearás en Make.com el domingo 8 de noviembre, con revisión humana antes de enviar algo.",
+                  "The birthday helper from our November 8 Make.com workshop — with a human review before anything is sent.",
+                  "El asistente de cumpleaños de nuestro taller de Make.com del 8 de noviembre, con revisión humana antes de enviar algo.",
                 ),
               )}
             </p>
