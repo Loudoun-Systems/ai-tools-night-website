@@ -163,8 +163,8 @@ export const events: SiteEvent[] = [
     venue: { en: "Reston, Virginia", es: "Reston, Virginia" },
     address: "1920 Association Dr, Reston, VA 20191",
     rsvpUrl: NOV15_MEETUP_URL,
-    source: "approved second-workshop brief 2026-11-02",
-    reviewedAt: "2026-11-02",
+    source: "approved second-workshop brief 2026-11-02; rescheduled by Haytham 2026-11-08",
+    reviewedAt: "2026-11-08",
     image: images.workshopNov15Cover,
     host: workshopNov15.event.host,
   },
@@ -209,7 +209,10 @@ export const events: SiteEvent[] = [
 ];
 
 /** Old placeholder event slugs that now point somewhere real. */
-export const legacyEventSlugs: Record<string, string> = { "ai-workshops": WORKSHOP_SLUG };
+export const legacyEventSlugs: Record<string, string> = {
+  "ai-workshops": WORKSHOP_SLUG,
+  "practical-ai-workshop-2026-11-15": NOV15_SLUG,
+};
 
 export function eventPhase(e: EventRecord, now = new Date()): "upcoming" | "past" {
   const end = e.dateEnd ?? e.dateStart;

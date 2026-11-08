@@ -30,9 +30,15 @@ import {
 } from "@/content/workshop-nov15";
 
 export const Route = createFileRoute("/events/$slug")({
-  beforeLoad: ({ params }) => {
+  beforeLoad: ({ params, location }) => {
     const target = legacyEventSlugs[params.slug];
-    if (target) throw redirect({ to: "/events/$slug", params: { slug: target }, statusCode: 301 });
+    if (target)
+      throw redirect({
+        to: "/events/$slug",
+        params: { slug: target },
+        search: location.search,
+        statusCode: 301,
+      });
   },
   loader: ({ params }) => {
     const event = events.find((e) => e.slug === params.slug);
@@ -161,7 +167,8 @@ function nov15JsonLd() {
     description: workshopNov15.en.short_description,
     startDate: e.start_iso,
     endDate: e.end_iso,
-    eventStatus: "https://schema.org/EventScheduled",
+    eventStatus: "https://schema.org/EventRescheduled",
+    previousStartDate: e.previous_start_iso,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     inLanguage: ["en", "es"],
     isAccessibleForFree: true,

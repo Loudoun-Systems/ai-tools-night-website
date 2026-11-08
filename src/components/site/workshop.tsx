@@ -100,7 +100,7 @@ export function WorkshopFeature({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) 
   );
 }
 
-/** Image-led feature of the November 15 community session. */
+/** Image-led feature of the community session rescheduled to December 6. */
 export function Nov15Feature({ headingLevel = 2 }: { headingLevel?: 2 | 3 }) {
   const { t, locale } = useLocale();
   const w = workshopNov15[locale];
